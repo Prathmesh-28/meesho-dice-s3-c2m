@@ -1,0 +1,5 @@
+.DS_Store
+node_modules/
+**/.vercel/
+# The prototype keeps its own repo (deploys to Vercel and GitHub Pages); never commit it here.
+.git-hold/
