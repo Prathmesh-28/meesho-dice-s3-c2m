@@ -11,6 +11,12 @@ const A = (f) => path.join(HERE, 'assets', f);
 const I = (n, c = 'w') => A(`icons/${n}_${c}.png`);
 const OUT = process.argv[2] ?? path.join(HERE, 'out', 'meesho_dice_round2.pptx');
 
+// Never overwrite the current deck without first saving it to ../old (see snapshot.sh).
+const DECK_MAIN = path.resolve(HERE, '../meesho_dice_round2.pptx');
+if (path.resolve(OUT) === DECK_MAIN && require('fs').existsSync(DECK_MAIN)) {
+  require('child_process').execFileSync('bash', [path.join(HERE, 'snapshot.sh'), 'rebuilt with build.mjs'], { stdio: 'inherit' });
+}
+
 // ---------- live numbers from the prototype model ----------
 const P = path.resolve(HERE, '../../prototype/src');
 const { GATE, PERSONA, ECONOMICS, HEALTH } = await import(`${P}/config.js`);

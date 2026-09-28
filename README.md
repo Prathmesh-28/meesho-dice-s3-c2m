@@ -21,7 +21,7 @@
 
 ## Round 2 deck
 
-[`02_round2_detailed_submission/deck/meesho_dice_round2.pdf`](02_round2_detailed_submission/deck/meesho_dice_round2.pdf) (editable: `meesho_dice_round2.pptx`). Cover plus 10 content slides: the seven sections the brief asks for, the price screen, an operating model, and the live prototype. The generator in `deck/source/` rebuilds it from the prototype's model.
+[`02_round2_detailed_submission/deck/meesho_dice_round2.pdf`](02_round2_detailed_submission/deck/meesho_dice_round2.pdf) (editable: `meesho_dice_round2.pptx`). Cover plus 10 content slides: the seven sections the brief asks for, the price screen, an operating model, and the live prototype. The generator in `deck/source/` rebuilds it from the prototype's model. Earlier versions live in [`deck/old/`](02_round2_detailed_submission/deck/old/VERSIONS.md); the current deck is always saved there before it changes.
 
 ## Round 2 prototype
 
