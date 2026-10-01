@@ -11,7 +11,7 @@
 | `01_round1_idea_submission/` | Round 1 three-slide entry (submitted) |
 | `02_round2_detailed_submission/deck/` | 8-10 slide detailed deck |
 | `02_round2_detailed_submission/prototype/` | Working prototype (C2M Control Tower) |
-| `02_round2_detailed_submission/research/` | Sources, teardown data, interview notes |
+| `02_round2_detailed_submission/research/` | All Round 2 research: problem explained, solution, 50-lever solution space, approach deep dive, fact library with sources (start at its README) |
 
 ## Timeline
 
