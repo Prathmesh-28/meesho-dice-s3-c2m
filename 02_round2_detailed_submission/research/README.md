@@ -14,7 +14,7 @@ All research and analysis done for the Round 2 detailed submission (26 Sep – 1
 | [08_nine_approaches_deep_dive.md](08_nine_approaches_deep_dive.md) | The nine fundamental strategies: evidence, Year-4 economics, failure modes, scoreboard, four competing bundles |
 | [09_factory_direct_review.md](09_factory_direct_review.md) | Review of the external "Meesho Factory Direct" proposal: what to adopt, what to keep from ours |
 | [10_facts_and_sources.md](10_facts_and_sources.md) | **Fact library:** every verified figure with its source, plus claims not to use |
-| [11_deck_audit_vs_winning_decks.md](11_deck_audit_vs_winning_decks.md) | **Deck audit:** 44 gaps vs winning case-competition decks, by severity, with fixes and a priority order |
+| [11_deck_audit_vs_winning_decks.md](11_deck_audit_vs_winning_decks.md) | **Deck audit:** 42 gaps (8 critical, 23 important, 11 polish) vs winning case-competition decks, by severity, with fixes and a priority order |
 
 ## Open items before 4 Oct
 
