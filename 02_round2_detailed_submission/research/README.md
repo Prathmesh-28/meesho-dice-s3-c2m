@@ -15,6 +15,7 @@ All research and analysis done for the Round 2 detailed submission (26 Sep – 1
 | [09_factory_direct_review.md](09_factory_direct_review.md) | Review of the external "Meesho Factory Direct" proposal: what to adopt, what to keep from ours |
 | [10_facts_and_sources.md](10_facts_and_sources.md) | **Fact library:** every verified figure with its source, plus claims not to use |
 | [11_deck_audit_vs_winning_decks.md](11_deck_audit_vs_winning_decks.md) | **Deck audit:** 42 gaps (8 critical, 23 important, 11 polish) vs winning case-competition decks, by severity, with fixes and a priority order |
+| [12_winning_deck_playbook.md](12_winning_deck_playbook.md) | **Playbook:** 12 patterns from four real winning decks and IIT Bombay's compendium, how ours compares, the build process, and a slide-by-slide blueprint |
 
 ## Open items before 4 Oct
 
