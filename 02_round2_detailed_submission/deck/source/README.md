@@ -1,6 +1,6 @@
 # Deck generator
 
-The current deck, `../meesho_dice_round2.pptx`, is the 14-page **Factory Direct** deck: a cover, 10 content pages and 3 appendices. Its tabs follow the 15-page IIM Mumbai DICE winner: Primary Research, Manufacturer Segmentation, Awareness & Strategy, Benchmarking & Comparison, Best Practices, Manufacturer Journey, Cluster Criteria, Unit Economics, Financial Analysis, and Roadmap & Risks, which takes the place of their thank-you page. It is built from these files:
+The current deck, `../meesho_dice_round2.pptx`, is the 15-page **Factory Direct** deck: a cover, 11 content pages and 3 appendices. Its tabs follow the 15-page IIM Mumbai DICE winner, with a User Personas & Flow page added and a week-by-week 90-day plan as the closer: Primary Research, Manufacturer Segmentation, User Personas & Flow, Awareness & Strategy, Benchmarking & Comparison, Best Practices, Manufacturer Journey, Cluster Criteria, Unit Economics, Financial Analysis, 90-Day Plan & Risks. It is built from these files:
 
 | File | What it does |
 |---|---|

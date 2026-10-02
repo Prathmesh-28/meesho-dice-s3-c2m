@@ -18,7 +18,7 @@ const OUTFILE = process.argv[2] ?? path.join(HERE, 'out', 'factory_direct.pptx')
 // Never overwrite the current deck without first saving it to ../old (see snapshot.sh).
 const DECK_MAIN = path.resolve(HERE, '../meesho_dice_round2.pptx');
 if (path.resolve(OUTFILE) === DECK_MAIN && fs.existsSync(DECK_MAIN)) {
-  require('child_process').execFileSync('bash', [path.join(HERE, 'snapshot.sh'), 'rebuilt with build_fd.mjs (IIM Mumbai flow, denser pages)'], { stdio: 'inherit' });
+  require('child_process').execFileSync('bash', [path.join(HERE, 'snapshot.sh'), 'rebuilt with build_fd.mjs (added User Personas & Flow page and week-by-week 90-day plan)'], { stdio: 'inherit' });
 }
 
 // Optional primary research (buyer survey + team interviews). Absent → visible [FILL] markers.
@@ -134,7 +134,7 @@ const SYM = { y: ['✓', C.green], a: ['–', C.amber], x: ['✕', C.red] };
 const symCell = (k) => ({ t: SYM[k][0], b: true, c: C.white, f: SYM[k][1], fs: 10 });
 
 // ------------------------------------------------------------------ page chrome
-const TABS = ['Primary\nResearch', 'Manufacturer\nSegmentation', 'Awareness\n& Strategy', 'Benchmarking\n& Comparison', 'Best\nPractices', 'Manufacturer\nJourney', 'Cluster\nCriteria', 'Unit\nEconomics', 'Financial\nAnalysis', 'Roadmap\n& Risks'];
+const TABS = ['Primary\nResearch', 'Manufacturer\nSegmentation', 'User Personas\n& Flow', 'Awareness\n& Strategy', 'Benchmarking\n& Comparison', 'Best\nPractices', 'Manufacturer\nJourney', 'Cluster\nCriteria', 'Unit\nEconomics', 'Financial\nAnalysis', '90-Day Plan\n& Risks'];
 function header(s, active, label) {
   box(s, 0, 0, 13.333, 0.56, C.plum);
   s.addImage({ path: AS('dice_logo.png'), x: 0.2, y: 0.06, w: 0.9, h: 0.448 });
@@ -145,7 +145,7 @@ function header(s, active, label) {
     TABS.forEach((t, k) => {
       const on = k === active;
       box(s, x0 + k * (tw + gap), 0.08, tw, 0.42, on ? C.coral : C.saffron, { round: true, r: 0.06, line: on ? C.white : C.saffron, lw: on ? 1.25 : 0.75 });
-      T(s, t, { x: x0 + k * (tw + gap), y: 0.08, w: tw, h: 0.42, fontSize: 8, bold: true, color: on ? C.white : C.plum, align: 'center', valign: 'middle', fontFace: F.head });
+      T(s, t, { x: x0 + k * (tw + gap), y: 0.08, w: tw, h: 0.42, fontSize: 7.5, bold: true, color: on ? C.white : C.plum, align: 'center', valign: 'middle', fontFace: F.head });
     });
   }
   s.addImage({ path: AS('meesho_icon.png'), x: 11.93, y: 0.09, w: 0.38, h: 0.38 });
@@ -235,8 +235,8 @@ function page(i, { headline, rail, band, foot, label }) {
 
   // P2 challenges (5 boxes x 2 ticks)
   b = panel(s, [0, 0.38, 0.40, 0.26], 'Challenges to solve (page where we solve each)', { hc: C.coral });
-  const chs = [['Price discovery · p8', 'Scale ≠ price', 'List prices overstate demand'], ['Unit operations · p5', 'Pick, pack, ship per order', 'Returns handled by the factory'], ['Inventory & cash · p9', 'Build-to-stock risk', '45–60 day distributor terms'],
-    ['Demand & visibility · p7', 'No reviews at the start', 'District demand unknown'], ['Retention · p7, p11', 'Gap decays after the badge', 'Quality slips with price']];
+  const chs = [['Price discovery · p9', 'Scale ≠ price', 'List prices overstate demand'], ['Unit operations · p6', 'Pick, pack, ship per order', 'Returns handled by the factory'], ['Inventory & cash · p10', 'Build-to-stock risk', '45–60 day distributor terms'],
+    ['Demand & visibility · p8', 'No reviews at the start', 'District demand unknown'], ['Retention · p8, p12', 'Gap decays after the badge', 'Quality slips with price']];
   const cw3 = (b.w - 0.12) / 3, chh = (b.h - 0.06) / 2;
   chs.forEach(([h, a, c], k) => {
     const x = b.x + (k % 3) * (cw3 + 0.06), y = b.y + Math.floor(k / 3) * (chh + 0.06);
@@ -246,7 +246,7 @@ function page(i, { headline, rail, band, foot, label }) {
   });
   const lx = b.x + 2 * (cw3 + 0.06), ly = b.y + chh + 0.06;
   box(s, lx, ly, cw3, chh, C.plum, { round: true, r: 0.03 });
-  T(s, '5 barriers → 6 levers, each owned by a Meesho team (pages 4–9)', { x: lx + 0.05, y: ly, w: cw3 - 0.1, h: chh, fontSize: 8, bold: true, color: C.white, valign: 'middle', align: 'center' });
+  T(s, '5 barriers → 6 levers, each owned by a Meesho team (pages 5–10)', { x: lx + 0.05, y: ly, w: cw3 - 0.1, h: chh, fontSize: 8, bold: true, color: C.white, valign: 'middle', align: 'center' });
 
   // P3 survey trio
   b = panel(s, [0.40, 0, 0.60, 0.38], 'Three data sets: why factories quit, what buyers pay, what buyers would trade');
@@ -359,21 +359,23 @@ function page(i, { headline, rail, band, foot, label }) {
   b = panel(s, [0.42, 0, 0.32, 1], 'Target manufacturer personas (cohort score out of 5)');
   const cs = Object.fromEntries(coh.map((x) => [x.k, x]));
   const personas = [
-    ['FaIndustry', 'Export-hit knitwear owner', 'Cohort A · Tiruppur', `₹10–50 cr turnover · Cohort A = ${pc(cs.A.share)} of SAM ≈ ${IN(cs.A.firms)} firms`, cs.A.score, ['Owns cost levers', 'Made to order', 'Cash-tight'], ['Orders confirmed before cutting fabric', 'No pick-pack-returns team needed', 'Cash faster than 45–60 day terms'], 'Association camps, 40–60 units each', C.coral],
-    ['FaWarehouse', 'Domestic home-textile maker', 'Cohort A · Panipat', 'Exports −50%, domestic −35% this year [S9]', cs.A.score, ['Low returns', 'Bulky SKUs', 'Idle looms'], ['Steady domestic orders', 'Bulk freight to the node', 'Price check before listing'], 'HCCI Panipat chapter; Udyam lists', C.coral],
-    ['FaRotateLeft', 'Churned Meesho manufacturer', 'Cohort C · Ludhiana, Surat', `Cohort C = ${pc(cs.C.share)} of SAM ≈ ${IN(cs.C.firms)} firms`, cs.C.score, ['KYC on file', 'Burnt by returns', 'Catalogue dormant'], ['Returns capped at the node', 'Orders in the first 30 days', 'Penalty-free re-entry'], 'Dormant-seller list; one WhatsApp re-invite', C.plum2],
-    ['FaStore', 'Online-elsewhere D2C maker', 'Cohort B · metros', `Cohort B = ${pc(cs.B.share)} of SAM ≈ ${IN(cs.B.firms)} firms`, cs.B.score, ['Brand-led', '₹800+ baskets', 'GST + catalogue done'], ['Value-tier SKUs, not discounts', 'Tier-2+ reach', 'No brand dilution'], 'Seller agencies; price-check link', C.muted],
+    ['FaIndustry', 'Export-hit knitwear owner', 'Cohort A · Tiruppur', `₹10–50 cr turnover · Cohort A = ${pc(cs.A.share)} of SAM ≈ ${IN(cs.A.firms)} firms`, cs.A.score, C.coral,
+      [['Barrier', 'No unit-level ops; making to stock is a balance-sheet change'], ['Motivation', 'Idle lines after the US tariff; wants a domestic hedge'], ['Needs', 'Confirmed orders · no packing team · cash before 45–60 days'], ['Reach', 'Association camps, 40–60 units each']]],
+    ['FaWarehouse', 'Domestic home-textile maker', 'Cohort A · Panipat', 'Small and medium units, bulky low-return SKUs', cs.A.score, C.coral,
+      [['Barrier', 'Bulky SKUs; no way to handle online returns'], ['Motivation', 'Exports −50%, domestic −35% this year: idle looms [S9]'], ['Needs', 'Steady domestic orders · bulk freight · price check first'], ['Reach', 'HCCI Panipat chapter; Udyam lists']]],
+    ['FaRotateLeft', 'Churned Meesho manufacturer', 'Cohort C · Ludhiana, Surat', `Cohort C = ${pc(cs.C.share)} of SAM ≈ ${IN(cs.C.firms)} firms`, cs.C.score, C.plum2,
+      [['Barrier', 'Weak first 30 orders, then a returns or RTO shock'], ['Motivation', 'Catalogue and KYC already done: sunk effort to reuse'], ['Needs', 'Returns capped at the node · early orders · penalty-free re-entry'], ['Reach', 'Dormant-seller list; one WhatsApp re-invite']]],
+    ['FaStore', 'Online-elsewhere D2C maker', 'Cohort B · metros', `Cohort B = ${pc(cs.B.share)} of SAM ≈ ${IN(cs.B.firms)} firms`, cs.B.score, C.muted,
+      [['Barrier', '₹800+ basket catalogue loses money at a ₹265 order value'], ['Motivation', `${SP.atu} mn buyers and Tier-2+ reach it lacks elsewhere`], ['Needs', 'Value-tier SKUs, not discounts · no brand dilution'], ['Reach', 'Seller agencies; price-check link']]],
   ];
   const ph = (b.h - 0.18) / 4;
-  personas.forEach(([ic, title, tag, fact, score, traits, needs, reach, col], k) => {
+  personas.forEach(([ic, title, tag, fact, score, col, lines], k) => {
     const y = b.y + k * (ph + 0.06);
     box(s, b.x, y, b.w, ph, C.white, { line: col, round: true, r: 0.04, lw: 1 });
     avatar(s, ic, b.x + 0.06, y + 0.06, 0.46, col);
     T(s, [run(title, { bold: true, color: C.plum, fontSize: 9, breakLine: true }), run(tag, { bold: true, color: col === C.muted ? C.plum2 : col, fontSize: 7.5, breakLine: true }), run(fact, { color: C.muted, fontSize: 7 })], { x: b.x + 0.58, y: y + 0.04, w: b.w - 1.22, h: 0.52, valign: 'middle' });
     chip(s, b.x + b.w - 0.6, y + 0.08, 0.54, 0.38, score.toFixed(2), col, { size: 11 });
-    const tw2 = (b.w - 0.2) / 3;
-    traits.forEach((t, j) => chip(s, b.x + 0.06 + j * (tw2 + 0.04), y + 0.6, tw2, 0.18, t, C.fill2, { size: 7, color: C.plum, line: C.saffron }));
-    T(s, [run('Needs: ', { bold: true, color: C.coral }), run(needs.join(' · '), { breakLine: true }), run('Reach: ', { bold: true, color: C.coral }), run(reach, {})], { x: b.x + 0.06, y: y + 0.81, w: b.w - 0.12, h: ph - 0.84, fontSize: 7.5, valign: 'top' });
+    T(s, lines.map(([h, t], i2) => [run(`${h}: `, { bold: true, color: h === 'Barrier' ? C.red : h === 'Motivation' ? C.green : C.coral }), run(t, { breakLine: i2 < lines.length - 1 })]).flat(), { x: b.x + 0.06, y: y + 0.58, w: b.w - 0.12, h: ph - 0.6, fontSize: 7.5, valign: 'top', paraSpaceAfter: 1 });
   });
 
   // P4 least likely
@@ -392,9 +394,69 @@ function page(i, { headline, rail, band, foot, label }) {
     ['Screen', `every seller on price, not turnover: ${PROTO.top10NotReady} of the 10 largest prototype sellers fail.`]], b.x, b.y, b.w, b.h, { fs: 8, psa: 3 });
 }
 
-// ================================================================== 4 · AWARENESS & STRATEGY
+// ================================================================== 4 · USER PERSONAS & FLOW
 {
   const s = page(2, {
+    headline: 'Six users, one flow: buyers prepay, factories make, nodes ship, an NBFC funds and Meesho runs the rules',
+    rail: 'USERS & FLOW',
+    band: 'Decision: sign the three partner roles before the first batch (two associations, one Tiruppur node, one NBFC); first prepaid batches in Week 10. Owner: Category + Valmo + Finance · KPI: all signed by Day 60.',
+    foot: `Sources: S1 (${SP.freq} orders per buyer a year; ${pc(SP.prepaid)} of shipped orders prepaid), S9, S12 (₹24 SMB fulfilment), S18 MSME-TEAM, S26 seller loans; prototype (~${IN(r10(PROTO.hs.perManager))} sellers per manager)   |   Flow numbers: one ${IN(BX.confirmed)}-pack batch (page 10)   |   Personas are composites, not real people or firms`,
+  });
+  // P1 swimlane flow
+  let b = panel(s, [0, 0, 1, 0.52], `End-to-end flow for one ${IN(BX.confirmed)}-pack prepaid batch: who does what, and when (D = day of the pre-order window)`);
+  const lanes = [['FaUserTie', 'Association', C.plum2], ['FaIndustry', 'Factory', C.coral], ['FaGaugeHigh', 'Meesho rules + data', C.plum], ['FaStore', 'Buyer', C.saffron], ['FaWarehouse', 'Node + Valmo', C.plum2], ['FaIndianRupeeSign', 'NBFC', C.green]];
+  const steps = [['1 · Recruit', 'D−10'], ['2 · Qualify', 'D−7'], ['3 · Brief', 'D−5'], ['4 · Commit', 'D−5'], ['5 · Pre-order', 'D0–3'], ['6 · Make', 'D0–4'], ['7 · Handover', 'D5'], ['8 · Ship', 'D6–12'], ['9 · Settle', 'D13–19'], ['10 · Score', 'daily']];
+  const LW = 1.32, HH = 0.3, cwS = (b.w - LW) / steps.length, lh = (b.h - HH) / lanes.length;
+  steps.forEach(([n, d], k) => T(s, [run(n, { bold: true, color: C.plum, breakLine: true }), run(d, { color: C.muted })], { x: b.x + LW + k * cwS, y: b.y, w: cwS, h: HH, fontSize: 7.5, align: 'center', valign: 'middle' }));
+  lanes.forEach(([ic, name, col], i) => {
+    const y = b.y + HH + i * lh;
+    box(s, b.x, y + 0.015, b.w, lh - 0.03, i % 2 ? C.white : 'F8EEF4', { line: C.line, round: true, r: 0.03 });
+    avatar(s, ic, b.x + 0.04, y + (lh - 0.27) / 2, 0.27, col);
+    T(s, name, { x: b.x + 0.35, y, w: LW - 0.37, h: lh, fontSize: 8, bold: true, color: C.plum, valign: 'middle' });
+  });
+  const cell = (k, i) => ({ x: b.x + LW + k * cwS + 0.13, y: b.y + HH + i * lh + 0.045, w: cwS - 0.26, h: lh - 0.09 });
+  const flowBoxes = [
+    [0, 0, 'Camp for 40–60 units'], [1, 2, `Price check: ${rs(U.cols[3].floor)} vs ${rs(U.gate)} gate`], [2, 2, 'Demand Brief: districts, sizes'], [3, 1, `Commits a ${IN(BX.confirmed)}-pack batch`],
+    [4, 3, `Prepays ${rs(BX.price)}, waits 7–8 days`], [5, 1, `Makes ${IN(BX.make)} (+15%)`], [6, 4, 'One truck in; QC sample'], [6, 5, `Advances ${rs(BX.advance)} (30%)`],
+    [7, 4, 'Packs, ships; grades returns'], [8, 2, `Pays ${rs(BX.payout)} net of fees`], [8, 5, 'Repaid from the payout'], [8, 1, `Keeps +${rs(BX.balance)}`],
+    [9, 2, 'Health Score; grants if slow'], [9, 0, 'Peers referred to camps'],
+  ];
+  const pathF = [[0, 0], [1, 2], [2, 2], [3, 1], [4, 3], [5, 1], [6, 4], [7, 4], [8, 2], [9, 2]];
+  for (let j = 0; j < pathF.length - 1; j++) {
+    const a = cell(...pathF[j]), c = cell(...pathF[j + 1]);
+    const x1 = a.x + a.w, y1 = a.y + a.h / 2, x2 = c.x, y2 = c.y + c.h / 2;
+    s.addShape(SH.LINE, { x: x1, y: Math.min(y1, y2), w: x2 - x1, h: Math.max(Math.abs(y2 - y1), 0.001), flipV: y2 < y1, line: { color: C.coral, width: 1.25, dashType: 'dash', endArrowType: 'triangle' } });
+  }
+  flowBoxes.forEach(([k, i, t]) => {
+    const c = cell(k, i);
+    box(s, c.x, c.y, c.w, c.h, C.white, { line: lanes[i][2], round: true, r: 0.04, lw: 1.25 });
+    T(s, t, { x: c.x + 0.03, y: c.y, w: c.w - 0.06, h: c.h, fontSize: 7, align: 'center', valign: 'middle', bold: i === 3 || i === 5 });
+  });
+  // P2 six user personas
+  b = panel(s, [0, 0.52, 1, 0.48], 'Six user personas (resellers are affected, not users: the badge is capped at 20% of category impressions)', { hc: C.coral });
+  const P6 = [
+    ['FaStore', 'Value-seeking buyer', `Tier-2+ shopper · ~${Math.round(SP.freq)} orders a year [S1]`, C.saffron, 'lowest price, reliable delivery, easy returns', `${pc(1 - SP.prepaid)} still pay cash on delivery [S1]; unsure about prepaying for a 7–8 day wait`, `prepays ${rs(BX.price)} for a 3-pack instead of ${rs(U.mkt)}`, `${rs(U.split.buyer, 1)} off a pack; a “Sold directly by the manufacturer” badge`, `Prepaid share ≥ ${pc(prepaidC2M, 1)}`, 'Meesho app; UPI pre-order at checkout'],
+    ['FaIndustry', 'Factory owner', '4 personas on page 3 (cohorts A, A, C, B)', C.coral, 'orders before cutting fabric; no packing team', 'build-to-stock risk; 45–60 day distributor terms', 'price check, commits batches, drops stock in bulk', `${rs(U.split.factory, 1)} a pack vs ${rs(U.b2bMarginPerPack, 1)} ex-factory; cash in ~11 days`, 'First batch ≤ 14 days', 'Supplier app, WhatsApp, voice agent'],
+    ['FaGaugeHigh', 'Category manager', `Meesho · ~${IN(r10(PROTO.hs.perManager))} C2M sellers each`, C.plum, 'category NMV protected; few manual cases', 'cannot chase hundreds of sellers by phone', 'acts only when a score stays below 40 after an automatic fix', 'control tower: price screen, Health Score queue, Day-30 readout', '≤ 5 escalations per 100 a month', 'Control-tower dashboard (prototype)'],
+    ['FaWarehouse', 'Node operator', 'Partner 3PL in the cluster; Valmo delivers onward', C.plum2, 'steady daily volume; clean order data', 'idle space between seasons', 'takes bulk drops; picks, packs, ships; grades returns', `₹${A.A28.value.nodeFee} a unit (pack ₹6, handle ₹9, freight ₹5); ${cr(A.A17.value.perNode)} set-up support`, '95% shipped within 48 h', 'Order feed from Meesho; Valmo pickups'],
+    ['FaIndianRupeeSign', 'NBFC partner', 'Lender to marketplace sellers [S26]', C.green, 'short, low-risk loans', 'cannot see small factories’ order flow', `advances ${pc(A.A20.value.advance)} of confirmed pre-order value at handover`, `repaid from the payout ~7 days after delivery; buyers already prepaid; Meesho covers the first ${pc(A.A20.value.firstLoss)} of losses`, 'Advance within 24 h; losses ≤ 1%', 'Confirmed-order data shared by Meesho'],
+    ['FaUserTie', 'Cluster association', 'Tiruppur and Panipat industry bodies', C.plum2, 'orders for members hit by export swings', 'Panipat exports −50%, domestic −35% [S9]', 'hosts camps of 40–60 units; vouches for members', 'domestic demand for members; MSME-TEAM co-funding, ₹277 cr scheme [S18]', '≥ 50% of camp units listed', 'Camps, member WhatsApp groups'],
+  ];
+  const pcw = (b.w - 0.08 * 5) / 6;
+  P6.forEach(([ic, title, sub, col, wants, pain, does, gets, kpi, uses], k) => {
+    const x = b.x + k * (pcw + 0.08);
+    box(s, x, b.y, pcw, b.h, C.white, { line: col, round: true, r: 0.04, lw: 1 });
+    avatar(s, ic, x + 0.05, b.y + 0.05, 0.38, col);
+    T(s, [run(title, { bold: true, color: C.plum, fontSize: 9, breakLine: true }), run(sub, { color: C.muted, fontSize: 7 })], { x: x + 0.47, y: b.y + 0.03, w: pcw - 0.5, h: 0.44, valign: 'middle' });
+    T(s, [['Wants', wants, C.plum], ['Pain', pain, C.red], ['Does', does, C.coral], ['Gets', gets, C.green], ['Uses', uses, C.plum2]].map(([h, t, hc], i2) => [run(`${h}: `, { bold: true, color: hc }), run(t, { breakLine: i2 < 4 })]).flat(),
+      { x: x + 0.06, y: b.y + 0.5, w: pcw - 0.12, h: b.h - 0.8, fontSize: 7.5, valign: 'top', paraSpaceAfter: 2 });
+    chip(s, x + 0.05, b.y + b.h - 0.27, pcw - 0.1, 0.23, `KPI: ${kpi}`, C.fill2, { size: 7.5, color: C.plum, line: C.saffron });
+  });
+}
+
+// ================================================================== 4 · AWARENESS & STRATEGY
+{
+  const s = page(3, {
     headline: `Big idea: Factory Direct lets a factory sell to ${SP.atu} mn buyers without an e-commerce team, reached through cluster camps`,
     rail: 'AWARENESS & STRATEGY',
     band: 'Decision: launch Factory Direct camps with the Tiruppur and Panipat associations. Owner: Category + Growth · KPI: 40–60 units a camp, ≥ 50% of qualified factories listed within 30 days.',
@@ -408,7 +470,7 @@ function page(i, { headline, rail, band, foot, label }) {
     ['FaWhatsapp', 'Day −7', `He sends his making cost on WhatsApp: lowest viable price ${rs(U.cols[3].floor)} vs the ${rs(U.gate)} gate. He qualifies.`, C.green, 'Lever: price check'],
     ['FaMapLocationDot', 'Day −5', 'A Demand Brief shows which districts buy men’s briefs; he commits a 1,000-pack prepaid batch.', C.plum, 'Lever: Demand Brief + pre-order'],
     ['FaWarehouse', 'Day 5', `One truck to the Tiruppur node: ${rs(BX.advance)} lands at handover; the node ships every order.`, C.coral, 'Lever: node + 30% advance'],
-    ['FaRocket', 'Day 16', `Paid ${rs(BX.balance)} more for kept orders, net of fees; he refers two neighbouring units.`, C.green, 'Outcome: repeat + referral'],
+    ['FaRocket', 'Day 13–19', `Paid ${rs(BX.balance)} more for kept orders, net of fees; he refers two neighbouring units.`, C.green, 'Outcome: repeat + referral'],
   ];
   const fwf = (b.w - 0.16 * 5) / 6;
   frames.forEach(([ic, d, t, col, lever], k) => {
@@ -464,11 +526,11 @@ function page(i, { headline, rail, band, foot, label }) {
 // ================================================================== 5 · BENCHMARKING & COMPARISON
 {
   const cols = U.cols;
-  const s = page(3, {
+  const s = page(4, {
     headline: 'Of three ways to bring factories online, only Factory Direct removes unit operations, stock risk and returns within FDI rules',
     rail: 'MODEL COMPARISON',
     band: 'Decision: build Factory Direct (seller-owned stock at partner nodes plus prepaid batches); Meesho never takes title to stock. Owner: Valmo + Legal · KPI: zero inventory-control findings.',
-    foot: 'Sources: S1, S2 (Valmo 50–55% of deliveries), S16 Temu semi-managed, S17 Shein Brazil, S19 Press Note 2 (marketplace may not own or control seller inventory), S23–S25   |   Costs per pack from the unit-economics table (page 9, Appendix C)',
+    foot: 'Sources: S1, S2 (Valmo 50–55% of deliveries), S16 Temu semi-managed, S17 Shein Brazil, S19 Press Note 2 (marketplace may not own or control seller inventory), S23–S25   |   Costs per pack from the unit-economics table (page 10, Appendix C)',
   });
   const models = [
     ['1', 'Open marketplace', '(factory self-ships)', 'The factory lists, then packs, ships and takes back every return itself.', [['FaIndustry', 'Factory'], ['FaClipboardCheck', 'Packs each order'], ['FaTruckFast', 'Courier'], ['FaStore', 'Buyer']], 'Meesho today · Amazon · Flipkart', C.plum2,
@@ -508,18 +570,18 @@ function page(i, { headline, rail, band, foot, label }) {
     ['Logistics (forward + pack / node)', cols[1].logistics.toFixed(1), cols[3].logistics.toFixed(1)], ['Unsold stock', cols[1].unsold.toFixed(1), cols[3].unsold.toFixed(1)], ['Working capital', cols[1].capital.toFixed(1), cols[3].capital.toFixed(1)],
     ['Returns (₹150 each)', cols[1].returns.toFixed(1), cols[3].returns.toFixed(1)], [{ t: 'Lowest viable price', b: true }, { t: rs(cols[1].floor), b: true, c: C.red }, { t: rs(cols[3].floor), b: true, c: C.green }]],
   { x: b.x, y: b.y, w: b.w, colW: [1.85, 0.95, b.w - 2.8], rowH: [0.22, 0.24, 0.24, 0.24, 0.24, 0.26], fs: 8 });
-  list(s, [['Fully managed:', 'not costed; an FDI marketplace may not own seller stock [S19].'], ['Meesho’s cost:', `${cr(A.A17.value.perNode)} set-up per partner node; ${A.A17.value.nodes[4]} nodes by Year 4 (page 10).`], ['Node fee:', `₹${A.A28.value.nodeFee} a unit (pack ₹6, handle ₹9, bulk freight ₹5) vs ₹24 for SMB fulfilment [S12].`]],
+  list(s, [['Fully managed:', 'not costed; an FDI marketplace may not own seller stock [S19].'], ['Meesho’s cost:', `${cr(A.A17.value.perNode)} set-up per partner node; ${A.A17.value.nodes[4]} nodes by Year 4 (page 11).`], ['Node fee:', `₹${A.A28.value.nodeFee} a unit (pack ₹6, handle ₹9, bulk freight ₹5) vs ₹24 for SMB fulfilment [S12].`]],
     b.x, b.y + 1.52, b.w, b.h - 1.52, { fs: 7.5, glyph: '›', gc: C.coral, psa: 3 });
 }
 
 // ================================================================== 6 · BEST PRACTICES
 {
   const rc = M.rice;
-  const s = page(4, {
+  const s = page(5, {
     headline: 'Pinduoduo, Taobao, Temu and Shein built C2M on demand data and small batches; RICE puts the ₹0 price gate first',
     rail: 'BEST PRACTICES',
     band: 'Decision: build in RICE order (price gate → Health Score → co-ops → Demand Brief → batches → node → prepayment → firewall); never ask a factory for a price cut. Owner: Strategy.',
-    foot: 'Sources: S15 KrASIA, S16 Tech Buzz China, S17 Reuters, S23 Xinhua, S24 Alibaba results, S25 AFP · benefits from the master model (pages 9–10)   |   RICE: reach = sellers touched in Year 2; effort = person-months; full benchmark table: Appendix C',
+    foot: 'Sources: S15 KrASIA, S16 Tech Buzz China, S17 Reuters, S23 Xinhua, S24 Alibaba results, S25 AFP · benefits from the master model (pages 10–11)   |   RICE: reach = sellers touched in Year 2; effort = person-months; full benchmark table: Appendix C',
   });
   let b = panel(s, [0, 0, 0.58, 0.68], 'Best practices: five platforms × five dimensions');
   const co = ['Pinduoduo NBI · China', 'Taobao C2M · China', 'Temu semi-managed', 'Shein on-demand', 'Shein Brazil (avoid)'];
@@ -555,7 +617,7 @@ function page(i, { headline, rail, band, foot, label }) {
 
   b = panel(s, [0, 0.68, 0.58, 0.32], 'Benefits analysis of Factory Direct (master model)', { hc: C.coral });
   const ben = [[`−${pc(U.cols[3].gap, 1)}`, `buyer price vs the ${rs(U.mkt)} market (briefs)`], [`${(U.split.factory / U.b2bMarginPerPack).toFixed(1)}×`, `factory margin a pack: ${rs(U.split.factory, 1)} vs ${rs(U.b2bMarginPerPack, 1)} ex-factory`], ['~11 days', 'cash cycle vs 45–60 days on distributor terms'],
-    [`−${(M.c2m.failDrop * 100).toFixed(1)} pts`, 'failed deliveries per C2M order (prepaid pre-orders)'], [rs(A.A8.value * SP.contribPerOrder + M.c2m.rtoSavingPerOrder, 1), 'Meesho value per C2M order (page 10)'], [pc(A.A31.value.batch), `unsold stock vs ${pc(A.A31.value.stock)} building to stock`]];
+    [`−${(M.c2m.failDrop * 100).toFixed(1)} pts`, 'failed deliveries per C2M order (prepaid pre-orders)'], [rs(A.A8.value * SP.contribPerOrder + M.c2m.rtoSavingPerOrder, 1), 'Meesho value per C2M order (page 11)'], [pc(A.A31.value.batch), `unsold stock vs ${pc(A.A31.value.stock)} building to stock`]];
   const bw = (b.w - 0.25) / 6;
   ben.forEach(([n, t], k) => {
     const x = b.x + k * (bw + 0.05);
@@ -568,7 +630,7 @@ function page(i, { headline, rail, band, foot, label }) {
 // ================================================================== 7 · MANUFACTURER JOURNEY
 {
   const grantCost = A.A19.value.perSeller / 1000 * A.A19.value.cpm;
-  const s = page(5, {
+  const s = page(6, {
     headline: 'Seven stages, each with a trigger, a non-cash nudge and a KPI, turn first batches into repeat factories without subsidy',
     rail: 'JOURNEY & SCALE-UP',
     band: 'Decision: switch on grants, the Health Score and the rulebook with the first 60 sellers; cap grants at 20% of category impressions. Owner: Growth + Data Science · KPI: active at D90 ≥ 75%.',
@@ -626,7 +688,7 @@ function page(i, { headline, rail, band, foot, label }) {
 // ================================================================== 8 · CLUSTER CRITERIA
 {
   const ahp = M.ahp, td = M.td, ga = M.gateApproach;
-  const s = page(6, {
+  const s = page(7, {
     headline: `Tiruppur and Panipat top the cluster AHP (CR ${ahp.CR.toFixed(3)}); factories qualify only with 60% of SKUs 8% below market`,
     rail: 'CLUSTER CRITERIA',
     band: 'Decision: pilot in Tiruppur and Panipat; run the price gate on demand-weighted medians in weeks 1–3 at ₹0 capex. Owner: Category + Pricing · KPI: badge lift ≥ 12% vs holdout by Day 30.',
@@ -698,7 +760,7 @@ function page(i, { headline, rail, band, foot, label }) {
 // ================================================================== 9 · UNIT ECONOMICS
 {
   const cols = U.cols, sp = U.split;
-  const s = page(7, {
+  const s = page(8, {
     headline: `A prepaid 3-pack costs ${rs(cols[3].cost)} vs a reseller’s ${rs(cols[0].cost, 1)}; of the ${rs(sp.pool)} freed, buyers get ${rs(sp.buyer, 1)} and the factory ${rs(sp.factory, 1)}`,
     rail: 'UNIT ECONOMICS',
     band: `Decision: price pre-orders at the gate less ₹${A.A32.value} (${rs(U.preorderPrice)}), funded by the factory’s ₹${IN(U.batchSaving, 0)} batch saving. Owner: Pricing + Category · KPI: factory margin ≥ ${rs(Math.floor(sp.factory))} a pack.`,
@@ -741,7 +803,7 @@ function page(i, { headline, rail, band, foot, label }) {
   box(s, b.x + bw0 * bf, b.y + 0.26, bw0 * (1 - bf), 0.36, C.plum);
   T(s, `Buyer ${rs(sp.buyer, 1)} · ${pc(bf)}`, { x: b.x, y: b.y + 0.26, w: bw0 * bf, h: 0.36, fontSize: 9, bold: true, color: C.white, align: 'center', valign: 'middle' });
   T(s, `Factory ${rs(sp.factory, 1)} · ${pc(1 - bf)}`, { x: b.x + bw0 * bf, y: b.y + 0.26, w: bw0 * (1 - bf), h: 0.36, fontSize: 9, bold: true, color: C.white, align: 'center', valign: 'middle' });
-  list(s, [['Buyer:', `pays ${rs(U.preorderPrice)} instead of ${rs(U.mkt)}.`], ['Factory:', `earns ${rs(sp.factory, 1)} a pack vs ${rs(U.b2bMarginPerPack, 1)} selling ex-factory (${(sp.factory / U.b2bMarginPerPack).toFixed(1)}×).`], ['Meesho:', `earns per order, not per rupee: ${rs(A.A8.value * SP.contribPerOrder + M.c2m.rtoSavingPerOrder, 1)} per C2M order (page 10).`]],
+  list(s, [['Buyer:', `pays ${rs(U.preorderPrice)} instead of ${rs(U.mkt)}.`], ['Factory:', `earns ${rs(sp.factory, 1)} a pack vs ${rs(U.b2bMarginPerPack, 1)} selling ex-factory (${(sp.factory / U.b2bMarginPerPack).toFixed(1)}×).`], ['Meesho:', `earns per order, not per rupee: ${rs(A.A8.value * SP.contribPerOrder + M.c2m.rtoSavingPerOrder, 1)} per C2M order (page 11).`]],
     b.x, b.y + 0.68, b.w, b.h - 0.68, { fs: 7.5, glyph: '›', gc: C.coral, psa: 1 });
 
   b = panel(s, [0, 0.72, 1, 0.28], 'Assumptions (every input carries an [A#] in Appendix B)', { hc: C.coral });
@@ -765,7 +827,7 @@ function page(i, { headline, rail, band, foot, label }) {
 // ================================================================== 10 · FINANCIAL ANALYSIS
 {
   const f = FN, yrs = [0, 1, 2, 3, 4], L = f.lines;
-  const s = page(8, {
+  const s = page(9, {
     headline: `${cr(f.npv, 0)} NPV at 12% and payback in Year ${f.payback}; NPV stays positive down to ${pc(M.be.yieldScale)} of planned seller yield`,
     rail: 'FINANCIAL ANALYSIS',
     band: `Decision: approve ${cr(f.cashY1)} of Year-1 cash as a capped H2 bet, released at the Day-30 and Day-90 gates. Owner: Finance · KPI: Year-1 C2M NMV ≥ ${cr(f.nmv[0], 0)}.`,
@@ -858,53 +920,119 @@ function page(i, { headline, rail, band, foot, label }) {
   });
 }
 
-// ================================================================== 11 · ROADMAP & RISKS
+// ================================================================== 12 · 90-DAY PLAN & RISKS
 {
-  const s = page(9, {
-    headline: `Three gated phases take C2M from a ₹0 price test to ${IN(M.SOM)} factories; Year 1 needs ${cr(FN.cashY1)} of capped cash`,
-    rail: 'EXECUTION',
-    band: `Ask: approve the ₹0 Day-30 test now and a capped H2 budget of ${cr(FN.cashY1)} for Year 1, released only when the Day-30 and Day-90 gates pass.`,
-    foot: 'Sources: S1 (H2: hard budget cap, graduation on adoption and retention), S19 (Press Note 2; E-Commerce Amendment Rules 2026 in force 1 Jan 2027), S26   |   Compliance by design: Appendix C   |   Dates assume Day 0 = Mon 2 Nov 2026',
+  const s = page(10, {
+    headline: `Prove the gap by Day 30, sign partners by Day 60, ship prepaid batches by Day 90, on ${cr(M.gates.d90)}`,
+    rail: '90-DAY PLAN',
+    band: `Ask: approve the ₹0 Day-30 test now and ${cr(M.gates.d90)} for Days 31–90, released only if the Day-30 gate passes; Year 1 is capped at ${cr(FN.cashY1)}.`,
+    foot: 'Sources: S1 (H2 bets: hard budget cap, graduation on adoption and retention), S19 (Press Note 2; E-Commerce Amendment Rules 2026 in force 1 Jan 2027), S26   |   Day 1 = Mon 2 Nov 2026 · Day 30 = 1 Dec · Day 60 = 31 Dec · Day 90 = 30 Jan 2027   |   Compliance: Appendix C',
   });
-  let b = panel(s, [0, 0, 0.66, 0.58], 'Phase × workstream: a concrete action in every cell');
-  const ph = ['Days 0–30 · prove the gap', 'Days 31–90 · pilot', 'Q2–Q4 · Wave 2', 'Years 2–4 · scale'];
-  const ws = [
-    ['Price screen', 'Pricing', ['Medians in 9 categories; badge + holdout', 'Weekly re-score; badge-off rule live', 'Gate in all Wave 2 categories', 'Gate is the default listing check']],
-    ['Supply', 'Category', ['Shortlist C2M-ready sellers', 'Tiruppur + Panipat camps: 60 factories', '+ Ludhiana, Rajkot, Erode: 450', '12 clusters: 1,400 factories']],
-    ['Demand', 'Data Science', ['Brief prototype on order data', 'Briefs live in 5 categories', 'Pre-order window in all briefs', 'Briefs refresh weekly, all 9']],
-    ['Operations', 'Valmo', ['Partner-warehouse quotes, Tiruppur', '1 Factory Node (after Day 30)', '6 nodes; returns end at nodes', '12 nodes, one per cluster']],
-    ['Money', 'Finance', ['₹0 capex', 'NBFC partner; 30% advances', 'Returns pool; first-loss 1%', 'Graduate to the H1 budget']],
-    ['Scale-up rules', 'Growth', ['Health Score baseline', 'Grants + rulebook live', '≤ 2 reviewers per 1,000 sellers', 'Meesho Mall path for graduates']],
+  let b = panel(s, [0, 0, 0.67, 0.64], 'Week-by-week plan for the first 90 days (bars = active weeks · ◆ = milestone · coral lines = gates), then scale');
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const D1 = Date.UTC(2026, 10, 2);
+  const wkLabel = (w) => { const d = new Date(D1 + (w - 1) * 7 * 86400000); return `${d.getUTCDate()} ${MON[d.getUTCMonth()]}`; };
+  const LW = 2.2, SC = 0.8, wkW = (b.w - LW - 2 * SC) / 13, gx = b.x + LW, HH = 0.3;
+  const groups = [
+    ['Price screen', 'Pricing + DS', C.coral, [
+      ['Medians + scores; badge live', [[1, 1]], [1], 'Wave 2 categories', 'Default check'],
+      ['4-week badge test vs holdout', [[1, 4]], [], '', ''],
+      ['Weekly re-score; badge-off rule', [[5, 13]], [], '', ''],
+    ]],
+    ['Supply', 'Category', C.plum, [
+      ['Sign Tiruppur + Panipat bodies', [[3, 6]], [6], '5 clusters', '12 clusters'],
+      ['Camps; catalogue 60 factories', [[5, 9]], [9], '450 factories', '1,400 factories'],
+    ]],
+    ['Demand', 'DS + Product', C.plum2, [
+      ['Demand Brief build, 5 categories', [[3, 8]], [8], 'All 9 categories', 'Weekly refresh'],
+      ['Pre-order window in buyer app', [[7, 10]], [10], '', ''],
+      ['First prepaid batches', [[10, 13]], [11], 'In every brief', ''],
+    ]],
+    ['Operations', 'Valmo', C.saffron, [
+      ['Warehouse quotes, Tiruppur', [[2, 4]], [], '', ''],
+      ['Node set-up after Day-30 gate', [[5, 9]], [], '6 nodes', '12 nodes'],
+      ['Node live; returns end at node', [[10, 13]], [10], '', ''],
+    ]],
+    ['Enablers', 'Finance · Growth · Legal', C.green, [
+      ['Finance: NBFC → 30% advances', [[4, 9], [10, 13]], [9], 'Returns pool', 'H1 budget'],
+      ['Growth: Health Score → grants', [[2, 4], [6, 13]], [6], '', '2 reviewers'],
+      ['Legal: PN2, GST → badge declared', [[2, 8]], [8], '', ''],
+    ]],
   ];
-  table(s, [['Workstream', 'Owner', ...ph], ...ws.map(([w, o, cells]) => [{ t: w, b: true, c: C.plum }, { t: o, fs: 7.5 }, ...cells.map((c) => ({ t: c, a: 'left' }))]),
-    [{ t: 'Gate', b: true, c: C.white, f: C.coral }, { t: '', f: C.coral }, { t: 'Day 30: lift ≥ 12% (interval > 0), ≥ 70% still clear at D14', b: true, c: C.white, f: C.coral }, { t: 'Day 90: 3 of 4: SLA, returns at node, retention ≥ 70%, category NMV ≥ base', b: true, c: C.white, f: C.coral }, { t: 'Each wave opens only if the last held its Day-90 numbers', b: true, c: C.white, f: C.coral }, { t: 'H2 → H1 on adoption and retention [S1]', b: true, c: C.white, f: C.coral }]],
-  { x: b.x, y: b.y, w: b.w, colW: [1.0, 0.8, ...Array(4).fill((b.w - 1.8) / 4)], rowH: [0.24, ...ws.map(() => 0.34), 0.46], fs: 8, hfs: 8 });
+  const nRows = groups.reduce((t, g) => t + g[3].length, 0);
+  const gateH = 0.6, rh = (b.h - HH - gateH - 0.24) / nRows;
+  T(s, 'Workstream · activity', { x: b.x, y: b.y, w: LW, h: HH, fontSize: 7.5, bold: true, color: C.plum, valign: 'middle' });
+  for (let w = 1; w <= 13; w++) {
+    const x = gx + (w - 1) * wkW;
+    box(s, x + 0.01, b.y, wkW - 0.02, HH, w <= 4 ? 'F3DCE6' : w <= 9 ? 'FDECC8' : 'DDEFE4', { round: true, r: 0.03 });
+    T(s, [run(`W${w}`, { bold: true, color: C.plum, breakLine: true }), run(wkLabel(w), { color: C.muted, fontSize: 6.5 })], { x, y: b.y, w: wkW, h: HH, fontSize: 7, align: 'center', valign: 'middle' });
+  }
+  [['Q2–Q4', 0], ['Years 2–4', 1]].forEach(([t, k]) => chip(s, gx + 13 * wkW + k * SC + 0.02, b.y, SC - 0.04, HH, t, C.plum, { size: 7.5 }));
+  let r = 0;
+  groups.forEach(([gname, owner, col, acts]) => {
+    const y0 = b.y + HH + r * rh;
+    box(s, b.x, y0 + 0.01, 0.66, acts.length * rh - 0.02, col, { round: true, r: 0.03 });
+    T(s, [run(gname, { bold: true, breakLine: true }), run(owner, { fontSize: 6.5 })], { x: b.x + 0.02, y: y0, w: 0.62, h: acts.length * rh, fontSize: 7, color: col === C.saffron ? C.plum : C.white, align: 'center', valign: 'middle' });
+    acts.forEach(([label, bars, ms, q, yy]) => {
+      const y = b.y + HH + r * rh;
+      if (r % 2 === 0) box(s, b.x + 0.7, y, b.w - 0.7, rh, 'F8EEF4');
+      T(s, label, { x: b.x + 0.72, y, w: LW - 0.74, h: rh, fontSize: 7, valign: 'middle' });
+      bars.forEach(([a, z]) => box(s, gx + (a - 1) * wkW + 0.02, y + rh * 0.2, (z - a + 1) * wkW - 0.04, rh * 0.6, col, { round: true, r: 0.03 }));
+      ms.forEach((w) => s.addShape(SH.DIAMOND, { x: gx + (w - 0.5) * wkW - 0.06, y: y + rh / 2 - 0.06, w: 0.12, h: 0.12, fill: { color: C.white }, line: { color: C.plum, width: 1 } }));
+      [q, yy].forEach((t, k) => { if (t) T(s, t, { x: gx + 13 * wkW + k * SC + 0.03, y, w: SC - 0.05, h: rh, fontSize: 6.5, color: C.plum, align: 'center', valign: 'middle' }); });
+      r += 1;
+    });
+  });
+  const gTop = b.y + HH, gBot = b.y + HH + nRows * rh;
+  [[30, 'Day 30'], [60, 'Day 60'], [90, 'Day 90']].forEach(([d, l]) => {
+    const x = gx + (d - 1) / 7 * wkW;
+    s.addShape(SH.LINE, { x, y: gTop, w: 0, h: gBot - gTop + 0.03, line: { color: C.coral, width: 1.75 } });
+    chip(s, x - 0.27, gBot + 0.03, 0.54, 0.15, l, C.coral, { size: 7 });
+  });
+  const gates = [
+    ['Day 30 gate', 'Fund if badge lift ≥ 12% (interval > 0) and ≥ 70% still clear at D14; else tighten to a 10% gap, or stop', C.coral],
+    ['Day 60 gate', '2 associations signed · 60 factories catalogued · briefs live in 5 categories · NBFC signed', C.amber],
+    ['Day 90 gate', '3 of 4: batches shipped in SLA · returns end at the node · retention ≥ 70% · category NMV ≥ base', C.green],
+    ['Money released', `₹0 to Day 30 → ${cr(M.gates.d90)} for Days 31–90 → ${cr(M.gates.rest)} in Q2–Q4 (Year 1 cap ${cr(FN.cashY1)})`, C.plum],
+  ];
+  const gw = (b.w - 0.18) / 4, gy = b.y + b.h - gateH;
+  gates.forEach(([h, t, col], k) => {
+    const x = b.x + k * (gw + 0.06);
+    box(s, x, gy, gw, gateH, C.white, { line: col, round: true, r: 0.04, lw: 1.25 });
+    T(s, [run(`${h}  `, { bold: true, color: col === C.amber ? C.plum : col, breakLine: true }), run(t, {})], { x: x + 0.05, y: gy + 0.02, w: gw - 0.1, h: gateH - 0.04, fontSize: 7, valign: 'middle' });
+  });
 
-  b = panel(s, [0, 0.58, 0.66, 0.42], 'KPI targets by phase (north star: C2M NMV still clearing the 8% gate)', { hc: C.coral });
+  // KPI targets grouped by funnel stage
+  b = panel(s, [0, 0.64, 0.67, 0.36], 'Metrics & KPIs: onboarding → activation → retention, with guardrails (north star: C2M NMV still clearing the gate)', { hc: C.coral });
   const L = M.ladder;
-  table(s, [['KPI', 'Day 30', 'Day 90', 'Year-1 exit', 'Year-4 exit'],
-    ['Active C2M sellers', 'Shortlist', IN(L[0].sellers), IN(L[1].sellers), IN(L[2].sellers)],
-    ['Run-rate C2M NMV', '—', cr(L[0].nmv), cr(L[1].nmv), cr(L[2].nmv)],
-    ['C2M NMV still clearing the gate', '≥ 70%', '≥ 70%', '≥ 75%', '≥ 80%'],
-    ['Badge lift vs holdout (NMV per live SKU)', `≥ 12% (prototype ${pc(PROTO.exp.base.lift, 1)})`, '≥ 12%', '—', '—'],
-    ['Prepaid share of C2M orders', '—', `≥ ${pc(SP.prepaid)}`, `≥ ${pc(prepaidC2M, 1)}`, `≥ ${pc(prepaidC2M, 1)}`],
-    ['Factory retention at Day 90', '—', '≥ 70%', '≥ 75%', '≥ 75%'],
-    ['Cumulative programme cash', '₹0', cr(M.gates.d90), cr(FN.cashY1), cr(FN.cost.slice(0, 4).reduce((p, q) => p + q, 0) - FN.lines.people.slice(0, 4).reduce((p, q) => p + q, 0))],
-  ], { x: b.x, y: b.y, w: b.w, colW: [2.6, ...Array(4).fill((b.w - 2.6) / 4)], rowH: [0.2, ...Array(7).fill((b.h - 0.22) / 7)], fs: 8, hfs: 8 });
+  const kp = [
+    ['Scale', 'Active C2M sellers', 'Shortlist', '60 catalogued', `${IN(L[0].sellers)} live`, IN(L[1].sellers), 'Category · weekly'],
+    ['Onboarding', 'Qualified → listed within 30 days', '—', '≥ 50%', '≥ 50%', '≥ 50%', 'Category · weekly'],
+    ['Onboarding', 'Days to first prepaid batch', '—', '—', '≤ 14', '≤ 14', 'Category · weekly'],
+    ['Activation', 'Orders at D7 / D14 vs cohort median', '—', '—', '≥ 60%', '≥ 60%', 'DS · daily'],
+    ['Activation', 'Prepaid share of C2M orders', '—', '—', `≥ ${pc(SP.prepaid)}`, `≥ ${pc(prepaidC2M, 1)}`, 'Finance · weekly'],
+    ['Retention', 'Sellers still clearing the 8% gate', '≥ 70%', '≥ 70%', '≥ 70%', '≥ 75%', 'Pricing · weekly'],
+    ['Retention', 'Factories active at Day 90', '—', '—', '≥ 70%', '≥ 75%', 'Category · monthly'],
+    ['Guardrail', 'Badge share of category impressions; category NMV', '≤ 20%; ≥ base', '≤ 20%; ≥ base', '≤ 20%; ≥ base', '≤ 20%; ≥ base', 'Growth · weekly'],
+    ['North star', 'Run-rate C2M NMV clearing the gate', '—', '—', cr(L[0].nmv), cr(L[1].nmv), 'Finance · monthly'],
+  ];
+  const stc = { Scale: C.plum, Onboarding: C.plum2, Activation: C.coral, Retention: C.green, Guardrail: C.amber, 'North star': C.plum };
+  table(s, [['Stage', 'KPI', 'Day 30', 'Day 60', 'Day 90', 'Year-1 exit', 'Owner · cadence'], ...kp.map((r2) => [{ t: r2[0], b: true, c: C.white, f: stc[r2[0]] }, { t: r2[1], a: 'left' }, r2[2], r2[3], r2[4], { t: r2[5], b: true, c: C.plum }, { t: r2[6], fs: 7 }])],
+    { x: b.x, y: b.y, w: b.w, colW: [0.78, 2.55, 0.85, 0.95, 0.85, 0.85, b.w - 6.83], rowH: [0.18, ...kp.map(() => (b.h - 0.2) / kp.length)], fs: 7.5, hfs: 7.5, margin: 0.02 });
 
-  b = panel(s, [0.66, 0, 0.34, 0.56], 'Top risks, sorted by likelihood × impact', { hc: C.coral });
+  b = panel(s, [0.67, 0, 0.33, 0.58], 'Top risks, sorted by likelihood × impact', { hc: C.coral });
   const rk = [['The gap was a promotion', 'H', 'H', 'Day-30 stop rule; badge off below 4%', 'Pricing'], ['Export recovery pulls factories back', 'H', 'M', 'Batches fill idle capacity between export runs', 'Category'],
-    ['Quality falls with price', 'M', 'H', 'Suspend at > 1.5× return norm; QC hold', 'Category'], ['Node or advances read as inventory control', 'L', 'H', 'Seller keeps title; NBFC lends; 3PL fees at arm’s length', 'Legal'], ['Re-rank starves resellers', 'L', 'M', '≤ 20% of category impressions; category NMV guardrail', 'Growth']];
-  table(s, [['Risk', 'L', 'I', 'Guardrail', 'Owner'], ...rk.map((r) => [{ t: r[0], b: true, c: C.plum }, { t: r[1], b: true, c: r[1] === 'H' ? C.red : r[1] === 'M' ? C.amber : C.green }, { t: r[2], b: true, c: r[2] === 'H' ? C.red : C.amber }, { t: r[3], a: 'left' }, { t: r[4], fs: 7.5 }])],
-    { x: b.x, y: b.y, w: b.w, colW: [1.3, 0.25, 0.25, b.w - 2.45, 0.65], rowH: [0.22, ...rk.map(() => (b.h - 0.24) / rk.length)], fs: 8, hfs: 8 });
+    ['Quality falls with price', 'M', 'H', 'Suspend at > 1.5× return norm; QC hold', 'Category'], ['Sellers game the badge with a few cheap SKUs', 'M', 'M', '≥ 60% of live SKUs must clear; dominant-seller rule', 'Pricing'],
+    ['Node or advances read as inventory control', 'L', 'H', 'Seller keeps title; NBFC lends; 3PL fees at arm’s length', 'Legal'], ['Re-rank starves resellers', 'L', 'M', '≤ 20% of category impressions; category NMV guardrail', 'Growth']];
+  table(s, [['Risk', 'L', 'I', 'Guardrail', 'Owner'], ...rk.map((r2) => [{ t: r2[0], b: true, c: C.plum }, { t: r2[1], b: true, c: r2[1] === 'H' ? C.red : r2[1] === 'M' ? C.amber : C.green }, { t: r2[2], b: true, c: r2[2] === 'H' ? C.red : C.amber }, { t: r2[3], a: 'left' }, { t: r2[4], fs: 7 }])],
+    { x: b.x, y: b.y, w: b.w, colW: [1.25, 0.24, 0.24, b.w - 2.33, 0.6], rowH: [0.2, ...rk.map(() => (b.h - 0.22) / rk.length)], fs: 7.5, hfs: 7.5, margin: 0.025 });
 
-  b = panel(s, [0.66, 0.56, 0.34, 0.44], 'The ask');
+  b = panel(s, [0.67, 0.58, 0.33, 0.42], 'The ask');
   T(s, [
-    run('Budget  ', { bold: true, color: C.coral }), run(`${cr(FN.cashY1)} cash in Year 1 (+${cr(FN.lines.people[0])} people), capped as an H2 bet; ₹0 until Day 30`, { breakLine: true }),
-    run('Decisions  ', { bold: true, color: C.coral }), run('(1) run the Day 0–30 badge test with a holdout; (2) name owners in Pricing, Category, Valmo, Finance; (3) sign a Tiruppur partner warehouse and an NBFC; (4) publish the price-gap badge as a ranking parameter before 1 Jan 2027', { breakLine: true }),
-    run('Dates  ', { bold: true, color: C.coral }), run('Day 0: 2 Nov 2026 · Day 30: 2 Dec 2026 · Day 90: 31 Jan 2027', { breakLine: true }),
+    run('Budget  ', { bold: true, color: C.coral }), run(`₹0 to Day 30; ${cr(M.gates.d90)} for Days 31–90; ${cr(FN.cashY1)} cash in Year 1 (+${cr(FN.lines.people[0])} people), capped as an H2 bet`, { breakLine: true }),
+    run('Decisions  ', { bold: true, color: C.coral }), run('(1) run the badge test with a holdout from Week 1; (2) name owners in Pricing, Category, Valmo, Finance, Legal; (3) sign the associations, a Tiruppur node and an NBFC by Day 60; (4) declare the price-gap badge as a ranking parameter before 1 Jan 2027', { breakLine: true }),
     run('Go / no-go  ', { bold: true, color: C.coral }), run('badged NMV per live SKU ≥ 12% above holdout, ≥ 70% still clearing at D14', {}),
-  ], { x: b.x, y: b.y, w: b.w, h: b.h, fontSize: 8.5, valign: 'top', paraSpaceAfter: 4 });
+  ], { x: b.x, y: b.y, w: b.w, h: b.h, fontSize: 8, valign: 'top', paraSpaceAfter: 4 });
 }
 
 // ================================================================== 12 · APPENDIX A: PRODUCT WALKTHROUGH
@@ -913,15 +1041,15 @@ function page(i, { headline, rail, band, foot, label }) {
     label: 'Appendix A · Product walkthrough',
     headline: 'The working prototype runs every rule in this deck end to end, on synthetic data that mirrors Meesho’s order tables',
     rail: 'APPENDIX A',
-    foot: `Prototype: React + Recharts static site; ${PROTO.sellers} synthetic sellers, ${IN(PROTO.skus)} SKUs, 9 categories; fixed seed; fictional names; four model tests run before every deploy   |   Supports pages 4, 7, 8, 11`,
+    foot: `Prototype: React + Recharts static site; ${PROTO.sellers} synthetic sellers, ${IN(PROTO.skus)} SKUs, 9 categories; fixed seed; fictional names; four model tests run before every deploy   |   Supports pages 4, 5, 8, 9, 12`,
   });
   const b = R([0, 0, 1, 1]);
   const fit = (f, pw, ph, x, y, w, h) => { const r = Math.min(w / pw, h / ph); s.addImage({ path: AS(f), x: x + (w - pw * r) / 2, y: y + (h - ph * r) / 2, w: pw * r, h: ph * r }); };
   const cells = [
-    [[['shot_pti_scatter.png', 1566, 1092]], '1 · Price Truth Index', `Size vs price gap for every seller above ₹5 cr: r = ${nm(PROTO.r, 2)}; ${PROTO.top10NotReady} of the 10 largest fail`, 'p8'],
-    [[['shot_day30.png', 2544, 1454]], '2 · Day-30 readout', `Badged vs holdout: +${pc(PROTO.exp.base.lift, 1)} (interval +${pc(PROTO.exp.base.ci[0], 1)} to +${pc(PROTO.exp.base.ci[1], 1)}) → fund`, 'p11'],
-    [[['shot_pti_gate.png', 2544, 444], ['shot_health_stages.png', 2544, 498]], '3 · Gate controls + Seller Health stages', `Gate sliders re-score every seller; ${PROTO.hs.cohort} pilot sellers by stage`, 'p7, p8'],
-    [[['shot_health_detail.png', 1506, 1176]], '4 · One seller’s Health Score', 'Five signals, the rule that fired, the next action', 'p7'],
+    [[['shot_pti_scatter.png', 1566, 1092]], '1 · Price Truth Index', `Size vs price gap for every seller above ₹5 cr: r = ${nm(PROTO.r, 2)}; ${PROTO.top10NotReady} of the 10 largest fail`, 'p9'],
+    [[['shot_day30.png', 2544, 1454]], '2 · Day-30 readout', `Badged vs holdout: +${pc(PROTO.exp.base.lift, 1)} (interval +${pc(PROTO.exp.base.ci[0], 1)} to +${pc(PROTO.exp.base.ci[1], 1)}) → fund`, 'p12'],
+    [[['shot_pti_gate.png', 2544, 444], ['shot_health_stages.png', 2544, 498]], '3 · Gate controls + Seller Health stages', `Gate sliders re-score every seller; ${PROTO.hs.cohort} pilot sellers by stage`, 'p8, p9'],
+    [[['shot_health_detail.png', 1506, 1176]], '4 · One seller’s Health Score', 'Five signals, the rule that fired, the next action', 'p8'],
   ];
   const lw = b.w * 0.6, gw = (lw - 0.1) / 2, gh = (b.h - 0.75) / 2;
   cells.forEach(([imgs, h, t, p], k) => {
@@ -932,9 +1060,9 @@ function page(i, { headline, rail, band, foot, label }) {
     T(s, [run(h, { bold: true, color: C.plum }), run(`   supports ${p}`, { color: C.coral, bold: true, fontSize: 8 }), run('', { breakLine: true }), run(t, { color: C.text })], { x: x + 0.08, y: y + gh - 0.54, w: gw - 0.16, h: 0.5, fontSize: 9, valign: 'middle' });
   });
   const phones = [
-    ['shot_phone_price.png', '5 · Manufacturer app: price check', 'Lowest viable price vs market median, before listing', 'p4, p9'],
-    ['shot_phone_brief.png', '6 · Demand Brief + batch', 'District demand → batch size → one-tap commit', 'p4, p7'],
-    ['shot_phone_whatsapp.png', '7 · WhatsApp nudges', 'Grant applied, batch confirmed, payout dates', 'p7'],
+    ['shot_phone_price.png', '5 · Manufacturer app: price check', 'Lowest viable price vs market median, before listing', 'p5, p10'],
+    ['shot_phone_brief.png', '6 · Demand Brief + batch', 'District demand → batch size → one-tap commit', 'p4, p8'],
+    ['shot_phone_whatsapp.png', '7 · WhatsApp nudges', 'Grant applied, batch confirmed, payout dates', 'p8'],
   ];
   const px = b.x + lw + 0.15, pw2 = (b.w - lw - 0.15 - 0.2) / 3;
   phones.forEach(([f, h, t, p], k) => {
@@ -956,7 +1084,7 @@ function page(i, { headline, rail, band, foot, label }) {
     label: 'Appendix B · Sources, method, assumptions',
     headline: 'Every figure in the deck traces to a numbered source [S#] or a registered assumption [A#] in one master model',
     rail: 'APPENDIX B',
-    foot: 'Master model: deck/source/model.mjs → outputs.json (every slide number is read from it) · prototype results: proto.mjs · teardown data: deck/source/data · survey kit: research/13   |   Supports pages 2–11',
+    foot: 'Master model: deck/source/model.mjs → outputs.json (every slide number is read from it) · prototype results: proto.mjs · teardown data: deck/source/data · survey kit: research/13   |   Supports pages 2–12',
   });
   let b = panel(s, [0, 0, 0.30, 1], 'Sources [S#] (publisher · title · date)');
   const sl = Object.entries(S);
@@ -1000,12 +1128,12 @@ function page(i, { headline, rail, band, foot, label }) {
 
   b = panel(s, [0.65, 0.68, 0.35, 0.32], 'Workings index (formula → page)');
   T(s, [
-    run('Sizing: ', { bold: true, color: C.plum }), run('NMV = sellers × ₹1.425 cr; savings = NMV × g ÷ (1 − g) → p3, p10', { breakLine: true }),
-    run('Unit cost: ', { bold: true, color: C.plum }), run('(make + unsold − resold + logistics + returns + capital) ÷ kept → p9', { breakLine: true }),
-    run('Benefit: ', { bold: true, color: C.plum }), run('orders × (incremental × ₹7.3 + Δfailed × ₹60) → p10', { breakLine: true }),
-    run('Δfailed: ', { bold: true, color: C.plum }), run('pre-order share × (1 − 37%) × 15 pts = 4.7 pts → p10', { breakLine: true }),
-    run('AHP: ', { bold: true, color: C.plum }), run('geometric means, CR = (λ − 5) ÷ 4 ÷ 1.12 → p8, Appendix C', { breakLine: true }),
-    run('RICE: ', { bold: true, color: C.plum }), run('reach × impact × confidence ÷ effort → p6', {}),
+    run('Sizing: ', { bold: true, color: C.plum }), run('NMV = sellers × ₹1.425 cr; savings = NMV × g ÷ (1 − g) → p3, p11', { breakLine: true }),
+    run('Unit cost: ', { bold: true, color: C.plum }), run('(make + unsold − resold + logistics + returns + capital) ÷ kept → p10', { breakLine: true }),
+    run('Benefit: ', { bold: true, color: C.plum }), run('orders × (incremental × ₹7.3 + Δfailed × ₹60) → p11', { breakLine: true }),
+    run('Δfailed: ', { bold: true, color: C.plum }), run('pre-order share × (1 − 37%) × 15 pts = 4.7 pts → p11', { breakLine: true }),
+    run('AHP: ', { bold: true, color: C.plum }), run('geometric means, CR = (λ − 5) ÷ 4 ÷ 1.12 → p9, Appendix C', { breakLine: true }),
+    run('RICE: ', { bold: true, color: C.plum }), run('reach × impact × confidence ÷ effort → p7', {}),
   ], { x: b.x, y: b.y, w: b.w, h: b.h, fontSize: 7.5, valign: 'top', paraSpaceAfter: 2 });
 }
 
@@ -1013,9 +1141,9 @@ function page(i, { headline, rail, band, foot, label }) {
 {
   const s = page(-1, {
     label: 'Appendix C · Benchmarks, compliance, model detail',
-    headline: 'Detailed benchmarking, compliance by design and the model workings behind pages 3, 8 and 9',
+    headline: 'Detailed benchmarking, compliance by design and the model workings behind pages 3, 9 and 10',
     rail: 'APPENDIX C',
-    foot: 'Sources: S15–S19, S22–S25   |   Compliance rows are design responses, not legal advice: Meesho legal confirms each before the pilot   |   Supports pages 3, 5, 6, 8, 9, 11',
+    foot: 'Sources: S15–S19, S22–S25   |   Compliance rows are design responses, not legal advice: Meesho legal confirms each before the pilot   |   Supports pages 3, 6, 7, 9, 10, 12',
   });
   let b = panel(s, [0, 0, 0.58, 0.52], 'Detailed benchmarking: KPI × company (dated, sourced) and how Meesho uses it');
   table(s, [['', 'Pinduoduo NBI', 'Taobao C2M', 'Temu semi-managed', 'Shein', 'Shein Brazil'],
@@ -1060,7 +1188,7 @@ function page(i, { headline, rail, band, foot, label }) {
     run('Logistics ', { bold: true, color: C.plum }), run('= delivered × forward fee + shipped × packing (₹10) or node fee (₹20)', { breakLine: true }),
     run('Capital ', { bold: true, color: C.plum }), run('= make cost × 18% × days ÷ 365 (45 vs 10 days)', { breakLine: true }),
     run('Floor ', { bold: true, color: C.plum }), run(`= cost per kept ÷ (1 − 9%) → proposed ${rs(c3.cost, 1)} ÷ 0.91 = ${rs(c3.floor, 1)}`, { breakLine: true }),
-    run('Reconciliation checks ', { bold: true, color: C.coral }), run(`NPV ${cr(FN.npv)} = Σ PV row (page 10) ✓ · Year-4 NMV ${cr(FN.nmv[3], 0)} (average 1,300 sellers) vs ${cr(Y4.nmv)} exit run-rate (1,400) ✓ · batch payout ${rs(BX.payout)} = revenue − fees ✓ · RICE order = dependency order ✓`, {}),
+    run('Reconciliation checks ', { bold: true, color: C.coral }), run(`NPV ${cr(FN.npv)} = Σ PV row (page 11) ✓ · Year-4 NMV ${cr(FN.nmv[3], 0)} (average 1,300 sellers) vs ${cr(Y4.nmv)} exit run-rate (1,400) ✓ · batch payout ${rs(BX.payout)} = revenue − fees ✓ · RICE order = dependency order ✓`, {}),
   ], { x: b.x, y: b.y, w: b.w, h: b.h, fontSize: 7.5, valign: 'top', paraSpaceAfter: 2 });
 }
 

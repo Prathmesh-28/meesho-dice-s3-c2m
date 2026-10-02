@@ -89,7 +89,7 @@ const round = (x, d = 1) => Math.round(x * 10 ** d) / 10 ** d;
 
 // ---------------------------------------------------------------- sponsor baseline [S1, S3]
 const SP = {
-  ordersQ1: 725e6, gmvQ1: 19054, nmvQ1: 11614, cmQ1: 0.046, cmCr: 531, prepaid: 0.37, atu: 274, ats: 1.04, tier2: 0.45, cash: 6521, growth: 0.021,
+  ordersQ1: 725e6, gmvQ1: 19054, nmvQ1: 11614, cmQ1: 0.046, cmCr: 531, prepaid: 0.37, atu: 274, ats: 1.04, tier2: 0.45, cash: 6521, growth: 0.021, freq: 10.3,
   fy26Nmv: 41560, fy26Aov: 265, fy26Orders: 2.67e9, fy26Sellers: 9.6e5,
 };
 SP.gmvPerOrder = SP.gmvQ1 * 1e7 / SP.ordersQ1; // ₹262.8

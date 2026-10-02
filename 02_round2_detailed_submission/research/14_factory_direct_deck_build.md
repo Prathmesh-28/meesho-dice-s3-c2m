@@ -1,6 +1,6 @@
 # The Factory Direct deck: storyline, model, new research, audit
 
-The 14-page Round 2 deck (`deck/meesho_dice_round2.pptx`), built on 2 Oct 2026 in the csuite-case-deck format and rebuilt the same day to follow the page flow and density of the 15-page DICE winner (IIM Mumbai, self-pickup). Earlier versions are archived in `deck/old/`: v03 is the 11-page deck, and v04 is the first 14-page version.
+The Round 2 deck (`deck/meesho_dice_round2.pptx`), built on 2 Oct 2026 in the csuite-case-deck format and rebuilt the same day to follow the page flow and density of the 15-page DICE winner (IIM Mumbai, self-pickup). On 3 Oct it grew to 15 pages: a User Personas & Flow page and a week-by-week 90-day plan. Earlier versions are archived in `deck/old/`: v03 is the 11-page deck, v04 the first 14-page version and v05 the 14-page IIM-flow version.
 
 ## Structure
 
@@ -10,16 +10,17 @@ The page flow copies the IIM Mumbai winner tab for tab, with "Customer" read as 
 |---|---|---|
 | 1 | Cover | Governing thought: screen on price, not size; make only what is sold; 1,400 factories, ₹1,995 cr NMV 8–12% below market, NPV ₹75 cr on ₹22.2 cr Year-1 cash |
 | 2 | Primary Research | Objective; as-is vs to-be chain; problem size (≈ ₹1,049 cr a year of wholesaler mark-up); 5 challenges; three data sets (ICRIER n = 2,365, teardown n = 279, buyer survey); 24 interviews (barrier grid); stakeholders' voice |
-| 3 | Manufacturer Segmentation | 12-category screen; TAM → SAM → SOM; 4 manufacturer personas with cohort scores; least likely to adopt; recommendation |
-| 4 | Awareness & Strategy | 6-frame storyboard of one factory owner, with the lever at each step; rationale; ATL/TTL/BTL channels; cluster camps; 4P of the offer; bottlenecks |
-| 5 | Benchmarking & Comparison | 3 operating models as process ribbons (who does what, result); symbol comparison; costs per model |
-| 6 | Best Practices | 5 platforms × 5 dimensions; what we copy; pitfalls; RICE; benefits analysis |
-| 7 | Manufacturer Journey | 7-stage journey grid (action, touchpoint, feeling, pain point, intervention, KPI); incentives and nudges; Health Score; rulebook; prototype screens |
-| 8 | Cluster Criteria | Selection criteria; AHP matrix (CR 0.016); cluster scoring; live teardown chart; price gate two ways (listing vs demand-weighted median) with prototype verdicts |
-| 9 | Unit Economics | Scenario column table per 3-pack (per 100 shipped); one 1,000-pack batch stage by stage; where the ₹45 per pack goes; assumptions strip |
-| 10 | Financial Analysis | 5-year table with discount factors and PV; NPV box; opportunity ladder; benefit vs cost chart; tornado; break-even and scenarios; Round 1 reconciliation |
-| 11 | Roadmap & Risks | Phase × workstream grid with gates; KPI targets by phase; risk register; the ask |
-| 12–14 | Appendices A–C | Prototype walkthrough · sources, method, assumption register · detailed benchmarks, compliance, model workings |
+| 3 | Manufacturer Segmentation | 12-category screen; TAM → SAM → SOM; 4 manufacturer personas, each with barrier, motivation, needs and reach; least likely to adopt; recommendation |
+| 4 | User Personas & Flow | Swimlane flow of one 1,000-pack batch across 6 users and 10 steps (D−10 to D19); 6 user personas (buyer, factory owner, category manager, node operator, NBFC, association), each with wants, pain, does, gets, uses and a KPI |
+| 5 | Awareness & Strategy | 6-frame storyboard of one factory owner, with the lever at each step; rationale; ATL/TTL/BTL channels; cluster camps; 4P of the offer; bottlenecks |
+| 6 | Benchmarking & Comparison | 3 operating models as process ribbons (who does what, result); symbol comparison; costs per model |
+| 7 | Best Practices | 5 platforms × 5 dimensions; what we copy; pitfalls; RICE; benefits analysis |
+| 8 | Manufacturer Journey | 7-stage journey grid (action, touchpoint, feeling, pain point, intervention, KPI); incentives and nudges; Health Score; rulebook; prototype screens |
+| 9 | Cluster Criteria | Selection criteria; AHP matrix (CR 0.016); cluster scoring; live teardown chart; price gate two ways (listing vs demand-weighted median) with prototype verdicts |
+| 10 | Unit Economics | Scenario column table per 3-pack (per 100 shipped); one 1,000-pack batch stage by stage; where the ₹45 per pack goes; assumptions strip |
+| 11 | Financial Analysis | 5-year table with discount factors and PV; NPV box; opportunity ladder; benefit vs cost chart; tornado; break-even and scenarios; Round 1 reconciliation |
+| 12 | 90-Day Plan & Risks | Week-by-week Gantt (W1 = 2 Nov 2026 to W13 = 25 Jan 2027) across 5 workstreams with milestones, Day 30/60/90 gates and money released, then Q2–Q4 and Years 2–4; KPI table grouped onboarding → activation → retention → guardrails with owner and cadence; 6 risks; the ask |
+| 13–15 | Appendices A–C | Prototype walkthrough · sources, method, assumption register · detailed benchmarks, compliance, model workings |
 
 ## What the model says (deck/source/model.mjs)
 

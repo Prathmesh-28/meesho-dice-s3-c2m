@@ -9,7 +9,7 @@
 |---|---|
 | `00_brief/` | Case brief and the official submission template |
 | `01_round1_idea_submission/` | Round 1 three-slide entry (submitted) |
-| `02_round2_detailed_submission/deck/` | Round 2 detailed deck (Factory Direct, 14 pages) and its generator |
+| `02_round2_detailed_submission/deck/` | Round 2 detailed deck (Factory Direct, 15 pages) and its generator |
 | `02_round2_detailed_submission/prototype/` | Working prototype (C2M Control Tower) |
 | `02_round2_detailed_submission/research/` | All Round 2 research: problem explained, solution, 50-lever solution space, approach deep dive, fact library with sources (start at its README) |
 
@@ -21,7 +21,7 @@
 
 ## Round 2 deck
 
-[`02_round2_detailed_submission/deck/meesho_dice_round2.pdf`](02_round2_detailed_submission/deck/meesho_dice_round2.pdf) (editable: `meesho_dice_round2.pptx`): **Factory Direct**, a cover, 10 content pages and 3 appendices. The tabs follow the IIM Mumbai DICE winner: Primary Research, Manufacturer Segmentation, Awareness & Strategy, Benchmarking & Comparison, Best Practices, Manufacturer Journey, Cluster Criteria, Unit Economics, Financial Analysis, and Roadmap & Risks. Every number comes from one master model, `deck/source/model.mjs`; `deck/source/build_fd.mjs` lays out the pages. Earlier versions live in [`deck/old/`](02_round2_detailed_submission/deck/old/VERSIONS.md); the current deck is always saved there before it changes.
+[`02_round2_detailed_submission/deck/meesho_dice_round2.pdf`](02_round2_detailed_submission/deck/meesho_dice_round2.pdf) (editable: `meesho_dice_round2.pptx`): **Factory Direct**, a cover, 11 content pages and 3 appendices. The tabs follow the IIM Mumbai DICE winner: Primary Research, Manufacturer Segmentation, User Personas & Flow, Awareness & Strategy, Benchmarking & Comparison, Best Practices, Manufacturer Journey, Cluster Criteria, Unit Economics, Financial Analysis, 90-Day Plan & Risks (week by week, with Day 30/60/90 gates). Every number comes from one master model, `deck/source/model.mjs`; `deck/source/build_fd.mjs` lays out the pages. Earlier versions live in [`deck/old/`](02_round2_detailed_submission/deck/old/VERSIONS.md); the current deck is always saved there before it changes.
 
 ## Round 2 prototype
 
