@@ -16,19 +16,16 @@ All research and analysis done for the Round 2 detailed submission (26 Sep – 1
 | [10_facts_and_sources.md](10_facts_and_sources.md) | **Fact library:** every verified figure with its source, plus claims not to use |
 | [11_deck_audit_vs_winning_decks.md](11_deck_audit_vs_winning_decks.md) | **Deck audit:** 42 gaps (8 critical, 23 important, 11 polish) vs winning case-competition decks, by severity, with fixes and a priority order |
 | [12_winning_deck_playbook.md](12_winning_deck_playbook.md) | **Playbook:** 12 patterns from four real winning decks and IIT Bombay's compendium, how ours compares, the build process, and a slide-by-slide blueprint |
+| [13_survey_and_interview_kit.md](13_survey_and_interview_kit.md) | Buyer survey (12 questions), manufacturer pulse (8), interview-notes template, and how the deck uses them |
+| [14_factory_direct_deck_build.md](14_factory_direct_deck_build.md) | **Current deck:** the 14-page Factory Direct storyline, what the master model says, new research, audit results, open items |
 
 ## Open items before 4 Oct
 
-**Verify**
-- Meesho's fee per customer return: ₹90 (estimate) vs ~₹140–170 (seller guides). Pull from a live supplier panel.
-- Factory Node cost per unit (partner-warehouse quotes, Tiruppur).
-- Pre-order uptake: would buyers wait 7 days for ₹20–40 off? (Small buyer survey.)
-- Order lift from extra visibility (ask 3–5 recent Meesho sellers about their first month).
-- Round 1 Temu figures (200K merchants, 60 nodes, 50% selling in 20 days): source or drop.
+See the list at the end of [14_factory_direct_deck_build.md](14_factory_direct_deck_build.md): buyer survey results and team interview quotes (page 2 carries `[FILL]` markers until they arrive), member photos on the cover, confirm the ₹80 making cost, export the final PDF from PowerPoint, and confirm the page-count rule with the organisers.
 
-**Deck changes recommended but not yet made** (archive the current deck to `deck/old/` first)
-- Update the KPI strip to Q1 FY27 numbers (274 mn users, 1.04 mn sellers).
-- Add the ICRIER exit reasons to Segmentation (Cohort C).
-- Add the moving-benchmark risk and fix (resellers-only benchmark).
-- Consider the Factory Direct framing: one named system, quality and capacity gates, batch-size graduation ladder, returns grading at the node.
-- Page count: the deck is a cover plus 10 slides; if the cover counts against the 10-slide limit, drop or merge one.
+Resolved on 2 Oct:
+- **Return fee:** the deck uses ₹150, which matches the seller guides.
+- **Round 1 Temu figures:** dropped. Temu is now cited from Tech Buzz China.
+- **Q1 FY27 numbers:** used throughout the deck.
+- **ICRIER exit reasons:** shown on page 2.
+- **Factory Direct framing:** adopted for the deck.

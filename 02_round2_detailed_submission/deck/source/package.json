@@ -1,0 +1,17 @@
+{
+  "name": "source",
+  "version": "1.0.0",
+  "description": "`build.mjs` rebuilds `../meesho_dice_round2.pptx`. It imports the prototype's model from `../../prototype/src`, so every prototype number on the slides matches the live app.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "pptxgenjs": "^3.12.0",
+    "sharp": "^0.35.5"
+  }
+}

@@ -9,7 +9,7 @@
 |---|---|
 | `00_brief/` | Case brief and the official submission template |
 | `01_round1_idea_submission/` | Round 1 three-slide entry (submitted) |
-| `02_round2_detailed_submission/deck/` | 8-10 slide detailed deck |
+| `02_round2_detailed_submission/deck/` | Round 2 detailed deck (Factory Direct, 14 pages) and its generator |
 | `02_round2_detailed_submission/prototype/` | Working prototype (C2M Control Tower) |
 | `02_round2_detailed_submission/research/` | All Round 2 research: problem explained, solution, 50-lever solution space, approach deep dive, fact library with sources (start at its README) |
 
@@ -21,7 +21,7 @@
 
 ## Round 2 deck
 
-[`02_round2_detailed_submission/deck/meesho_dice_round2.pdf`](02_round2_detailed_submission/deck/meesho_dice_round2.pdf) (editable: `meesho_dice_round2.pptx`). Cover plus 10 content slides: the seven sections the brief asks for, the price screen, an operating model, and the live prototype. The generator in `deck/source/` rebuilds it from the prototype's model. Earlier versions live in [`deck/old/`](02_round2_detailed_submission/deck/old/VERSIONS.md); the current deck is always saved there before it changes.
+[`02_round2_detailed_submission/deck/meesho_dice_round2.pdf`](02_round2_detailed_submission/deck/meesho_dice_round2.pdf) (editable: `meesho_dice_round2.pptx`): **Factory Direct**, a cover, 10 content pages (research, segments, sizing, price truth, the Factory Direct model, benchmarks, scale-up, metrics, business case, roadmap and risks) and 3 appendices (prototype walkthrough; sources, method and assumption register; benchmarks, compliance and model workings). Every number comes from one master model, `deck/source/model.mjs`; `deck/source/build_fd.mjs` lays out the pages. Earlier versions live in [`deck/old/`](02_round2_detailed_submission/deck/old/VERSIONS.md); the current deck is always saved there before it changes.
 
 ## Round 2 prototype
 

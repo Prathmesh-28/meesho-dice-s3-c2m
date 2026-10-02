@@ -62,7 +62,7 @@ Meesho's own pricing pages block automated reads: confirm from a live supplier p
 |---|---|
 | **Shein Brazil (failure):** pledged R$750 mn (~$150 mn) in Apr 2023 for 2,000 factories and 85% local sales by end-2026; 336 factories signed by end-2023; by Feb 2026 Reuters found 1 still producing (GB Manufacturing). Factories cited ~30% price-cut demands (e.g., a skirt from R$50 to R$38) and unrealistic speed | [FashionNetwork / Reuters](https://us.fashionnetwork.com/news/Shein-tried-to-turn-brazil-into-a-production-hub-local-factories-walked-away,1804653.html), [Shein 2023](https://www.sheingroup.com/corporate-news/company-updates/shein-to-bring-local-manufacturing-to-brazil-enabling-2000-local-manufacturers-thatwill-create-approximately-100000-jobs-in-the-next-three-years/) |
 | **Pinduoduo New Brand Initiative:** by end-2019, 106 member brands, 900+ companies in C2M production, 2,200+ custom products, 115 mn+ orders | [KrASIA](https://kr-asia.com/pinduoduo-is-partnering-with-chinese-manufacturers-to-build-sharp-domestic-brands) |
-| **Temu:** shifted from fully managed towards semi-managed in 2025 (targets of 60–80% of US GMV semi-managed); merchants bulk-ship to local warehouses | [Tech Buzz China](https://techbuzzchina.substack.com/p/temu-watch-10-logistics-in-times), [China Digital Retail Report](https://chinadigitalretailreport.substack.com/p/report-temu-watch-15-forward-warehouse) |
+| **Temu:** semi-managed merchants keep stock in local warehouses while Temu runs pricing and marketing. US GMV split in Q3 2024: 80% fully managed, 20% semi-managed (Europe 10–13%); Temu aimed to add 80,000 semi-managed merchants in 2025. (An earlier note here said "60–80% targeted"; use the Q3 2024 figure.) | [Tech Buzz China, Temu Watch #6, 27 Dec 2024](https://techbuzzchina.substack.com/p/temu-watch-6-revelations-at-the-end) |
 | **Group buying in India:** DealShare restructured in 2023, turned to private labels and stores; CityMall active (reports conflict) | [BrandHistories](https://brandhistories.com/company/dealshare/analysis), [ProductMint](https://productmint.com/citymall-business-model-how-does-citymall-make-money/) |
 
 ## Regulation
@@ -83,3 +83,27 @@ Meesho's own pricing pages block automated reads: confirm from a live supplier p
 | Temu: 200K merchants in under 2 years; 4 mn parcels/day from 60 nodes; 50% of new sellers sell within 20 days (Round 1) | Not verified: source or drop |
 | ₹90 per customer return (Round 1, prototype) | Unsourced team estimate; seller guides say ~₹140–170; show a range or confirm from a supplier panel |
 | Meesho auto-compensates suppliers for wrong returns using package images; IPO prospectus shows lower seller cost than rivals (Redseer) | From the Factory Direct write-up; not yet verified |
+
+## Added 2 Oct 2026 (for the Factory Direct deck)
+
+| Fact | Source |
+|---|---|
+| Meesho runs new bets as Horizon 2 (H2) initiatives: "Total burn across all H2 initiatives has a hard budget cap. An initiative stays experimental until it shows real adoption and retention post which it graduates to H1." Valmo and Content Commerce both started as H2 and are now core | [Q1 FY27 Shareholders' Letter](https://static-assets.meesho.com/investor-relations/1784806298911/Q1ShareholdersLetter.pdf), p. 6 |
+| Q1 FY27: contribution margin 4.6% of NMV; GMV ₹19,054 cr; NMV ₹11,614 cr (NMV/GMV 61%); 725 mn placed orders, so GMV ₹263 and contribution ≈ ₹7.3 per placed order (₹531 cr ÷ 725 mn); prepaid c.37% of shipped orders; NMV grew faster than orders thanks to lower cancellations and RTO ("TrustMesh") | Same letter, pp. 2–6 |
+| Seller-success tools named by Meesho: "AI-powered cataloguing, demand intelligence, Gen AI voice agents … product improvements that help new sellers gain visibility faster"; Tier 2+ towns are 45% of sellers; Kirana Club acquisition to build "Meesho for Retailers" | Same letter, pp. 2, 9 |
+| MSME limits (from 1 Apr 2025): micro ≤ ₹2.5 cr investment and ≤ ₹10 cr turnover; small ≤ ₹25 cr / ₹100 cr; medium ≤ ₹125 cr / ₹500 cr | Ministry of MSME, S.O. 1364(E), 21 Mar 2025 |
+| Indian manufacturing capacity utilisation 74.3% (Q2 FY26, RBI OBICUS), so roughly a quarter of capacity is idle | RBI via Business Standard, Oct 2025 |
+| Tiruppur owners (Apparel Resources, 25 Jun 2026): VM Navamani, MD, Cossmo Tex: "Currently, domestic business is about 20%, and we are planning to increase it to 35–40% in the next 2–3 years because export markets are mostly volatile." Ashwin Kumar, NASA Impex: "Orders of around 100 pieces tend to double costs … so 500 pieces is our preferred minimum." S. Ramesh, Dorai Fashion Wear: "Our MOQ typically ranges between 1,500 to 2,000 pieces." Tiruppur domestic sales ≈ ₹27,000 cr | [Apparel Resources](https://apparelresources.com/business-news/manufacturing/tirupur-rewires-growth-playbook-amid-global-uncertainty/) |
+| Panipat (The Tribune, 17 Aug 2026): Vinod Dhamija, Chairman, HCCI Panipat chapter: "Panipat's exports had shrunk by 50 per cent, while the domestic market had also been disturbed very badly." Domestic market hit by more than 35% this year (Ramesh Verma, reported speech). Turnover ~₹60,000 cr; exports ~₹20,000 cr; 450 export units | [The Tribune](https://www.tribuneindia.com/news/haryana/panipat-textile-industry-hit-by-weak-demand-high-costs/) |
+| Taobao C2M (27 Mar 2020): "10 billion new orders to factories across China over the next three years"; 1,000 "Super Factories" above 100 mn yuan output each; consumer insight, product R&D and finance from Alibaba's financial arms | [Xinhua](http://www.xinhuanet.com/english/2020-03/27/c_138923520.htm) |
+| Taobao Deals (factory-direct value app): 280 mn annual active consumers in the 12 months to 31 Dec 2021 | [Alibaba December Quarter 2021 results](https://www.businesswire.com/news/home/20220223006445/en/Alibaba-Group-Announces-December-Quarter-2021-Results), 23 Feb 2022 |
+| Shein to AFP: "by testing and producing new products in small initial batches of 100 to 200 items, we gather and evaluate customer feedback in real time, and restock only the products that our consumers truly want" | AFP via Malay Mail, 24 Mar 2024 |
+| **Team teardown of meesho.com (2 Oct 2026):** 279 live listings, 56 per query, 5 product types. Listing median vs review-weighted (demand-weighted) median: men's briefs 3-pack ₹322.5 vs ₹209; ankle socks 5-pack ₹133 vs ₹128; double bedsheet + 2 pillow covers ₹404 vs ₹325; bath towel ₹234 vs ₹227; steel glasses (6) ₹415 vs ₹262. Briefs: Spearman (reviews vs price) −0.53; listings under ₹200 are 11% of listings but 43% of reviews | `deck/source/data/` (raw and summary JSON) |
+
+## Do NOT use (added 2 Oct)
+
+| Claim | Problem |
+|---|---|
+| A synthetic "₹245 market median" for briefs (prototype) as a market fact | Prototype data is generated; the live demand-weighted median is ₹209 |
+| "Temu targets 60–80% of US GMV semi-managed" | Not supported by the source re-checked; use 20% of US GMV in Q3 2024 |
+

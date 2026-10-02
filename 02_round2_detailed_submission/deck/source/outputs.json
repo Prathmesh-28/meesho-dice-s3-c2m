@@ -1,0 +1,1280 @@
+{
+ "SP": {
+  "ordersQ1": 725000000,
+  "gmvQ1": 19054,
+  "nmvQ1": 11614,
+  "cmQ1": 0.046,
+  "cmCr": 531,
+  "prepaid": 0.37,
+  "atu": 274,
+  "ats": 1.04,
+  "tier2": 0.45,
+  "cash": 6521,
+  "growth": 0.021,
+  "fy26Nmv": 41560,
+  "fy26Aov": 265,
+  "fy26Orders": 2670000000,
+  "fy26Sellers": 960000,
+  "gmvPerOrder": 262.8137931034483,
+  "nmvGmv": 0.6095308071795948,
+  "contribPerOrder": 7.324137931034483
+ },
+ "funnel": [
+  [
+   "Udyam-registered MSMEs",
+   47200000,
+   "S7"
+  ],
+  [
+   "Above micro (small + medium)",
+   528000,
+   "S7"
+  ],
+  [
+   "In manufacturing",
+   185000,
+   "S22"
+  ],
+  [
+   "Make Meesho’s categories (TAM)",
+   55451,
+   "S22"
+  ],
+  [
+   "Own 3+ of 4 cost levers",
+   19408,
+   "S22"
+  ],
+  [
+   "Inside the 12 screened clusters (SAM)",
+   11645,
+   "S22"
+  ],
+  [
+   "Active C2M sellers by Year 4 (SOM)",
+   1400,
+   "A2"
+  ]
+ ],
+ "SAM": 11645,
+ "SOM": 1400,
+ "yieldCr": 1.425,
+ "eligibleNmv": 16624,
+ "ladder": [
+  {
+   "stage": "Pilot · Day 90",
+   "clusters": 2,
+   "nodes": 1,
+   "sellers": 60,
+   "nmv": 85.5,
+   "shareFy26": 0.0020572666025024063,
+   "save": [
+    7.434782608695651,
+    11.659090909090908
+   ],
+   "meesho": 3.1726950561323775
+  },
+  {
+   "stage": "Year 1 exit",
+   "clusters": 5,
+   "nodes": 6,
+   "sellers": 450,
+   "nmv": 641.25,
+   "shareFy26": 0.015429499518768047,
+   "save": [
+    55.76086956521739,
+    87.44318181818183
+   ],
+   "meesho": 23.79521292099283
+  },
+  {
+   "stage": "Year 4 exit",
+   "clusters": 12,
+   "nodes": 12,
+   "sellers": 1400,
+   "nmv": 1995,
+   "shareFy26": 0.04800288739172281,
+   "save": [
+    173.4782608695652,
+    272.0454545454545
+   ],
+   "meesho": 74.02955130975548
+  }
+ ],
+ "c2m": {
+  "gmvPerOrder": 236.53241379310347,
+  "nmvGmv": 0.6567808071795949,
+  "nmvPerOrder": 155.34994965517242,
+  "prepaidShift": 0.315,
+  "failDrop": 0.04725,
+  "rtoSavingPerOrder": 2.835,
+  "ordersPerDay": 251.31064398198905,
+  "keptPerDay": 165.05600760731454,
+  "shareOfOutput": 0.02118521064674103,
+  "exFactory": 87.91208791208791
+ },
+ "unit": {
+  "mkt": 209,
+  "gate": 192.28,
+  "cols": [
+   {
+    "key": "reseller",
+    "head": "Reseller today",
+    "sub": "buys via a wholesaler, ships, stocks",
+    "label": "Existing",
+    "goods": 105.10094556606182,
+    "unsold": 7.098844308146632,
+    "logistics": 72.4216380182002,
+    "returns": 13.043478260869565,
+    "capital": 2.8356479455555585,
+    "cost": 200.5005540988338,
+    "floor": 220.33027922948767,
+    "rto": 0.14,
+    "gap": -0.054211862342046224,
+    "passes": false,
+    "marginAtGate": -0.04275303775137185
+   },
+   {
+    "key": "direct",
+    "head": "+ Factory lists direct",
+    "sub": "no wholesaler mark-up",
+    "label": "Step 1",
+    "goods": 83.16683518705763,
+    "unsold": 5.617346365576902,
+    "logistics": 72.4216380182002,
+    "returns": 13.043478260869565,
+    "capital": 2.243860548222225,
+    "cost": 176.4931583799265,
+    "floor": 193.94852569222692,
+    "rto": 0.14,
+    "gap": 0.07201662348216786,
+    "passes": false,
+    "marginAtGate": 0.08210339931388333
+   },
+   {
+    "key": "node",
+    "head": "+ Factory Node",
+    "sub": "bulk drop; node packs, ships, grades",
+    "label": "Step 2",
+    "goods": 82.11122345803841,
+    "unsold": 5.617346365576902,
+    "logistics": 70.93023255813954,
+    "returns": 13.043478260869565,
+    "capital": 2.243860548222225,
+    "cost": 173.94614119084665,
+    "floor": 191.14960570422707,
+    "rto": 0.14,
+    "gap": 0.08540858514723892,
+    "passes": true,
+    "marginAtGate": 0.09534979617824713
+   },
+   {
+    "key": "batch",
+    "head": "+ Prepaid pre-order batch",
+    "sub": "make confirmed orders + 15%",
+    "label": "Proposed",
+    "goods": 81.11016466622634,
+    "unsold": 0.9296086394108511,
+    "logistics": 68.42758557860932,
+    "returns": 13.043478260869565,
+    "capital": 0.44926839449883327,
+    "cost": 163.96010553961491,
+    "floor": 180.17594015342297,
+    "rto": 0.04550000000000001,
+    "gap": 0.13791416194534467,
+    "passes": true,
+    "marginAtGate": 0.14728466018506914
+   }
+  ],
+  "ceilings": {
+   "direct": 78.66559065107063,
+   "node": 80.91464356794822,
+   "batch": 90.68233475222146
+  },
+  "batchSaving": 10.9736655508041,
+  "b2bMarginPerPack": 7.912087912087912,
+  "directMarginPerPack": 18.319894460385086,
+  "resellerCogs": 101.0989010989011,
+  "rtoPrepaid": 0.04550000000000001,
+  "preorderFactoryShare": 10,
+  "preorderMeeshoShare": 0,
+  "c": 80
+ },
+ "fin": {
+  "P": {
+   "incremental": 0.4,
+   "contrib": 7.324137931034483,
+   "gap": 0.15,
+   "costFail": 60,
+   "preorder": 0.5,
+   "yieldScale": 1,
+   "costScale": 1,
+   "rate": 0.12
+  },
+  "nmv": [
+   140,
+   700,
+   1260,
+   1852.5,
+   2066.25
+  ],
+  "orders": [
+   9011911.5140208,
+   45059557.570104,
+   81107203.6261872,
+   119246900.5694538,
+   133006158.32746771
+  ],
+  "benIncr": [
+   2.640179318038646,
+   13.200896590193228,
+   23.76161386234781,
+   34.93522990476137,
+   38.96621797069537
+  ],
+  "benRto": [
+   2.554876914224897,
+   12.774384571124484,
+   22.993892228024073,
+   33.806496311440156,
+   37.7072458858371
+  ],
+  "benefit": [
+   5.195056232263543,
+   25.97528116131771,
+   46.75550609037188,
+   68.74172621620153,
+   76.67346385653246
+  ],
+  "lines": {
+   "people": [
+    3.5999999999999996,
+    6,
+    7.199999999999999,
+    7.8,
+    7.8
+   ],
+   "onboarding": [
+    5,
+    3,
+    2,
+    2,
+    0
+   ],
+   "briefs": [
+    6,
+    3,
+    3,
+    3,
+    3
+   ],
+   "nodes": [
+    7.800000000000001,
+    2.6,
+    2.6,
+    2.6,
+    0
+   ],
+   "returnsPool": [
+    3,
+    0.7000000000000001,
+    1.26,
+    1.8525,
+    2.06625
+   ],
+   "grants": [
+    0.16875,
+    0.16875,
+    0.09375,
+    0.09375,
+    0.0375
+   ],
+   "firstLoss": [
+    0.21,
+    1.05,
+    1.8900000000000001,
+    2.77875,
+    3.099375
+   ],
+   "preorderTopUp": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "cost": [
+   25.77875,
+   16.518749999999997,
+   18.04375,
+   20.125,
+   16.003125
+  ],
+  "net": [
+   -20.583693767736456,
+   9.456531161317713,
+   28.711756090371882,
+   48.61672621620153,
+   60.67033885653247
+  ],
+  "pv": [
+   -18.37829800690755,
+   7.53868874467292,
+   20.436460865163106,
+   30.896808423254168,
+   34.42597961274417
+  ],
+  "nmvPerOrder": 155.34994965517242,
+  "npv": 74.91963963892681,
+  "npvStress": 66.09072970376778,
+  "irr": 1.0474832862518482,
+  "payback": 3,
+  "dpayback": 3,
+  "cashY1": 22.17875
+ },
+ "tornado": [
+  {
+   "label": "Seller yield (₹1.425 cr NMV / seller)",
+   "key": "yieldScale",
+   "lo": 47.695727312638176,
+   "hi": 102.14355196521547,
+   "swing": 54.44782465257729
+  },
+  {
+   "label": "Incremental orders (40% × ₹7.3)",
+   "key": "incremental",
+   "lo": 60.09834503375256,
+   "hi": 89.74093424410108,
+   "swing": 29.642589210348525
+  },
+  {
+   "label": "Failed-delivery saving (15 pts × ₹60)",
+   "key": "costFail",
+   "lo": 60.577211014110404,
+   "hi": 89.26206826374323,
+   "swing": 28.684857249632827
+  },
+  {
+   "label": "Programme cost",
+   "key": "costScale",
+   "lo": 89.09943494113213,
+   "hi": 60.73984433672149,
+   "swing": 28.35959060441064
+  },
+  {
+   "label": "Prepaid pre-order share (50%)",
+   "key": "preorder",
+   "lo": 63.675440739650604,
+   "hi": 85.81141365434286,
+   "swing": 22.135972914692253
+  }
+ ],
+ "be": {
+  "yieldScale": 0.44960416606557285,
+  "incremental": 0,
+  "costScale": 2.056709748514844,
+  "noRto": 8.952129614973998,
+  "zeroIncr": 0.8131666130554471,
+  "benefitShare": 0.4862134779698996
+ },
+ "scen": {
+  "bear": {
+   "npv": -10.037543008312028,
+   "note": "20% incremental · 8-pt gap · 75% yield"
+  },
+  "base": {
+   "npv": 74.91963963892681,
+   "note": "40% incremental · 15-pt gap · plan yield"
+  },
+  "bull": {
+   "npv": 140.3068659606625,
+   "note": "55% incremental · 20-pt gap · 110% yield"
+  }
+ },
+ "round1": {
+  "npv": 156,
+  "note": "Round 1 counted contribution on all C2M orders"
+ },
+ "allIncremental": 186.07934917773386,
+ "ahp": {
+  "crit": [
+   "Cost ownership",
+   "Demand on Meesho",
+   "Returns band",
+   "Node feasibility",
+   "Institutional partner"
+  ],
+  "M": [
+   [
+    1,
+    1,
+    2,
+    3,
+    4
+   ],
+   [
+    1,
+    1,
+    1,
+    2,
+    3
+   ],
+   [
+    0.5,
+    1,
+    1,
+    1,
+    2
+   ],
+   [
+    0.3333333333333333,
+    0.5,
+    1,
+    1,
+    2
+   ],
+   [
+    0.25,
+    0.3333333333333333,
+    0.5,
+    0.5,
+    1
+   ]
+  ],
+  "gm": [
+   1.888175022589804,
+   1.4309690811052556,
+   1,
+   0.8027415617602307,
+   0.4610539557408639
+  ],
+  "w": [
+   0.3382044497528095,
+   0.2563110436789335,
+   0.17911710816348547,
+   0.14378474714513248,
+   0.08258265125963915
+  ],
+  "lam": 5.071843616629064,
+  "CR": 0.016036521568987428,
+  "clusters": [
+   {
+    "name": "Tiruppur",
+    "cat": "Hosiery",
+    "s": [
+     5,
+     5,
+     4,
+     4,
+     5
+    ],
+    "score": 4.677098144691382,
+    "equal": 4.6
+   },
+   {
+    "name": "Panipat",
+    "cat": "Home textiles",
+    "s": [
+     5,
+     4,
+     5,
+     4,
+     4
+    ],
+    "score": 4.517321557916295,
+    "equal": 4.4
+   },
+   {
+    "name": "Ludhiana",
+    "cat": "Hosiery, knitwear",
+    "s": [
+     4,
+     3,
+     4,
+     4,
+     4
+    ],
+    "score": 3.7436889563210665,
+    "equal": 3.8
+   },
+   {
+    "name": "Rajkot",
+    "cat": "Plastics, jewellery",
+    "s": [
+     4,
+     3,
+     5,
+     3,
+     3
+    ],
+    "score": 3.6964386660797803,
+    "equal": 3.6
+   },
+   {
+    "name": "Surat",
+    "cat": "Ethnic wear",
+    "s": [
+     2,
+     5,
+     2,
+     5,
+     3
+    ],
+    "score": 3.2828700237318373,
+    "equal": 3.4
+   }
+  ],
+  "flipDemand": 0.6673110436789338
+ },
+ "categories": [
+  {
+   "name": "Saree & dress material",
+   "cluster": "Erode, Bhiwandi",
+   "marks": "yyyy",
+   "score": 5
+  },
+  {
+   "name": "Home textiles",
+   "cluster": "Panipat, Solapur",
+   "marks": "yyya",
+   "score": 4.7
+  },
+  {
+   "name": "Moulded plastics",
+   "cluster": "Rajkot, Daman",
+   "marks": "yyya",
+   "score": 4.7
+  },
+  {
+   "name": "Hosiery & innerwear",
+   "cluster": "Tiruppur, Ludhiana",
+   "marks": "yayy",
+   "score": 4.6
+  },
+  {
+   "name": "Imitation jewellery",
+   "cluster": "Rajkot, Coimbatore",
+   "marks": "yyay",
+   "score": 4.5
+  },
+  {
+   "name": "Basic footwear",
+   "cluster": "Agra, Bahadurgarh",
+   "marks": "yyay",
+   "score": 4.5
+  },
+  {
+   "name": "Steel kitchenware",
+   "cluster": "Jagadhri, Wazirpur",
+   "marks": "yaya",
+   "score": 4.3
+  },
+  {
+   "name": "Brass décor",
+   "cluster": "Moradabad",
+   "marks": "yxya",
+   "score": 3.9000000000000004
+  },
+  {
+   "name": "Bags",
+   "cluster": "Nangloi, Kolkata",
+   "marks": "ayay",
+   "score": 3.7
+  },
+  {
+   "name": "Fitted western wear",
+   "cluster": "Gandhi Nagar, Bengaluru",
+   "marks": "ayxy",
+   "score": 3.2
+  },
+  {
+   "name": "Electronics accessories",
+   "cluster": "Import-assembly",
+   "marks": "xyay",
+   "score": 2.9
+  },
+  {
+   "name": "Ethnic wear",
+   "cluster": "Surat",
+   "marks": "xyxy",
+   "score": 2.4
+  }
+ ],
+ "catW": [
+  0.4,
+  0.2,
+  0.25,
+  0.15
+ ],
+ "cohorts": [
+  {
+   "k": "A",
+   "name": "Offline B2B factories",
+   "share": 0.72,
+   "s": [
+    5,
+    5,
+    4,
+    2,
+    5
+   ],
+   "firms": 8400,
+   "score": 4.35,
+   "equal": 4.2
+  },
+  {
+   "k": "C",
+   "name": "Churned from Meesho",
+   "share": 0.09,
+   "s": [
+    4,
+    2,
+    5,
+    5,
+    1
+   ],
+   "firms": 1050,
+   "score": 3.5500000000000003,
+   "equal": 3.4
+  },
+  {
+   "k": "B",
+   "name": "Selling online elsewhere",
+   "share": 0.19,
+   "s": [
+    3,
+    3,
+    2,
+    4,
+    4
+   ],
+   "firms": 2200,
+   "score": 3.05,
+   "equal": 3.2
+  }
+ ],
+ "cohortCrit": [
+  [
+   "Price edge",
+   0.3
+  ],
+  [
+   "Pool size",
+   0.25
+  ],
+  [
+   "Barriers Meesho can fix",
+   0.2
+  ],
+  [
+   "Speed to first order",
+   0.15
+  ],
+  [
+   "New supply",
+   0.1
+  ]
+ ],
+ "rice": [
+  {
+   "name": "Price gate + C2M badge",
+   "stage": "Acquire",
+   "R": 900,
+   "I": 2,
+   "C": 0.9,
+   "E": 2,
+   "y1": 0,
+   "score": 810
+  },
+  {
+   "name": "Health Score + rulebook",
+   "stage": "Scale",
+   "R": 900,
+   "I": 2,
+   "C": 0.85,
+   "E": 3,
+   "y1": 0,
+   "score": 510
+  },
+  {
+   "name": "Cluster co-op onboarding",
+   "stage": "Acquire",
+   "R": 810,
+   "I": 2,
+   "C": 0.85,
+   "E": 3,
+   "y1": 5,
+   "score": 459
+  },
+  {
+   "name": "District Demand Brief",
+   "stage": "Scale",
+   "R": 900,
+   "I": 2,
+   "C": 0.75,
+   "E": 4,
+   "y1": 6,
+   "score": 337.5
+  },
+  {
+   "name": "Prepaid pre-order batches",
+   "stage": "Scale",
+   "R": 765,
+   "I": 3,
+   "C": 0.7,
+   "E": 5,
+   "y1": 0,
+   "score": 321.3
+  },
+  {
+   "name": "Factory Node (partner 3PL)",
+   "stage": "Acquire",
+   "R": 900,
+   "I": 3,
+   "C": 0.8,
+   "E": 8,
+   "y1": 7.8,
+   "score": 270
+  },
+  {
+   "name": "Batch prepayment (NBFC)",
+   "stage": "Scale",
+   "R": 675,
+   "I": 2,
+   "C": 0.7,
+   "E": 4,
+   "y1": 0.2,
+   "score": 236.24999999999997
+  },
+  {
+   "name": "Returns firewall pool",
+   "stage": "Acquire",
+   "R": 630,
+   "I": 3,
+   "C": 0.65,
+   "E": 6,
+   "y1": 3,
+   "score": 204.75
+  }
+ ],
+ "exp": {
+  "sellers": 62,
+  "days": 28,
+  "se": 0.016,
+  "mde": 0.0448,
+  "fund": 0.12
+ },
+ "td": [
+  {
+   "q": "men cotton briefs pack of 3",
+   "n": 56,
+   "median": 322.5,
+   "dw": 209,
+   "p25": 230,
+   "p75": 443,
+   "min": 149,
+   "max": 1661,
+   "rho": -0.53,
+   "top10": 219.5,
+   "reviews": 41723,
+   "overstate": 0.5430622009569377
+  },
+  {
+   "q": "cotton ankle socks pack of 5",
+   "n": 56,
+   "median": 133,
+   "dw": 128,
+   "p25": 112,
+   "p75": 164,
+   "min": 92,
+   "max": 282,
+   "rho": -0.19,
+   "top10": 133,
+   "reviews": 62427,
+   "overstate": 0.0390625
+  },
+  {
+   "q": "cotton double bedsheet with 2 pillow covers",
+   "n": 56,
+   "median": 404,
+   "dw": 325,
+   "p25": 335,
+   "p75": 656,
+   "min": 269,
+   "max": 1297,
+   "rho": -0.23,
+   "top10": 350.5,
+   "reviews": 7587,
+   "overstate": 0.24307692307692297
+  },
+  {
+   "q": "cotton bath towel",
+   "n": 56,
+   "median": 234,
+   "dw": 227,
+   "p25": 189,
+   "p75": 301,
+   "min": 42,
+   "max": 467,
+   "rho": -0.13,
+   "top10": 231.5,
+   "reviews": 55620,
+   "overstate": 0.03083700440528636
+  },
+  {
+   "q": "stainless steel glass set of 6",
+   "n": 55,
+   "median": 415,
+   "dw": 262,
+   "p25": 264,
+   "p75": 565,
+   "min": 170,
+   "max": 961,
+   "rho": -0.25,
+   "top10": 255.5,
+   "reviews": 13857,
+   "overstate": 0.583969465648855
+  }
+ ],
+ "briefsRaw": [
+  {
+   "text": "Classy Men Briefs ₹323 4.1 176 Reviews",
+   "price": 323,
+   "mrp": null,
+   "rating": 4.1,
+   "reviews": 176
+  },
+  {
+   "text": "+2 More Unique Men Briefs ₹314 4.0 8414 Reviews",
+   "price": 314,
+   "mrp": null,
+   "rating": 4,
+   "reviews": 8414
+  },
+  {
+   "text": "+1 More Attractive Men Briefs ₹392 4.1 1282 Reviews",
+   "price": 392,
+   "mrp": null,
+   "rating": 4.1,
+   "reviews": 1282
+  },
+  {
+   "text": "Amazing Men Briefs ₹323 4.3 192 Reviews",
+   "price": 323,
+   "mrp": null,
+   "rating": 4.3,
+   "reviews": 192
+  },
+  {
+   "text": "Rupa Jon Men's Cotton Multicolor Plain/Solid Trunk/Drawer - Pack of 4 ₹474 ₹622 24% off 3.",
+   "price": 474,
+   "mrp": 622,
+   "rating": 3.8,
+   "reviews": 12
+  },
+  {
+   "text": "Royal Men Briefs ₹309 ₹324 5% off 4.2 128 Reviews",
+   "price": 309,
+   "mrp": 324,
+   "rating": 4.2,
+   "reviews": 128
+  },
+  {
+   "text": "Wonderful Men Briefs ₹153 ₹163 6% off 4.2 937 Reviews",
+   "price": 153,
+   "mrp": 163,
+   "rating": 4.2,
+   "reviews": 937
+  },
+  {
+   "text": "Trunks ₹280 4.4 5 Reviews",
+   "price": 280,
+   "mrp": null,
+   "rating": 4.4,
+   "reviews": 5
+  },
+  {
+   "text": "+6 More 22h : 43m : 23s Dollar Lehar Super Combed Cotton Mens Brief -Pack of 10- Actual Co",
+   "price": 421,
+   "mrp": 625,
+   "rating": 4.2,
+   "reviews": 943
+  },
+  {
+   "text": "Royal Men Briefs ₹186 3.9 1711 Reviews",
+   "price": 186,
+   "mrp": null,
+   "rating": 3.9,
+   "reviews": 1711
+  },
+  {
+   "text": "Modern Men Briefs ₹217 4.0 266 Reviews",
+   "price": 217,
+   "mrp": null,
+   "rating": 4,
+   "reviews": 266
+  },
+  {
+   "text": "Wonderful Men Briefs ₹358 ₹408 12% off 4.3 Supplier",
+   "price": 358,
+   "mrp": 408,
+   "rating": 4.3,
+   "reviews": 0
+  },
+  {
+   "text": "+5 More Graceful Men Briefs ₹230 4.2 298 Reviews",
+   "price": 230,
+   "mrp": null,
+   "rating": 4.2,
+   "reviews": 298
+  },
+  {
+   "text": "Modern Men Briefs ₹213 ₹223 4% off 4.9 7 Reviews",
+   "price": 213,
+   "mrp": 223,
+   "rating": 4.9,
+   "reviews": 7
+  },
+  {
+   "text": "+8 More New Men Briefs ₹288 4.1 Supplier",
+   "price": 288,
+   "mrp": null,
+   "rating": 4.1,
+   "reviews": 0
+  },
+  {
+   "text": "Useful Men Briefs ₹238 4.0 415 Reviews",
+   "price": 238,
+   "mrp": null,
+   "rating": 4,
+   "reviews": 415
+  },
+  {
+   "text": "Useful Men Briefs ₹323 3.9 9 Reviews",
+   "price": 323,
+   "mrp": null,
+   "rating": 3.9,
+   "reviews": 9
+  },
+  {
+   "text": "+1 More 22h : 43m : 23s Useful Men Briefs ₹191 ₹450 58% off 3.8 5867 Reviews",
+   "price": 191,
+   "mrp": 450,
+   "rating": 3.8,
+   "reviews": 5867
+  },
+  {
+   "text": "+4 More Cupatex Men's Briefs ₹448 4.0 1197 Reviews",
+   "price": 448,
+   "mrp": null,
+   "rating": 4,
+   "reviews": 1197
+  },
+  {
+   "text": "Amazing Men Briefs ₹373 4.1 Supplier",
+   "price": 373,
+   "mrp": null,
+   "rating": 4.1,
+   "reviews": 0
+  },
+  {
+   "text": "+1 More Modern Men Briefs ₹1,368 ₹1,820 25% off 4.3 Supplier",
+   "price": 1368,
+   "mrp": 1820,
+   "rating": 4.3,
+   "reviews": 0
+  },
+  {
+   "text": "Wonderful Men Briefs ₹220 ₹226 3% off 4.2 Supplier",
+   "price": 220,
+   "mrp": 226,
+   "rating": 4.2,
+   "reviews": 0
+  },
+  {
+   "text": "22h : 43m : 23s Dollar Bigboss Men's Brief ₹591 ₹954 38% off 4.0 66 Reviews",
+   "price": 591,
+   "mrp": 954,
+   "rating": 4,
+   "reviews": 66
+  },
+  {
+   "text": "Amazing Men Briefs ₹674 ₹890 24% off 4.3 Supplier",
+   "price": 674,
+   "mrp": 890,
+   "rating": 4.3,
+   "reviews": 0
+  },
+  {
+   "text": "Royal Men Briefs ₹149 ₹164 9% off 3.8 270 Reviews",
+   "price": 149,
+   "mrp": 164,
+   "rating": 3.8,
+   "reviews": 270
+  },
+  {
+   "text": "+3 More 22h : 43m : 23s Dollar Bigboss Men's Brief ₹362 ₹507 29% off 4.3 775 Reviews",
+   "price": 362,
+   "mrp": 507,
+   "rating": 4.3,
+   "reviews": 775
+  },
+  {
+   "text": "Trunks ₹230 3.9 Supplier",
+   "price": 230,
+   "mrp": null,
+   "rating": 3.9,
+   "reviews": 0
+  },
+  {
+   "text": "Classic Men Briefs ₹321 4.1 Supplier",
+   "price": 321,
+   "mrp": null,
+   "rating": 4.1,
+   "reviews": 0
+  },
+  {
+   "text": "Unique Men Briefs ₹1,541 ₹2,020 24% off 4.3 Supplier",
+   "price": 1541,
+   "mrp": 2020,
+   "rating": 4.3,
+   "reviews": 0
+  },
+  {
+   "text": "Useful Men Briefs ₹252 4.0 342 Reviews",
+   "price": 252,
+   "mrp": null,
+   "rating": 4,
+   "reviews": 342
+  },
+  {
+   "text": "Amazing Men Briefs ₹1,661 ₹2,260 27% off 4.3 Supplier",
+   "price": 1661,
+   "mrp": 2260,
+   "rating": 4.3,
+   "reviews": 0
+  },
+  {
+   "text": "Trendy Men Boxers ₹441 3.6 Supplier",
+   "price": 441,
+   "mrp": null,
+   "rating": 3.6,
+   "reviews": 0
+  },
+  {
+   "text": "Useful Men Briefs ₹829 ₹1,130 27% off 4.3 Supplier",
+   "price": 829,
+   "mrp": 1130,
+   "rating": 4.3,
+   "reviews": 0
+  },
+  {
+   "text": "Trunks ₹180 3.7 67 Reviews",
+   "price": 180,
+   "mrp": null,
+   "rating": 3.7,
+   "reviews": 67
+  },
+  {
+   "text": "+1 More Useful Men Briefs ₹230 4.0 2100 Reviews",
+   "price": 230,
+   "mrp": null,
+   "rating": 4,
+   "reviews": 2100
+  },
+  {
+   "text": "New Men Briefs ₹186 3.9 9283 Reviews",
+   "price": 186,
+   "mrp": null,
+   "rating": 3.9,
+   "reviews": 9283
+  },
+  {
+   "text": "22h : 43m : 23s Dollar Bigboss Men's Brief ₹427 ₹636 33% off 4.2 39 Reviews",
+   "price": 427,
+   "mrp": 636,
+   "rating": 4.2,
+   "reviews": 39
+  },
+  {
+   "text": "Comfy Women Briefs ₹219 4.3 Supplier",
+   "price": 219,
+   "mrp": null,
+   "rating": 4.3,
+   "reviews": 0
+  },
+  {
+   "text": "Unique Men Briefs ₹233 3.9 21 Reviews",
+   "price": 233,
+   "mrp": null,
+   "rating": 3.9,
+   "reviews": 21
+  },
+  {
+   "text": "New Men Briefs ₹652 ₹858 24% off 4.3 Supplier",
+   "price": 652,
+   "mrp": 858,
+   "rating": 4.3,
+   "reviews": 0
+  },
+  {
+   "text": "+2 More Stylus Women Briefs ₹209 3.9 6718 Reviews",
+   "price": 209,
+   "mrp": null,
+   "rating": 3.9,
+   "reviews": 6718
+  },
+  {
+   "text": "+1 More Unique Men Briefs ₹367 ₹406 10% off 4.3 Supplier",
+   "price": 367,
+   "mrp": 406,
+   "rating": 4.3,
+   "reviews": 0
+  },
+  {
+   "text": "Unique Men Trunks ₹270 4.0 Supplier",
+   "price": 270,
+   "mrp": null,
+   "rating": 4,
+   "reviews": 0
+  },
+  {
+   "text": "Fancy Men Briefs ₹322 4.0 Supplier",
+   "price": 322,
+   "mrp": null,
+   "rating": 4,
+   "reviews": 0
+  },
+  {
+   "text": "Classic Men Briefs ₹243 3.7 6 Reviews",
+   "price": 243,
+   "mrp": null,
+   "rating": 3.7,
+   "reviews": 6
+  },
+  {
+   "text": "Classic Men Briefs ₹463 4.3 Supplier",
+   "price": 463,
+   "mrp": null,
+   "rating": 4.3,
+   "reviews": 0
+  },
+  {
+   "text": "Royal Men Briefs ₹211 3.8 22 Reviews",
+   "price": 211,
+   "mrp": null,
+   "rating": 3.8,
+   "reviews": 22
+  },
+  {
+   "text": "Attractive Men Briefs ₹361 ₹414 13% off 4.3 Supplier",
+   "price": 361,
+   "mrp": 414,
+   "rating": 4.3,
+   "reviews": 0
+  },
+  {
+   "text": "Attractive Men Briefs ₹363 4.3 Supplier",
+   "price": 363,
+   "mrp": null,
+   "rating": 4.3,
+   "reviews": 0
+  },
+  {
+   "text": "+3 More Dollar Lehar | Force NXT Men's Briefs ₹625 Delivery ₹60 ₹70 4.1 Supplier",
+   "price": 625,
+   "mrp": 60,
+   "rating": 4.1,
+   "reviews": 0
+  },
+  {
+   "text": "Graceful Men Briefs ₹555 4.3 Supplier",
+   "price": 555,
+   "mrp": null,
+   "rating": 4.3,
+   "reviews": 0
+  },
+  {
+   "text": "+2 More Modern Men Briefs ₹599 ₹665 10% off 4.3 Supplier",
+   "price": 599,
+   "mrp": 665,
+   "rating": 4.3,
+   "reviews": 0
+  },
+  {
+   "text": "+2 More Sassy Women Briefs ₹354 ₹393 10% off 4.3 Supplier",
+   "price": 354,
+   "mrp": 393,
+   "rating": 4.3,
+   "reviews": 0
+  },
+  {
+   "text": "Fancy Men Briefs ₹253 3.4 14 Reviews",
+   "price": 253,
+   "mrp": null,
+   "rating": 3.4,
+   "reviews": 14
+  },
+  {
+   "text": "Royal Men Briefs ₹203 3.8 141 Reviews",
+   "price": 203,
+   "mrp": null,
+   "rating": 3.8,
+   "reviews": 141
+  },
+  {
+   "text": "Fancy Men Briefs ₹533 ₹625 15% off 4.3 Supplier",
+   "price": 533,
+   "mrp": 625,
+   "rating": 4.3,
+   "reviews": 0
+  }
+ ],
+ "tdAll": 279,
+ "briefsBands": [
+  {
+   "label": "< ₹200",
+   "listings": 6,
+   "listingShare": 0.10714285714285714,
+   "reviewShare": 0.4346523500227692
+  },
+  {
+   "label": "₹200–249",
+   "listings": 13,
+   "listingShare": 0.23214285714285715,
+   "reviewShare": 0.23953215252977975
+  },
+  {
+   "label": "₹250–299",
+   "listings": 5,
+   "listingShare": 0.08928571428571429,
+   "reviewShare": 0.008652302087577595
+  },
+  {
+   "label": "₹300–399",
+   "listings": 15,
+   "listingShare": 0.26785714285714285,
+   "reviewShare": 0.2630683316156556
+  },
+  {
+   "label": "₹400–599",
+   "listings": 10,
+   "listingShare": 0.17857142857142858,
+   "reviewShare": 0.05409486374421782
+  },
+  {
+   "label": "₹600+",
+   "listings": 7,
+   "listingShare": 0.125,
+   "reviewShare": 0
+  }
+ ],
+ "problemSize": 1048.8879541511117,
+ "gates": {
+  "d30": 0,
+  "d90": 7.3,
+  "y1": 22.17875,
+  "rest": 14.87875
+ }
+}
