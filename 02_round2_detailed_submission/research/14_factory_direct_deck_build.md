@@ -1,25 +1,25 @@
 # The Factory Direct deck: storyline, model, new research, audit
 
-The 14-page Round 2 deck (`deck/meesho_dice_round2.pptx`), built on 2 Oct 2026 in the csuite-case-deck format and modelled on the 15-page DICE winner (IIM Mumbai, self-pickup). It replaces the 11-page v03 deck, which is archived in `deck/old/`.
+The 14-page Round 2 deck (`deck/meesho_dice_round2.pptx`), built on 2 Oct 2026 in the csuite-case-deck format and rebuilt the same day to follow the page flow and density of the 15-page DICE winner (IIM Mumbai, self-pickup). Earlier versions are archived in `deck/old/`: v03 is the 11-page deck, and v04 is the first 14-page version.
 
 ## Structure
 
-Cover, then 10 content pages (one navigation tab each), then 3 appendices. Every content page has an action headline with a number, one primary exhibit, and a decision band (decision, owner, KPI).
+The page flow copies the IIM Mumbai winner tab for tab, with "Customer" read as "Manufacturer" and "Location" as "Cluster". Our closer replaces their thank-you page. Every content page has an action headline with a number, dense panels, and a decision band (decision, owner, KPI).
 
-| Page | Tab | Headline (what is true) | Primary exhibit |
-|---|---|---|---|
-| 1 | Cover | Governing thought: screen on price, not size; make only what is sold; 1,400 factories, ₹1,995 cr NMV 8–12% below market, NPV ₹75 cr on ₹22.2 cr Year-1 cash | Brand cover |
-| 2 | Primary Research | Demand follows price and 35% of MSMEs want online sales, but returns and know-how push out those who try | Survey trio (ICRIER n = 2,365; teardown n = 279; buyer survey), stakeholder voice |
-| 3 | Manufacturer Segments | Start with offline B2B factories (8,400 firms, 4.35/5) in hosiery and home textiles, piloting in Tiruppur and Panipat | Cohort scoring, category screen, cluster AHP (CR 0.016) |
-| 4 | Market Sizing | 11,645 manufacturers can carry a real gap; 1,400 by Year 4 put ₹1,995 cr of NMV 8–12% below market | Funnel, opportunity ladder, three sanity checks |
-| 5 | Price Truth | The price buyers pay sits 3–37% below the listing median, so the gate uses demand-weighted prices | Live teardown range chart |
-| 6 | Factory Direct | Factory Direct cuts a factory's lowest viable price from ₹194 to ₹180 | Six-step flow, scenario column table |
-| 7 | Global Benchmarks | Factory-direct works when platforms supply demand data and logistics; Shein Brazil kept 1 of 336 factories | Six case cards, RICE |
-| 8 | Sustainable Scale-up | A ₹3,750 visibility grant fixes the cold start; rules handle 90 of 93 interventions | Manufacturer journey grid |
-| 9 | Metrics & KPIs | Nine funnel KPIs and a daily Health Score decide by Day 30: fund, tighten or stop | KPI tree |
-| 10 | Business Case | ₹75 cr NPV at 12%, payback in Year 3; positive down to 45% of planned yield | 5-year table, tornado, scenarios |
-| 11 | Roadmap & Risks | Three gated phases; Year 1 needs ₹22.2 cr of capped cash | Phase × workstream grid, risks, the ask |
-| 12–14 | Appendices A–C | Prototype walkthrough · sources, method, assumption register · benchmarks, compliance, model workings | |
+| Page | Tab | What the page carries |
+|---|---|---|
+| 1 | Cover | Governing thought: screen on price, not size; make only what is sold; 1,400 factories, ₹1,995 cr NMV 8–12% below market, NPV ₹75 cr on ₹22.2 cr Year-1 cash |
+| 2 | Primary Research | Objective; as-is vs to-be chain; problem size (≈ ₹1,049 cr a year of wholesaler mark-up); 5 challenges; three data sets (ICRIER n = 2,365, teardown n = 279, buyer survey); 24 interviews (barrier grid); stakeholders' voice |
+| 3 | Manufacturer Segmentation | 12-category screen; TAM → SAM → SOM; 4 manufacturer personas with cohort scores; least likely to adopt; recommendation |
+| 4 | Awareness & Strategy | 6-frame storyboard of one factory owner, with the lever at each step; rationale; ATL/TTL/BTL channels; cluster camps; 4P of the offer; bottlenecks |
+| 5 | Benchmarking & Comparison | 3 operating models as process ribbons (who does what, result); symbol comparison; costs per model |
+| 6 | Best Practices | 5 platforms × 5 dimensions; what we copy; pitfalls; RICE; benefits analysis |
+| 7 | Manufacturer Journey | 7-stage journey grid (action, touchpoint, feeling, pain point, intervention, KPI); incentives and nudges; Health Score; rulebook; prototype screens |
+| 8 | Cluster Criteria | Selection criteria; AHP matrix (CR 0.016); cluster scoring; live teardown chart; price gate two ways (listing vs demand-weighted median) with prototype verdicts |
+| 9 | Unit Economics | Scenario column table per 3-pack (per 100 shipped); one 1,000-pack batch stage by stage; where the ₹45 per pack goes; assumptions strip |
+| 10 | Financial Analysis | 5-year table with discount factors and PV; NPV box; opportunity ladder; benefit vs cost chart; tornado; break-even and scenarios; Round 1 reconciliation |
+| 11 | Roadmap & Risks | Phase × workstream grid with gates; KPI targets by phase; risk register; the ask |
+| 12–14 | Appendices A–C | Prototype walkthrough · sources, method, assumption register · detailed benchmarks, compliance, model workings |
 
 ## What the model says (deck/source/model.mjs)
 

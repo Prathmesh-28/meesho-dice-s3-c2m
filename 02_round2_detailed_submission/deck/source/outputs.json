@@ -72,7 +72,9 @@
     7.434782608695651,
     11.659090909090908
    ],
-   "meesho": 3.1726950561323775
+   "meesho": 3.1726950561323775,
+   "ordersPerDay": 15078.638638919341,
+   "shareOfOrders": 0.0018926291257126346
   },
   {
    "stage": "Year 1 exit",
@@ -85,7 +87,9 @@
     55.76086956521739,
     87.44318181818183
    ],
-   "meesho": 23.79521292099283
+   "meesho": 23.79521292099283,
+   "ordersPerDay": 113089.78979189506,
+   "shareOfOrders": 0.01419471844284476
   },
   {
    "stage": "Year 4 exit",
@@ -98,7 +102,9 @@
     173.4782608695652,
     272.0454545454545
    ],
-   "meesho": 74.02955130975548
+   "meesho": 74.02955130975548,
+   "ordersPerDay": 351834.90157478466,
+   "shareOfOrders": 0.04416134626662814
   }
  ],
  "c2m": {
@@ -198,7 +204,35 @@
   "rtoPrepaid": 0.04550000000000001,
   "preorderFactoryShare": 10,
   "preorderMeeshoShare": 0,
-  "c": 80
+  "c": 80,
+  "preorderPrice": 182.28,
+  "batch": {
+   "confirmed": 1000,
+   "make": 1150,
+   "failed": 45.500000000000014,
+   "delivered": 954.5,
+   "returns": 76.36,
+   "kept": 878.14,
+   "price": 182.28,
+   "value": 182280,
+   "advance": 54684,
+   "revenue": 160067.3592,
+   "fees": {
+    "forward": 40089,
+    "node": 20000,
+    "returns": 11454
+   },
+   "feeTotal": 71543,
+   "payout": 88524.3592,
+   "balance": 33840.359200000006
+  },
+  "split": {
+   "pool": 45.039894460385085,
+   "costSaving": 36.54044855921887,
+   "resellerMargin": 8.499445901166212,
+   "buyer": 26.72,
+   "factory": 18.319894460385086
+  }
  },
  "fin": {
   "P": {
@@ -1232,6 +1266,15 @@
   }
  ],
  "tdAll": 279,
+ "gateApproach": {
+  "n": 56,
+  "listMedian": 322.5,
+  "listGate": 296.7,
+  "listClear": 24,
+  "dwMedian": 209,
+  "dwGate": 192.28,
+  "dwClear": 6
+ },
  "briefsBands": [
   {
    "label": "< ₹200",

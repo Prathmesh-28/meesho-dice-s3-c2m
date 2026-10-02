@@ -165,6 +165,18 @@ const batchSaving = cols[2].floor - cols[3].floor; // ₹ per pack the batch fre
 const b2bMarginPerPack = exFactory - c; // ₹7.9 per pack selling ex-factory
 const directMarginPerPack = gate - A.A32.value - cols[3].cost; // pre-order sold at the gate price less the ₹10 pre-order discount
 const preorderFactoryShare = Math.min(A.A32.value, batchSaving);
+const preorderPrice = gate - A.A32.value; // ₹182: gate price less the ₹10 pre-order discount
+// Worked example for page 6: one prepaid batch of 1,000 confirmed packs through the Factory Direct flow
+const batch = (() => {
+  const confirmed = 1000, make = Math.round(confirmed * 1.15), L = A.A28.value;
+  const failed = confirmed * rtoPrepaid, delivered = confirmed - failed, returns = delivered * A.A25.value.ret, kept = delivered - returns;
+  const value = confirmed * preorderPrice, advance = value * A.A20.value.advance, revenue = kept * preorderPrice;
+  const fees = { forward: delivered * L.nodeFwd, node: confirmed * L.nodeFee, returns: returns * A.A26.value };
+  const feeTotal = fees.forward + fees.node + fees.returns, payout = revenue - feeTotal;
+  return { confirmed, make, failed, delivered, returns, kept, price: preorderPrice, value, advance, revenue, fees, feeTotal, payout, balance: payout - advance };
+})();
+// Where the money per pack goes: proposed route (pre-order) vs a reseller selling at the market price
+const split = { pool: mkt - cols[3].cost, costSaving: cols[0].cost - cols[3].cost, resellerMargin: mkt - cols[0].cost, buyer: mkt - preorderPrice, factory: preorderPrice - cols[3].cost };
 const preorderMeeshoShare = A.A32.value - preorderFactoryShare; // per pre-order, funded from Meesho's RTO saving
 
 // ---------------------------------------------------------------- Meesho 5-year case
@@ -305,6 +317,10 @@ const td = TEARDOWN.map((t) => ({
 }));
 const briefsRaw = RAW.results.find((r) => r.q === 'men cotton briefs pack of 3').items.filter((x) => x.price && x.reviews != null);
 const tdAll = RAW.results.reduce((s, r) => s + r.items.length, 0);
+// Price gate, two ways (page 8): listing median vs demand-weighted median, briefs 3-pack
+const briefsPrices = briefsRaw.map((x) => x.price);
+const gateApproach = { n: briefsPrices.length, listMedian: briefs.median, listGate: briefs.median * 0.92, listClear: briefsPrices.filter((p) => p <= briefs.median * 0.92).length,
+  dwMedian: mkt, dwGate: gate, dwClear: briefsPrices.filter((p) => p <= gate).length };
 const bands = [[0, 200, '< ₹200'], [200, 250, '₹200–249'], [250, 300, '₹250–299'], [300, 400, '₹300–399'], [400, 600, '₹400–599'], [600, 1e9, '₹600+']];
 const totRev = sum(briefsRaw.map((x) => x.reviews));
 const briefsBands = bands.map(([lo, hi, label]) => {
@@ -323,14 +339,14 @@ export const OUT = {
   ].map((r) => {
     const nmv = runRate(r.sellers);
     const orders = nmv * 1e7 / c2mNmvPerOrder;
-    return { ...r, nmv, shareFy26: nmv / SP.fy26Nmv, save: A.A7.value.map((g) => nmv * g / (1 - g)), meesho: orders * (A.A8.value * SP.contribPerOrder + rtoSavingPerOrder) / 1e7 };
+    return { ...r, nmv, shareFy26: nmv / SP.fy26Nmv, save: A.A7.value.map((g) => nmv * g / (1 - g)), meesho: orders * (A.A8.value * SP.contribPerOrder + rtoSavingPerOrder) / 1e7, ordersPerDay: orders / 365, shareOfOrders: orders / 365 / (SP.ordersQ1 / 91) };
   }),
   c2m: { gmvPerOrder: c2mGmvPerOrder, nmvGmv: c2mNmvGmv, nmvPerOrder: c2mNmvPerOrder, prepaidShift, failDrop, rtoSavingPerOrder, ordersPerDay, keptPerDay, shareOfOutput, exFactory },
-  unit: { mkt, gate, cols, ceilings, batchSaving, b2bMarginPerPack, directMarginPerPack, resellerCogs, rtoPrepaid, preorderFactoryShare, preorderMeeshoShare, c },
+  unit: { mkt, gate, cols, ceilings, batchSaving, b2bMarginPerPack, directMarginPerPack, resellerCogs, rtoPrepaid, preorderFactoryShare, preorderMeeshoShare, c, preorderPrice, batch, split },
   fin: base, tornado, be, scen, round1, allIncremental,
   ahp: { crit, M, gm, w, lam, CR, clusters, flipDemand },
   categories, catW, cohorts, cohortCrit, rice, exp,
-  td, briefsRaw, tdAll, briefsBands, problemSize, gates: { ...gates, y1: base.cashY1, rest: base.cashY1 - gates.d90 },
+  td, briefsRaw, tdAll, gateApproach, briefsBands, problemSize, gates: { ...gates, y1: base.cashY1, rest: base.cashY1 - gates.d90 },
 };
 
 if (process.argv[1] && process.argv[1].endsWith('model.mjs')) {

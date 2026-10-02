@@ -1,11 +1,12 @@
 # Deck generator
 
-The current deck, `../meesho_dice_round2.pptx`, is the 14-page **Factory Direct** deck: a cover, 10 content pages (one per tab) and 3 appendices. It is built from two files:
+The current deck, `../meesho_dice_round2.pptx`, is the 14-page **Factory Direct** deck: a cover, 10 content pages and 3 appendices. Its tabs follow the 15-page IIM Mumbai DICE winner: Primary Research, Manufacturer Segmentation, Awareness & Strategy, Benchmarking & Comparison, Best Practices, Manufacturer Journey, Cluster Criteria, Unit Economics, Financial Analysis, and Roadmap & Risks, which takes the place of their thank-you page. It is built from these files:
 
 | File | What it does |
 |---|---|
 | `model.mjs` | The master model. It holds the source list `[S#]`, the assumption register `[A#]` and every calculation: sizing, the manufacturer's unit economics, Meesho's 5-year case, sensitivity, break-even, AHP, cohort scoring and RICE. `node model.mjs` prints the checks and writes `outputs.json`. |
-| `build_fd.mjs` | Lays out the 14 pages and reads every number from `model.mjs`. No number is typed onto a slide by hand. |
+| `proto.mjs` | Runs the prototype's own model (`../../prototype/src`) and exports its results (price-screen verdicts, Day-30 lift, Health Score counts), so the deck and the live app agree. |
+| `build_fd.mjs` | Lays out the 14 pages and reads every number from `model.mjs` and `proto.mjs`. No number is typed onto a slide by hand. |
 | `data/` | The live meesho.com teardown of 2 Oct 2026 (279 listings, raw and summary). Add `primary_research.json` here when the buyer survey and interview notes come in (format below). |
 
 ```bash
