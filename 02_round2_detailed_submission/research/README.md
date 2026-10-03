@@ -18,6 +18,7 @@ All research and analysis done for the Round 2 detailed submission (26 Sep – 1
 | [12_winning_deck_playbook.md](12_winning_deck_playbook.md) | **Playbook:** 12 patterns from four real winning decks and IIT Bombay's compendium, how ours compares, the build process, and a slide-by-slide blueprint |
 | [13_survey_and_interview_kit.md](13_survey_and_interview_kit.md) | Buyer survey (12 questions), manufacturer pulse (8), interview-notes template, and how the deck uses them |
 | [14_factory_direct_deck_build.md](14_factory_direct_deck_build.md) | **Current deck:** the 14-page Factory Direct storyline, what the master model says, new research, audit results, open items |
+| [15_global_c2m_benchmarks_alibaba_and_peers.md](15_global_c2m_benchmarks_alibaba_and_peers.md) | **Global benchmarks:** Alibaba's six factory-direct programmes (Taobao C2M, Taobao Deals, 1688, Xunxi, TMIC, AliExpress Choice), Pinduoduo/Temu, JD, Shein (incl. Shein India with Reliance), Douyin, and India's players (Flipkart, Walmart Vriddhi, Amazon, ONDC, Udaan, IndiaMART); what worked, what failed, what to add to the deck |
 
 ## Open items before 4 Oct
 

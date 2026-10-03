@@ -107,3 +107,20 @@ Meesho's own pricing pages block automated reads: confirm from a live supplier p
 | A synthetic "₹245 market median" for briefs (prototype) as a market fact | Prototype data is generated; the live demand-weighted median is ₹209 |
 | "Temu targets 60–80% of US GMV semi-managed" | Not supported by the source re-checked; use 20% of US GMV in Q3 2024 |
 
+## Added 3 Oct 2026: global factory-direct benchmarks (details and URLs in 15_global_c2m_benchmarks_alibaba_and_peers.md)
+
+| Fact | Source |
+|---|---|
+| Taobao Deals annual buyers: 100 mn+ (Dec 2020), 240 mn+ (Sep 2021), 280 mn (Dec 2021), 300 mn+ (Mar 2022); paid GMV of M2C products +40% (Jun-22 quarter), +35% (Dec-22 quarter) | Alibaba quarterly results (SEC 6-K; alibabagroup.com) |
+| Taobao Deals cut user-acquisition spend in 2022 after reaching ~300 mn buyers; 70–80% overlap with Pinduoduo buyers | TechNode, 14 Sep 2022 |
+| 1688: RMB 800 bn+ transactions (2023); in 174 of China's 192 top industrial belts; 100 mn+ annual buyers (Feb 2025) | KrASIA, 27 Feb 2024; Baidu Baike |
+| Xunxi factory: MOQ 100 pieces, 7-day production, lead time −75%, inventory need −30%; ~200 merchants served (Nov 2020) | KrASIA, 20 Nov 2020 |
+| Pinduoduo New Brand Initiative: 1,500+ factories, 460 mn orders, 2 mn+ custom items a day (Oct 2020); target 5,000 partners and 100 industrial belts by 2025 | Pandaily, 26 Oct 2020 |
+| Pinduoduo Xinpinmu in-house brand: ¥15 bn initial; ¥100 bn over 3 years (26 Mar 2026) | China Daily |
+| Temu US: semi-managed ~70% of business; semi-managed margin ~+4% vs fully managed ~−5% (Dec 2025; analyst estimates) | Tech Buzz China, Temu Watch 11 |
+| JD: ¥200 bn to buy export goods for domestic sale (Apr 2025); Taobao/Tmall to help ≥ 10,000 exporters; 20,000+ exporters listed by late May 2025 | China Daily, 26 May 2025 |
+| Shein: first batches ~100–200 units; 7,500 contract manufacturers (IPO filing) | Sheng Lu Fashion, 8 Aug 2026 |
+| Shein India (Reliance): 150 → 1,000 Indian manufacturers; 100-unit first batches; 12,000 styles (Jun 2025) | Apparel Resources, 9 Jun 2025 |
+| Walmart Vriddhi: 70,000+ MSMEs trained since 2019; +100,000 by 2028 | Walmart, 19 Jun 2025 |
+| Douyin 2024: industrial-belt products sold 15.4 bn orders (+39%), 63% via livestream; 830 belts each > ¥100 mn | Douyin report via press |
+
