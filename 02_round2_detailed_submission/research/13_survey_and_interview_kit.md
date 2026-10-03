@@ -33,6 +33,8 @@ For the Factory Direct deck (page 2 "Research" and the model's adoption and pric
 
 ## B. Manufacturer pulse (5 minutes, for factory owners you can reach: Round 1 interviewees, their peers, cluster associations)
 
+The full version is now a Google Form with branching by group: [16_manufacturer_survey_google_form.md](16_manufacturer_survey_google_form.md). It keeps these answer options, so pulse responses can be merged.
+
 | # | Question | Options |
 |---|---|---|
 | 1 | Cluster and product | Free text |
