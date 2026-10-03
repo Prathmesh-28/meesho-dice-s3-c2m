@@ -2,11 +2,12 @@
 
 **Answers:** What does the product look like, screen by screen?
 
-**On the slide:** All eight phone screens of the manufacturer app, two per tab (Price check, Demand Brief, Batch, WhatsApp). Coral markers on each screen match the numbered lines under it; each step ends with the barrier it removes. Bottom row: control-tower thumbnails, what the prototype runs on, QR and live link.
+**On the slide:** All eight phone screens of the manufacturer app, two per tab (Price check, Demand Brief, Batch, WhatsApp). Coral markers on each screen match the numbered lines under it; each step ends with the barrier it removes. Bottom row: one KPI per step (the pilot target each screen is judged on), a 60-second live demo (at a ₹105 making cost, Ship myself misses the 8% badge and the Factory Node clears it), and the QR with the live link and prototype stats.
 
 ## Changed on 4 Oct 2026
 - Rebuilt from scratch. It used to show four desktop screenshots and three phones with "supports p…" pointers.
 - Screens captured from the live site on 4 Oct 2026 by `_tools/capture_phone.mjs` into `deck/source/assets/phone/` (the PNGs plus `phone_screens.json` with marker positions).
+- Bottom row redone (v07 saved first): the control-tower thumbnails and the stats panel gave way to the KPI strip and the demo; the stats moved into the live-link panel. The demo values come from the prototype's price check, and the build fails if ₹105 stops showing the node clearing the gate.
 - Numbers in the text come from the prototype's own code (`proto.mjs` → `PROTO.maker`), so they match the screens.
 
 ## Open

@@ -23,6 +23,12 @@ const check = priceCheck({ unitCost: PERSONA.unitCost, category: PERSONA.categor
 const brief = demandBrief({ typeId: PERSONA.type, marketMedian: check.marketMedian });
 const batch = batchPlan({ brief, listingPrice: check.suggested, minViablePrice: check.floor });
 const cash = cashCycle();
+// Slide 13's "try it" demo: a making cost where shipping yourself misses the 8% badge and the Factory Node clears it.
+const demoCost = 105;
+const demo = Object.fromEntries(['self', 'node'].map((mode) => {
+  const r = priceCheck({ unitCost: demoCost, category: PERSONA.category, typeId: PERSONA.type, mode, margin: ECONOMICS.targetMarginB2B, medians: pti.medians });
+  return [mode, { gap: r.gap, qualifies: r.qualifies }];
+}));
 
 export const PROTO = {
   sellers: market.sellers.length,
@@ -37,7 +43,7 @@ export const PROTO = {
     districts: brief.rows.length, weekly: brief.weeklyTotal, suggested: brief.suggested, newSellerShare: ECONOMICS.newSellerShare,
     preOrders: batch.preOrders, make: batch.make, buffer: ECONOMICS.batchBuffer, discount: batch.discount, prepaid: batch.prepayment,
     advanceShare: ECONOMICS.prepaymentShare, windowDays: batch.windowDaysLeft, settleDays: ECONOMICS.settlementDays,
-    b2bDays: cash.b2bDays, batchDays: cash.batchDays,
+    b2bDays: cash.b2bDays, batchDays: cash.batchDays, demo: { cost: demoCost, ...demo },
   },
 };
 if (process.argv[1] && process.argv[1].endsWith('proto.mjs')) console.log(JSON.stringify(PROTO, null, 1));

@@ -1134,43 +1134,42 @@ function page(i, { headline, rail, band, foot, label }) {
     chip(s, b.x, b.y + b.h - 0.19, b.w, 0.19, `Removes: ${st.removes}`, C.fill2, { size: 7, color: C.plum, line: C.saffron });
   });
 
-  // Meesho's side of the same prototype
-  const ctl = [0, fh, 0.47, 1 - fh], rc = R(ctl);
-  let b = panel(s, ctl, 'Meesho’s side: the control tower (desktop, same link)');
-  icon(s, 'FaGaugeHigh', rc.x + rc.w - 0.25, rc.y + 0.04, 0.17);
-  const thumbs = [['shot_pti_scatter.png', 1566, 1092, 'Price Truth Index', `every seller above ₹5 cr scored; ${PROTO.top10NotReady} of the 10 largest fail`],
-    ['shot_day30_chart.png', 1566, 822, 'Day-30 readout', `badge vs holdout: +${pc(PROTO.exp.base.lift, 1)} → fund`],
-    ['shot_health_detail.png', 1506, 1176, 'Seller Health Score', 'five signals, the rule that fired, the next action']];
-  const tw = thumbs.reduce((t, [, w0, h0]) => t + b.h * w0 / h0, 0), capW = (b.w - tw - 0.1 * 5) / 3;
-  let tx = b.x;
-  thumbs.forEach(([f, w0, h0, h, t]) => {
-    const iw = b.h * w0 / h0;
-    s.addImage({ path: AS(f), x: tx, y: b.y, w: iw, h: b.h });
-    T(s, [run(h, { bold: true, color: C.plum, breakLine: true }), run(t, {})], { x: tx + iw + 0.06, y: b.y, w: capW, h: b.h, fontSize: 7.5, valign: 'middle' });
-    tx += iw + 0.06 + capW + 0.1;
+  // How the pilot judges each step: the journey KPIs from the Manufacturer Journey page, one per screen
+  const kpi = [0, fh, 0.47, 1 - fh], rk = R(kpi);
+  let b = panel(s, kpi, 'One KPI per step: how the pilot proves the app works');
+  icon(s, 'FaFlagCheckered', rk.x + rk.w - 0.25, rk.y + 0.04, 0.17);
+  const kpis = [['Price check → listed', '≥ 50% list within 30 days'], ['Demand Brief → batch', 'first prepaid batch ≤ 14 days'],
+    ['Batch → first orders', '≥ 60% of cohort orders at D7, D14'], ['WhatsApp → repeat', 'active at D90 ≥ 75%']];
+  const cw4 = (b.w - 0.12) / 4;
+  kpis.forEach(([h, t], k) => {
+    const x = b.x + k * (cw4 + 0.04);
+    s.addShape(SH.PENTAGON, { x, y: b.y, w: cw4, h: b.h, fill: { color: [C.plum, C.plum2, C.coral, C.saffron][k] }, line: { color: C.white, width: 1 } });
+    T(s, [run(h, { bold: true, breakLine: true }), run(t, {})], { x: x + 0.07, y: b.y, w: cw4 - 0.31, h: b.h, fontSize: 7.5, color: k === 3 ? C.plum : C.white, valign: 'middle' });
   });
 
-  const run0 = [0.47, fh, 0.30, 1 - fh], rr = R(run0);
-  b = panel(s, run0, 'What the prototype runs on', { hc: C.coral });
-  icon(s, 'FaFlask', rr.x + rr.w - 0.25, rr.y + 0.04, 0.17);
-  const stats = [['FaIndustry', IN(PROTO.sellers), 'synthetic sellers', C.coral], ['FaStore', IN(PROTO.skus), 'SKUs listed', C.saffron], ['FaClipboardCheck', '9', 'C2M categories', C.plum], ['FaFlask', '4', 'model tests before every deploy', C.green]];
-  const sw = (b.w - 0.18) / 4;
-  stats.forEach(([ic, v, l, col], k) => {
-    const x = b.x + k * (sw + 0.06);
-    box(s, x, b.y, 0.24, 0.24, col, { round: true, r: 0.04 });
-    icon(s, ic, x + 0.04, b.y + 0.04, 0.16);
-    T(s, v, { x: x + 0.28, y: b.y - 0.02, w: sw - 0.28, h: 0.28, fontSize: 11, bold: true, color: col === C.saffron ? 'C27C0E' : col, valign: 'middle', fontFace: F.head });
-    T(s, l, { x, y: b.y + 0.27, w: sw, h: b.h - 0.27, fontSize: 7, color: C.muted, valign: 'top' });
+  // A one-minute demo that shows the Factory Node clearing the gate (values from the prototype's own price check)
+  const D = MK.demo;
+  if (D.self.qualifies || !D.node.qualifies) throw new Error(`Demo at ₹${D.cost} no longer shows the node clearing the gate`);
+  const tryIt = [0.47, fh, 0.30, 1 - fh], rt = R(tryIt);
+  b = panel(s, tryIt, 'Try it in 60 seconds', { hc: C.coral });
+  icon(s, 'FaBolt', rt.x + rt.w - 0.25, rt.y + 0.04, 0.17);
+  let ty = b.y;
+  [['Scan the QR and open the Manufacturer app tab.', 0.14], [`Set making cost to ₹${D.cost} and pick Ship myself: Not yet, ${pc(D.self.gap, 1)} below the market (the badge needs 8%).`, 0.24],
+    [`Switch to Factory Node: Qualifies, ${pc(D.node.gap, 1)} below.`, 0.14]].forEach(([t, h], i) => {
+    mark(b.x + 0.08, ty + 0.075, i + 1, 0.15);
+    T(s, t, { x: b.x + 0.21, y: ty, w: b.w - 0.21, h, fontSize: 7.5, valign: 'top' });
+    ty += h + 0.01;
   });
 
   const live = [0.77, fh, 0.23, 1 - fh], rl = R(live);
   b = panel(s, live, 'Open it live');
   icon(s, 'FaLink', rl.x + rl.w - 0.25, rl.y + 0.04, 0.17);
   s.addImage({ path: AS('qr_live.png'), x: b.x, y: b.y, w: b.h, h: b.h });
-  T(s, [run('meesho-dice-c2m-iitb.vercel.app', { bold: true, color: C.coral, fontSize: 8.5, breakLine: true, hyperlink: { url: 'https://meesho-dice-c2m-iitb.vercel.app/#/maker' } }),
-    run('Mirror: prathmesh-28.github.io/c2m-control-tower', { color: C.text, breakLine: true }), run('Offline: one HTML file in prototype/dist-single', { color: C.muted })],
-  { x: b.x + b.h + 0.08, y: b.y, w: b.w - b.h - 0.08, h: b.h, fontSize: 7, valign: 'middle' });
-  s.addNotes('Product walkthrough. Eight screens of the manufacturer app (Price check, Demand Brief, Batch, WhatsApp), two per tab, captured from the live prototype; coral markers match the numbered lines. Screen values come from the prototype’s seeded synthetic data (Kavin Knit Mills, ₹98 making cost); the costed case in Unit Economics uses ₹80 and the ₹209 demand-weighted median.');
+  T(s, [run('meesho-dice-c2m-iitb.vercel.app', { bold: true, color: C.coral, fontSize: 8, breakLine: true, hyperlink: { url: 'https://meesho-dice-c2m-iitb.vercel.app/#/maker' } }),
+    run('Mirror: prathmesh-28.github.io/c2m-control-tower', { breakLine: true }), run('+ Meesho’s control tower: 3 more tabs', { breakLine: true }),
+    run(`${IN(PROTO.sellers)} synthetic sellers · ${IN(PROTO.skus)} SKUs · 4 model tests`, { color: C.muted })],
+  { x: b.x + b.h + 0.07, y: b.y, w: b.w - b.h - 0.07, h: b.h, fontSize: 6.5, valign: 'middle' });
+  s.addNotes(`Product walkthrough. Eight screens of the manufacturer app (Price check, Demand Brief, Batch, WhatsApp), two per tab, captured from the live prototype; coral markers match the numbered lines. Bottom row: the journey KPI that judges each step in the pilot, a one-minute live demo (making cost ₹${D.cost}: Ship myself misses the 8% badge, the Factory Node clears it), and the live link. Screen values come from the prototype’s seeded synthetic data (Kavin Knit Mills, ₹98 making cost); the costed case in Unit Economics uses ₹80 and the ₹209 demand-weighted median.`);
 }
 
 // ================================================================== 14 · APPENDIX B: SOURCES, METHOD, ASSUMPTIONS
