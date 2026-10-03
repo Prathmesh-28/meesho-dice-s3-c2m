@@ -7,3 +7,4 @@ Every file here is an earlier version of `../meesho_dice_round2.pptx`, saved bef
 - **v03** · 2026-10-02_0108 · Saved before: replaced by the 14-page Factory Direct deck (csuite-case-deck format)
 - **v04** · 2026-10-02_1337 · Saved before: rebuilt with build_fd.mjs (IIM Mumbai flow, denser pages)
 - **v05** · 2026-10-03_0019 · Saved before: rebuilt with build_fd.mjs (added User Personas & Flow page and week-by-week 90-day plan)
+- **v06** · 2026-10-04_0047 · Saved before: dedicated product walkthrough on slide 13 (all 8 phone screens); inline citations and page pointers moved out of slide bodies (deck had PowerPoint hand edits: icons, logos)

@@ -16,9 +16,19 @@ const IC = (n, c = 'w') => AS(`icons/${n}_${c}.png`);
 const OUTFILE = process.argv[2] ?? path.join(HERE, 'out', 'factory_direct.pptx');
 
 // Never overwrite the current deck without first saving it to ../old (see snapshot.sh).
+// Since 3 Oct 2026 the main deck also carries hand edits made in PowerPoint (icons, logos), which this script does not
+// reproduce; it refuses to overwrite a main deck it did not write itself unless --force is passed.
+// Apply generator changes to the hand-edited deck with ../rough_work/_tools/apply_to_main.py instead.
 const DECK_MAIN = path.resolve(HERE, '../meesho_dice_round2.pptx');
+const BUILD_STAMP = path.join(HERE, '.main_deck_build.json');
+const sha = (f) => require('crypto').createHash('sha256').update(fs.readFileSync(f)).digest('hex');
 if (path.resolve(OUTFILE) === DECK_MAIN && fs.existsSync(DECK_MAIN)) {
-  require('child_process').execFileSync('bash', [path.join(HERE, 'snapshot.sh'), 'rebuilt with build_fd.mjs (added User Personas & Flow page and week-by-week 90-day plan)'], { stdio: 'inherit' });
+  const last = fs.existsSync(BUILD_STAMP) ? JSON.parse(fs.readFileSync(BUILD_STAMP, 'utf8')).sha256 : null;
+  if (last !== sha(DECK_MAIN) && !process.argv.includes('--force')) {
+    console.error('The main deck has edits this script did not make (PowerPoint). Build elsewhere and use rough_work/_tools/apply_to_main.py, or pass --force to overwrite (it is snapshotted first).');
+    process.exit(1);
+  }
+  require('child_process').execFileSync('bash', [path.join(HERE, 'snapshot.sh'), 'rebuilt with build_fd.mjs (dedicated product walkthrough on slide 13; inline citations moved to footers)'], { stdio: 'inherit' });
 }
 
 // Optional primary research (buyer survey + team interviews). Absent → visible [FILL] markers.
@@ -51,9 +61,32 @@ const U = M.unit, FN = M.fin, SP = M.SP, Y4 = M.ladder[2], BX = U.batch;
 const prepaidC2M = A.A10.value + (1 - A.A10.value) * SP.prepaid;
 const r10 = (x) => Math.round(x / 10) * 10;
 
+// ------------------------------------------------------------------ citations
+// Slide bodies show no inline [S#] / [A#] tags. The source keeps them (each maps to Appendix B); clean() strips them
+// from the slide, and closePage() fails the build if a tag stripped from a page's body is not named in its footer.
+const TAG = /\s*\[((?:S|A)\d+[^\]]*)\]/g;
+const ids = (str) => {
+  const out = new Set();
+  for (const [, k, a, b] of str.matchAll(/\b([SA])(\d+)(?:\s*[–-]\s*\1?(\d+))?\b/g)) for (let i = +a; i <= +(b ?? a); i++) out.add(`${k}${i}`);
+  return out;
+};
+let PAGE = null;
+function clean(text) {
+  if (Array.isArray(text)) return text.map((r) => (r && typeof r === 'object' && 'text' in r ? { ...r, text: clean(r.text) } : clean(r)));
+  if (typeof text !== 'string') return text;
+  return text.replace(TAG, (_, inner) => { if (PAGE) ids(inner).forEach((t) => PAGE.tags.add(t)); return ''; });
+}
+function closePage() {
+  if (!PAGE) return;
+  const named = ids(PAGE.foot ?? ''), missing = [...PAGE.tags].filter((t) => !named.has(t));
+  if (missing.length) throw new Error(`Slide ${PAGE.n}: footer does not name ${missing.join(', ')}`);
+  PAGE = null;
+}
+
 // ------------------------------------------------------------------ primitives
 function T(s, text, o = {}) {
-  s.addText(text, { fontFace: F.body, fontSize: 8, color: C.text, margin: 0, isTextBox: true, valign: 'top', ...o });
+  const { raw, ...rest } = o;
+  s.addText(raw ? text : clean(text), { fontFace: F.body, fontSize: 8, color: C.text, margin: 0, isTextBox: true, valign: 'top', ...rest });
 }
 const run = (text, o = {}) => ({ text, options: o });
 function box(s, x, y, w, h, fill, o = {}) {
@@ -119,7 +152,7 @@ function table(s, rows, o) {
     const isHead = head && i === 0;
     const zebra = !isHead && (o.zebra ?? true) && i % 2 === 0;
     return {
-      text: cell.t ?? '',
+      text: clean(cell.t ?? ''),
       options: {
         bold: isHead || cell.b, color: isHead ? C.white : (cell.c ?? C.text),
         fill: { color: isHead ? (o.hc ?? C.plum) : (cell.f ?? (zebra ? C.zebra : C.white)) },
@@ -152,7 +185,9 @@ function header(s, active, label) {
   s.addImage({ path: AS('iitb_logo_white.png'), x: 12.48, y: 0.06, w: 0.45, h: 0.44 });
 }
 function page(i, { headline, rail, band, foot, label }) {
+  closePage();
   const s = pres.addSlide();
+  PAGE = { n: pres.slides.length, foot, tags: new Set() };
   s.background = { color: C.white };
   header(s, i, label);
   T(s, headline, { x: 0.25, y: 0.58, w: 12.83, h: 0.55, fontFace: F.head, fontSize: 16, bold: true, color: C.plum, valign: 'middle', lineSpacingMultiple: 0.9 });
@@ -162,7 +197,7 @@ function page(i, { headline, rail, band, foot, label }) {
     box(s, 0.25, 6.78, 12.83, 0.4, C.plum, { round: true, r: 0.06 });
     T(s, band, { x: 0.4, y: 6.78, w: 12.55, h: 0.4, fontSize: 10, bold: true, color: C.white, valign: 'middle' });
   }
-  T(s, foot, { x: 0.25, y: 7.22, w: 12.2, h: 0.22, fontSize: 7.5, color: C.muted, valign: 'middle' });
+  T(s, foot, { x: 0.25, y: 7.22, w: 12.2, h: 0.22, fontSize: 7.5, color: C.muted, valign: 'middle', raw: true });
   T(s, String(pres.slides.length), { x: 12.6, y: 7.22, w: 0.48, h: 0.22, fontSize: 9, bold: true, color: C.plum, align: 'right', valign: 'middle' });
   return s;
 }
@@ -234,9 +269,9 @@ function page(i, { headline, rail, band, foot, label }) {
   ], { x: b.x + 1.5, y: cy0 + 0.02, w: b.w - 1.56, h: ch0 - 0.04, fontSize: 7.5, valign: 'middle' });
 
   // P2 challenges (5 boxes x 2 ticks)
-  b = panel(s, [0, 0.38, 0.40, 0.26], 'Challenges to solve (page where we solve each)', { hc: C.coral });
-  const chs = [['Price discovery · p9', 'Scale ≠ price', 'List prices overstate demand'], ['Unit operations · p6', 'Pick, pack, ship per order', 'Returns handled by the factory'], ['Inventory & cash · p10', 'Build-to-stock risk', '45–60 day distributor terms'],
-    ['Demand & visibility · p8', 'No reviews at the start', 'District demand unknown'], ['Retention · p8, p12', 'Gap decays after the badge', 'Quality slips with price']];
+  b = panel(s, [0, 0.38, 0.40, 0.26], 'Challenges to solve', { hc: C.coral });
+  const chs = [['Price discovery', 'Scale ≠ price', 'List prices overstate demand'], ['Unit operations', 'Pick, pack, ship per order', 'Returns handled by the factory'], ['Inventory & cash', 'Build-to-stock risk', '45–60 day distributor terms'],
+    ['Demand & visibility', 'No reviews at the start', 'District demand unknown'], ['Retention', 'Gap decays after the badge', 'Quality slips with price']];
   const cw3 = (b.w - 0.12) / 3, chh = (b.h - 0.06) / 2;
   chs.forEach(([h, a, c], k) => {
     const x = b.x + (k % 3) * (cw3 + 0.06), y = b.y + Math.floor(k / 3) * (chh + 0.06);
@@ -246,7 +281,7 @@ function page(i, { headline, rail, band, foot, label }) {
   });
   const lx = b.x + 2 * (cw3 + 0.06), ly = b.y + chh + 0.06;
   box(s, lx, ly, cw3, chh, C.plum, { round: true, r: 0.03 });
-  T(s, '5 barriers → 6 levers, each owned by a Meesho team (pages 5–10)', { x: lx + 0.05, y: ly, w: cw3 - 0.1, h: chh, fontSize: 8, bold: true, color: C.white, valign: 'middle', align: 'center' });
+  T(s, '5 barriers → 6 levers, each owned by a Meesho team', { x: lx + 0.05, y: ly, w: cw3 - 0.1, h: chh, fontSize: 8, bold: true, color: C.white, valign: 'middle', align: 'center' });
 
   // P3 survey trio
   b = panel(s, [0.40, 0, 0.60, 0.38], 'Three data sets: why factories quit, what buyers pay, what buyers would trade');
@@ -332,7 +367,7 @@ function page(i, { headline, rail, band, foot, label }) {
     headline: `${IN(M.SAM)} manufacturers can carry a real price gap; offline B2B factories (${IN(coh[0].firms)}) in hosiery and home textiles go first`,
     rail: 'SEGMENTATION',
     band: 'Decision: target Cohort A in hosiery and home textiles first, re-invite Cohort C in parallel, offer Cohort B value-tier only. Owner: Category · KPI: 60 factories catalogued by Day 60.',
-    foot: 'Sources: S5 MSME limits · S7 Udyam · S9 · S20 category mix · S22 Round 1 (12-category screen, 24 interviews, cohort split)   |   Rubrics: Appendix C   |   ✓ = 5, – = 3, ✕ = 1   |   Personas are composites, not real firms',
+    foot: 'Sources: S5 MSME limits · S7 Udyam · S9 · S11 return fee · S20 category mix · S22 Round 1 (12-category screen, 24 interviews, cohort split)   |   Rubrics: Appendix C   |   ✓ = 5, – = 3, ✕ = 1   |   Personas are composites, not real firms',
   });
   // P1 segment evaluation
   let b = panel(s, [0, 0, 0.42, 0.72], 'Segment evaluation: 12 category segments × 4 cost metrics (weighted)');
@@ -400,7 +435,7 @@ function page(i, { headline, rail, band, foot, label }) {
     headline: 'Six users, one flow: buyers prepay, factories make, nodes ship, an NBFC funds and Meesho runs the rules',
     rail: 'USERS & FLOW',
     band: 'Decision: sign the three partner roles before the first batch (two associations, one Tiruppur node, one NBFC); first prepaid batches in Week 10. Owner: Category + Valmo + Finance · KPI: all signed by Day 60.',
-    foot: `Sources: S1 (${SP.freq} orders per buyer a year; ${pc(SP.prepaid)} of shipped orders prepaid), S9, S12 (₹24 SMB fulfilment), S18 MSME-TEAM, S26 seller loans; prototype (~${IN(r10(PROTO.hs.perManager))} sellers per manager)   |   Flow numbers: one ${IN(BX.confirmed)}-pack batch (page 10)   |   Personas are composites, not real people or firms`,
+    foot: `Sources: S1 (${SP.freq} orders per buyer a year; ${pc(SP.prepaid)} of shipped orders prepaid), S9, S12 (₹24 SMB fulfilment), S18 MSME-TEAM, S26 seller loans; prototype (~${IN(r10(PROTO.hs.perManager))} sellers per manager)   |   Flow numbers: one ${IN(BX.confirmed)}-pack batch   |   Personas are composites, not real people or firms`,
   });
   // P1 swimlane flow
   let b = panel(s, [0, 0, 1, 0.52], `End-to-end flow for one ${IN(BX.confirmed)}-pack prepaid batch: who does what, and when (D = day of the pre-order window)`);
@@ -436,7 +471,7 @@ function page(i, { headline, rail, band, foot, label }) {
   b = panel(s, [0, 0.52, 1, 0.48], 'Six user personas (resellers are affected, not users: the badge is capped at 20% of category impressions)', { hc: C.coral });
   const P6 = [
     ['FaStore', 'Value-seeking buyer', `Tier-2+ shopper · ~${Math.round(SP.freq)} orders a year [S1]`, C.saffron, 'lowest price, reliable delivery, easy returns', `${pc(1 - SP.prepaid)} still pay cash on delivery [S1]; unsure about prepaying for a 7–8 day wait`, `prepays ${rs(BX.price)} for a 3-pack instead of ${rs(U.mkt)}`, `${rs(U.split.buyer, 1)} off a pack; a “Sold directly by the manufacturer” badge`, `Prepaid share ≥ ${pc(prepaidC2M, 1)}`, 'Meesho app; UPI pre-order at checkout'],
-    ['FaIndustry', 'Factory owner', '4 personas on page 3 (cohorts A, A, C, B)', C.coral, 'orders before cutting fabric; no packing team', 'build-to-stock risk; 45–60 day distributor terms', 'price check, commits batches, drops stock in bulk', `${rs(U.split.factory, 1)} a pack vs ${rs(U.b2bMarginPerPack, 1)} ex-factory; cash in ~11 days`, 'First batch ≤ 14 days', 'Supplier app, WhatsApp, voice agent'],
+    ['FaIndustry', 'Factory owner', '4 factory personas: cohorts A, A, C, B', C.coral, 'orders before cutting fabric; no packing team', 'build-to-stock risk; 45–60 day distributor terms', 'price check, commits batches, drops stock in bulk', `${rs(U.split.factory, 1)} a pack vs ${rs(U.b2bMarginPerPack, 1)} ex-factory; cash in ~11 days`, 'First batch ≤ 14 days', 'Supplier app, WhatsApp, voice agent'],
     ['FaGaugeHigh', 'Category manager', `Meesho · ~${IN(r10(PROTO.hs.perManager))} C2M sellers each`, C.plum, 'category NMV protected; few manual cases', 'cannot chase hundreds of sellers by phone', 'acts only when a score stays below 40 after an automatic fix', 'control tower: price screen, Health Score queue, Day-30 readout', '≤ 5 escalations per 100 a month', 'Control-tower dashboard (prototype)'],
     ['FaWarehouse', 'Node operator', 'Partner 3PL in the cluster; Valmo delivers onward', C.plum2, 'steady daily volume; clean order data', 'idle space between seasons', 'takes bulk drops; picks, packs, ships; grades returns', `₹${A.A28.value.nodeFee} a unit (pack ₹6, handle ₹9, freight ₹5); ${cr(A.A17.value.perNode)} set-up support`, '95% shipped within 48 h', 'Order feed from Meesho; Valmo pickups'],
     ['FaIndianRupeeSign', 'NBFC partner', 'Lender to marketplace sellers [S26]', C.green, 'short, low-risk loans', 'cannot see small factories’ order flow', `advances ${pc(A.A20.value.advance)} of confirmed pre-order value at handover`, `repaid from the payout ~7 days after delivery; buyers already prepaid; Meesho covers the first ${pc(A.A20.value.firstLoss)} of losses`, 'Advance within 24 h; losses ≤ 1%', 'Confirmed-order data shared by Meesho'],
@@ -530,7 +565,7 @@ function page(i, { headline, rail, band, foot, label }) {
     headline: 'Of three ways to bring factories online, only Factory Direct removes unit operations, stock risk and returns within FDI rules',
     rail: 'MODEL COMPARISON',
     band: 'Decision: build Factory Direct (seller-owned stock at partner nodes plus prepaid batches); Meesho never takes title to stock. Owner: Valmo + Legal · KPI: zero inventory-control findings.',
-    foot: 'Sources: S1, S2 (Valmo 50–55% of deliveries), S16 Temu semi-managed, S17 Shein Brazil, S19 Press Note 2 (marketplace may not own or control seller inventory), S23–S25   |   Costs per pack from the unit-economics table (page 10, Appendix C)',
+    foot: 'Sources: S1, S2 (Valmo 50–55% of deliveries), S16 Temu semi-managed, S17 Shein Brazil, S12 SMB fulfilment fee, S19 Press Note 2 (marketplace may not own or control seller inventory), S23–S25   |   Costs per pack from the unit-economics table; workings in Appendix C',
   });
   const models = [
     ['1', 'Open marketplace', '(factory self-ships)', 'The factory lists, then packs, ships and takes back every return itself.', [['FaIndustry', 'Factory'], ['FaClipboardCheck', 'Packs each order'], ['FaTruckFast', 'Courier'], ['FaStore', 'Buyer']], 'Meesho today · Amazon · Flipkart', C.plum2,
@@ -570,7 +605,7 @@ function page(i, { headline, rail, band, foot, label }) {
     ['Logistics (forward + pack / node)', cols[1].logistics.toFixed(1), cols[3].logistics.toFixed(1)], ['Unsold stock', cols[1].unsold.toFixed(1), cols[3].unsold.toFixed(1)], ['Working capital', cols[1].capital.toFixed(1), cols[3].capital.toFixed(1)],
     ['Returns (₹150 each)', cols[1].returns.toFixed(1), cols[3].returns.toFixed(1)], [{ t: 'Lowest viable price', b: true }, { t: rs(cols[1].floor), b: true, c: C.red }, { t: rs(cols[3].floor), b: true, c: C.green }]],
   { x: b.x, y: b.y, w: b.w, colW: [1.85, 0.95, b.w - 2.8], rowH: [0.22, 0.24, 0.24, 0.24, 0.24, 0.26], fs: 8 });
-  list(s, [['Fully managed:', 'not costed; an FDI marketplace may not own seller stock [S19].'], ['Meesho’s cost:', `${cr(A.A17.value.perNode)} set-up per partner node; ${A.A17.value.nodes[4]} nodes by Year 4 (page 11).`], ['Node fee:', `₹${A.A28.value.nodeFee} a unit (pack ₹6, handle ₹9, bulk freight ₹5) vs ₹24 for SMB fulfilment [S12].`]],
+  list(s, [['Fully managed:', 'not costed; an FDI marketplace may not own seller stock [S19].'], ['Meesho’s cost:', `${cr(A.A17.value.perNode)} set-up per partner node; ${A.A17.value.nodes[4]} nodes by Year 4.`], ['Node fee:', `₹${A.A28.value.nodeFee} a unit (pack ₹6, handle ₹9, bulk freight ₹5) vs ₹24 for SMB fulfilment [S12].`]],
     b.x, b.y + 1.52, b.w, b.h - 1.52, { fs: 7.5, glyph: '›', gc: C.coral, psa: 3 });
 }
 
@@ -581,7 +616,7 @@ function page(i, { headline, rail, band, foot, label }) {
     headline: 'Pinduoduo, Taobao, Temu and Shein built C2M on demand data and small batches; RICE puts the ₹0 price gate first',
     rail: 'BEST PRACTICES',
     band: 'Decision: build in RICE order (price gate → Health Score → co-ops → Demand Brief → batches → node → prepayment → firewall); never ask a factory for a price cut. Owner: Strategy.',
-    foot: 'Sources: S15 KrASIA, S16 Tech Buzz China, S17 Reuters, S23 Xinhua, S24 Alibaba results, S25 AFP · benefits from the master model (pages 10–11)   |   RICE: reach = sellers touched in Year 2; effort = person-months; full benchmark table: Appendix C',
+    foot: 'Sources: S15 KrASIA, S16 Tech Buzz China, S17 Reuters, S23 Xinhua, S24 Alibaba results, S25 AFP · benefits from the master model   |   RICE: reach = sellers touched in Year 2; effort = person-months; full benchmark table: Appendix C',
   });
   let b = panel(s, [0, 0, 0.58, 0.68], 'Best practices: five platforms × five dimensions');
   const co = ['Pinduoduo NBI · China', 'Taobao C2M · China', 'Temu semi-managed', 'Shein on-demand', 'Shein Brazil (avoid)'];
@@ -617,7 +652,7 @@ function page(i, { headline, rail, band, foot, label }) {
 
   b = panel(s, [0, 0.68, 0.58, 0.32], 'Benefits analysis of Factory Direct (master model)', { hc: C.coral });
   const ben = [[`−${pc(U.cols[3].gap, 1)}`, `buyer price vs the ${rs(U.mkt)} market (briefs)`], [`${(U.split.factory / U.b2bMarginPerPack).toFixed(1)}×`, `factory margin a pack: ${rs(U.split.factory, 1)} vs ${rs(U.b2bMarginPerPack, 1)} ex-factory`], ['~11 days', 'cash cycle vs 45–60 days on distributor terms'],
-    [`−${(M.c2m.failDrop * 100).toFixed(1)} pts`, 'failed deliveries per C2M order (prepaid pre-orders)'], [rs(A.A8.value * SP.contribPerOrder + M.c2m.rtoSavingPerOrder, 1), 'Meesho value per C2M order (page 11)'], [pc(A.A31.value.batch), `unsold stock vs ${pc(A.A31.value.stock)} building to stock`]];
+    [`−${(M.c2m.failDrop * 100).toFixed(1)} pts`, 'failed deliveries per C2M order (prepaid pre-orders)'], [rs(A.A8.value * SP.contribPerOrder + M.c2m.rtoSavingPerOrder, 1), 'Meesho value per C2M order'], [pc(A.A31.value.batch), `unsold stock vs ${pc(A.A31.value.stock)} building to stock`]];
   const bw = (b.w - 0.25) / 6;
   ben.forEach(([n, t], k) => {
     const x = b.x + k * (bw + 0.05);
@@ -803,10 +838,10 @@ function page(i, { headline, rail, band, foot, label }) {
   box(s, b.x + bw0 * bf, b.y + 0.26, bw0 * (1 - bf), 0.36, C.plum);
   T(s, `Buyer ${rs(sp.buyer, 1)} · ${pc(bf)}`, { x: b.x, y: b.y + 0.26, w: bw0 * bf, h: 0.36, fontSize: 9, bold: true, color: C.white, align: 'center', valign: 'middle' });
   T(s, `Factory ${rs(sp.factory, 1)} · ${pc(1 - bf)}`, { x: b.x + bw0 * bf, y: b.y + 0.26, w: bw0 * (1 - bf), h: 0.36, fontSize: 9, bold: true, color: C.white, align: 'center', valign: 'middle' });
-  list(s, [['Buyer:', `pays ${rs(U.preorderPrice)} instead of ${rs(U.mkt)}.`], ['Factory:', `earns ${rs(sp.factory, 1)} a pack vs ${rs(U.b2bMarginPerPack, 1)} selling ex-factory (${(sp.factory / U.b2bMarginPerPack).toFixed(1)}×).`], ['Meesho:', `earns per order, not per rupee: ${rs(A.A8.value * SP.contribPerOrder + M.c2m.rtoSavingPerOrder, 1)} per C2M order (page 11).`]],
+  list(s, [['Buyer:', `pays ${rs(U.preorderPrice)} instead of ${rs(U.mkt)}.`], ['Factory:', `earns ${rs(sp.factory, 1)} a pack vs ${rs(U.b2bMarginPerPack, 1)} selling ex-factory (${(sp.factory / U.b2bMarginPerPack).toFixed(1)}×).`], ['Meesho:', `earns per order, not per rupee: ${rs(A.A8.value * SP.contribPerOrder + M.c2m.rtoSavingPerOrder, 1)} per C2M order.`]],
     b.x, b.y + 0.68, b.w, b.h - 0.68, { fs: 7.5, glyph: '›', gc: C.coral, psa: 1 });
 
-  b = panel(s, [0, 0.72, 1, 0.28], 'Assumptions (every input carries an [A#] in Appendix B)', { hc: C.coral });
+  b = panel(s, [0, 0.72, 1, 0.28], 'Assumptions (all registered in Appendix B)', { hc: C.coral });
   const asm = [
     ['FaIndustry', 'Factory', [`Making cost ₹${A.A22.value} a pack [A22]`, `Margin ${pc(A.A23.value)} on price [A23]`, `Capital ${pc(A.A30.value.rate)} a year [A30]`]],
     ['FaMagnifyingGlassChart', 'Market', [`Demand-weighted median ${rs(U.mkt)} [S10]`, `Gate −8% = ${rs(U.gate)}`, `Pre-order ₹${A.A32.value} off [A32]`]],
@@ -831,7 +866,7 @@ function page(i, { headline, rail, band, foot, label }) {
     headline: `${cr(f.npv, 0)} NPV at 12% and payback in Year ${f.payback}; NPV stays positive down to ${pc(M.be.yieldScale)} of planned seller yield`,
     rail: 'FINANCIAL ANALYSIS',
     band: `Decision: approve ${cr(f.cashY1)} of Year-1 cash as a capped H2 bet, released at the Day-30 and Day-90 gates. Owner: Finance · KPI: Year-1 C2M NMV ≥ ${cr(f.nmv[0], 0)}.`,
-    foot: 'Sources: S1 (₹531 cr contribution on 725 mn placed orders; prepaid 37%; NMV ₹11,614 cr on GMV ₹19,054 cr), S3, S11, S13   |   NPV: t = 1..5, year-end, no terminal value; year NMV uses average active sellers, the ladder shows exit run-rates   |   Register: Appendix B',
+    foot: 'Sources: S1 (₹531 cr contribution on 725 mn placed orders; prepaid 37%; NMV ₹11,614 cr on GMV ₹19,054 cr), S3, S11, S13   |   NPV: t = 1..5, year-end, no terminal value; year NMV on average active sellers, ladder at exit run-rates   |   Assumptions: A3, A4, A8, A11–A21',
   });
   let b = panel(s, [0, 0, 0.53, 0.66], 'Five-year case (₹ cr, nominal; NPV = sum of the PV row)');
   const d1 = (x) => x.toFixed(1);
@@ -1035,62 +1070,122 @@ function page(i, { headline, rail, band, foot, label }) {
   ], { x: b.x, y: b.y, w: b.w, h: b.h, fontSize: 8, valign: 'top', paraSpaceAfter: 4 });
 }
 
-// ================================================================== 12 · APPENDIX A: PRODUCT WALKTHROUGH
+// ================================================================== 13 · APPENDIX A: PRODUCT WALKTHROUGH
+// Every screen of the manufacturer app, captured from the live prototype by rough_work/_tools/capture_phone.mjs.
+// Coral markers sit on the elements each numbered line explains; the text reads the same values the screens show.
 {
+  const MK = PROTO.maker, PH = JSON.parse(fs.readFileSync(AS('phone/phone_screens.json'), 'utf8')).screens;
   const s = page(-1, {
     label: 'Appendix A · Product walkthrough',
-    headline: 'The working prototype runs every rule in this deck end to end, on synthetic data that mirrors Meesho’s order tables',
+    headline: 'Eight phone screens take a factory from “will I make money?” to a prepaid batch, with no e-commerce team',
     rail: 'APPENDIX A',
-    foot: `Prototype: React + Recharts static site; ${PROTO.sellers} synthetic sellers, ${IN(PROTO.skus)} SKUs, 9 categories; fixed seed; fictional names; four model tests run before every deploy   |   Supports pages 4, 5, 8, 9, 12`,
+    foot: `Screens: the live prototype, captured 4 Oct 2026, on seeded synthetic data; ${MK.name} is fictional. Its inputs (₹${MK.unitCost} making cost, ${rs(MK.median)} synthetic median) differ from the costed case (₹${A.A22.value} making cost, ${rs(U.mkt)} demand-weighted median)`,
   });
-  const b = R([0, 0, 1, 1]);
-  const fit = (f, pw, ph, x, y, w, h) => { const r = Math.min(w / pw, h / ph); s.addImage({ path: AS(f), x: x + (w - pw * r) / 2, y: y + (h - ph * r) / 2, w: pw * r, h: ph * r }); };
-  const cells = [
-    [[['shot_pti_scatter.png', 1566, 1092]], '1 · Price Truth Index', `Size vs price gap for every seller above ₹5 cr: r = ${nm(PROTO.r, 2)}; ${PROTO.top10NotReady} of the 10 largest fail`, 'p9'],
-    [[['shot_day30.png', 2544, 1454]], '2 · Day-30 readout', `Badged vs holdout: +${pc(PROTO.exp.base.lift, 1)} (interval +${pc(PROTO.exp.base.ci[0], 1)} to +${pc(PROTO.exp.base.ci[1], 1)}) → fund`, 'p12'],
-    [[['shot_pti_gate.png', 2544, 444], ['shot_health_stages.png', 2544, 498]], '3 · Gate controls + Seller Health stages', `Gate sliders re-score every seller; ${PROTO.hs.cohort} pilot sellers by stage`, 'p8, p9'],
-    [[['shot_health_detail.png', 1506, 1176]], '4 · One seller’s Health Score', 'Five signals, the rule that fired, the next action', 'p8'],
+  const steps = [
+    { title: '1 · Price check: will I make money?', ic: 'FaIndianRupeeSign', removes: 'unknown margin · returns exposure · slow cash',
+      shots: [['price_top', 'Inputs + verdict', [1, 2]], ['price_end', 'Profit per pack + cash', [3, 4, null]]],
+      items: [[1, 'Picks the product, then enters making cost, the margin it needs and how orders ship.'],
+        [2, 'Verdict before listing: lowest viable price vs what buyers pay; the badge needs 8% below.'],
+        [3, 'Per pack the buyer keeps: making, shipping, returns and failed deliveries, then profit.'],
+        [4, `Cash back in ~${Math.round(MK.batchDays)} days (${pc(MK.advanceShare)} at node handover) vs ${MK.b2bDays} days on distributor terms.`]] },
+    { title: '2 · Demand Brief: is there demand?', ic: 'FaMapLocationDot', removes: 'unproven demand · guessing sizes and price',
+      shots: [['brief_top', 'Top districts', [1, 2]], ['brief_end', 'Suggested batch', [3, null]]],
+      items: [[1, `This exact product in the top ${MK.districts} districts: ${IN(MK.weekly)} orders a week, refreshed every Monday.`],
+        [2, 'Each district: orders a week, the price band that sells, the best-selling size and colour.'],
+        [3, `First batch suggested: ${IN(MK.suggested)} units (${pc(MK.newSellerShare)} of 14 days of demand), split by size.`],
+        [null, 'Built weekly from search and delivered orders, summed by district: no buyer is identifiable.']] },
+    { title: '3 · Batch: must I stock up blind?', ic: 'FaWarehouse', removes: 'build-to-stock risk · unit shipping · cash gap',
+      shots: [['batch_open', 'Before commit', [1, 2, 3]], ['batch_done', 'After one tap', [4]]],
+      items: [[1, `Buyers who accept “ships in 7 days” for a small discount prepay: ${IN(MK.preOrders)} of ${IN(MK.suggested)} in a ${MK.windowDays}-day window.`],
+        [2, `Make confirmed orders + ${pc(MK.buffer)} buffer = ${IN(MK.make)} units; ${pc(MK.advanceShare)} of confirmed value is paid at handover.`],
+        [3, 'One tap commits the batch; nothing beyond it is made.'],
+        [4, `Day 3 bulk handover at the ${MK.cluster} node; Days 4-8 the node ships; Day 15 the balance is paid.`]] },
+    { title: '4 · WhatsApp: no app, no manager', ic: 'FaWhatsapp', removes: 'tech know-how · dashboards · account managers',
+      shots: [['wa_brief', 'Weekly brief', [1, 2]], ['wa_reply', 'Reply 1: committed', [3, 4]]],
+      items: [[1, 'The same brief every week on WhatsApp: top districts, price bands, suggested batch, pre-orders.'],
+        [2, 'Quick replies: 1 commits the batch, 2 opens the size mix, 3 asks for a callback.'],
+        [3, 'The owner replies “1”: no app install, no login, no account manager.'],
+        [4, 'Confirmation: units to make, the node to drop them at, and the cash paid at handover.']] },
   ];
-  const lw = b.w * 0.6, gw = (lw - 0.1) / 2, gh = (b.h - 0.75) / 2;
-  cells.forEach(([imgs, h, t, p], k) => {
-    const x = b.x + (k % 2) * (gw + 0.1), y = b.y + Math.floor(k / 2) * (gh + 0.12);
-    box(s, x, y, gw, gh, C.fill, { line: C.line, round: true, r: 0.04 });
-    const ih = (gh - 0.62 - 0.06 * (imgs.length - 1)) / imgs.length;
-    imgs.forEach(([f, pw, ph], j2) => fit(f, pw, ph, x + 0.06, y + 0.06 + j2 * (ih + 0.06), gw - 0.12, ih));
-    T(s, [run(h, { bold: true, color: C.plum }), run(`   supports ${p}`, { color: C.coral, bold: true, fontSize: 8 }), run('', { breakLine: true }), run(t, { color: C.text })], { x: x + 0.08, y: y + gh - 0.54, w: gw - 0.16, h: 0.5, fontSize: 9, valign: 'middle' });
+  const fh = 0.83, pw = 1.34, mark = (x, y, n, d = 0.17) => {
+    s.addShape(SH.OVAL, { x: x - d / 2, y: y - d / 2, w: d, h: d, fill: { color: C.coral }, line: { color: C.white, width: 1 } });
+    T(s, String(n), { x: x - d / 2, y: y - d / 2, w: d, h: d, fontSize: 7.5, bold: true, color: C.white, align: 'center', valign: 'middle' });
+  };
+  steps.forEach((st, k) => {
+    const fr = [k / 4, 0, 1 / 4, fh], r = R(fr), b = panel(s, fr, st.title, { hc: k % 2 ? C.coral : C.plum });
+    icon(s, st.ic, r.x + r.w - 0.25, r.y + 0.04, 0.17);
+    const x0 = b.x + (b.w - 2 * pw - 0.08) / 2;
+    let ph = 0;
+    st.shots.forEach(([key, label, nums], j) => {
+      const sc = PH[key], x = x0 + j * (pw + 0.08);
+      ph = pw * sc.h / sc.w;
+      s.addImage({ path: AS(`phone/${sc.file}`), x, y: b.y, w: pw, h: ph });
+      // Marker on the element's top-left corner; right-hand elements (the reply bubble) get it on their left instead.
+      sc.marks.forEach((m, q) => { if (m && nums[q]) mark(x + m.x * pw - (m.x > 0.5 ? 0.11 : 0.04), b.y + m.y * ph + 0.04, nums[q]); });
+      T(s, label, { x: x - 0.04, y: b.y + ph + 0.02, w: pw + 0.08, h: 0.15, fontSize: 7, bold: true, color: C.plum, align: 'center', valign: 'middle' });
+    });
+    const lh = 0.255, y0 = b.y + ph + 0.22;
+    st.items.forEach(([n, t], i) => {
+      const y = y0 + i * lh;
+      if (n) mark(b.x + 0.08, y + 0.08, n, 0.16);
+      else T(s, '•', { x: b.x, y, w: 0.16, h: 0.16, fontSize: 9, bold: true, color: C.coral, align: 'center', valign: 'middle' });
+      T(s, t, { x: b.x + 0.21, y, w: b.w - 0.21, h: lh, fontSize: 7.5, valign: 'top' });
+    });
+    chip(s, b.x, b.y + b.h - 0.19, b.w, 0.19, `Removes: ${st.removes}`, C.fill2, { size: 7, color: C.plum, line: C.saffron });
   });
-  const phones = [
-    ['shot_phone_price.png', '5 · Manufacturer app: price check', 'Lowest viable price vs market median, before listing', 'p5, p10'],
-    ['shot_phone_brief.png', '6 · Demand Brief + batch', 'District demand → batch size → one-tap commit', 'p4, p8'],
-    ['shot_phone_whatsapp.png', '7 · WhatsApp nudges', 'Grant applied, batch confirmed, payout dates', 'p8'],
-  ];
-  const px = b.x + lw + 0.15, pw2 = (b.w - lw - 0.15 - 0.2) / 3;
-  phones.forEach(([f, h, t, p], k) => {
-    const x = px + k * (pw2 + 0.1), ph = pw2 * 1570 / 780;
-    box(s, x, b.y, pw2, ph + 0.95, C.fill, { line: C.line, round: true, r: 0.04 });
-    s.addImage({ path: AS(f), x: x + 0.05, y: b.y + 0.05, w: pw2 - 0.1, h: (pw2 - 0.1) * 1570 / 780 });
-    T(s, [run(h, { bold: true, color: C.plum, breakLine: true }), run(t, { color: C.text, breakLine: true }), run(`supports ${p}`, { color: C.coral, bold: true, fontSize: 8 })], { x: x + 0.06, y: b.y + ph + 0.05, w: pw2 - 0.12, h: 0.86, fontSize: 8.5, valign: 'top' });
+
+  // Meesho's side of the same prototype
+  const ctl = [0, fh, 0.47, 1 - fh], rc = R(ctl);
+  let b = panel(s, ctl, 'Meesho’s side: the control tower (desktop, same link)');
+  icon(s, 'FaGaugeHigh', rc.x + rc.w - 0.25, rc.y + 0.04, 0.17);
+  const thumbs = [['shot_pti_scatter.png', 1566, 1092, 'Price Truth Index', `every seller above ₹5 cr scored; ${PROTO.top10NotReady} of the 10 largest fail`],
+    ['shot_day30_chart.png', 1566, 822, 'Day-30 readout', `badge vs holdout: +${pc(PROTO.exp.base.lift, 1)} → fund`],
+    ['shot_health_detail.png', 1506, 1176, 'Seller Health Score', 'five signals, the rule that fired, the next action']];
+  const tw = thumbs.reduce((t, [, w0, h0]) => t + b.h * w0 / h0, 0), capW = (b.w - tw - 0.1 * 5) / 3;
+  let tx = b.x;
+  thumbs.forEach(([f, w0, h0, h, t]) => {
+    const iw = b.h * w0 / h0;
+    s.addImage({ path: AS(f), x: tx, y: b.y, w: iw, h: b.h });
+    T(s, [run(h, { bold: true, color: C.plum, breakLine: true }), run(t, {})], { x: tx + iw + 0.06, y: b.y, w: capW, h: b.h, fontSize: 7.5, valign: 'middle' });
+    tx += iw + 0.06 + capW + 0.1;
   });
-  const ly = b.y + b.h - 0.6;
-  box(s, b.x, ly, lw, 0.6, C.plum, { round: true, r: 0.05 });
-  s.addImage({ path: AS('qr_live.png'), x: b.x + 0.06, y: ly + 0.05, w: 0.5, h: 0.5 });
-  T(s, [run('Open it live: ', { bold: true, color: C.saffron }), run('meesho-dice-c2m-iitb.vercel.app', { bold: true, color: C.white, breakLine: true }), run('Mirror: prathmesh-28.github.io/c2m-control-tower · Offline: one HTML file in prototype/dist-single', { color: 'E9D5E3' })],
-    { x: b.x + 0.65, y: ly, w: lw - 0.7, h: 0.6, fontSize: 9.5, valign: 'middle' });
+
+  const run0 = [0.47, fh, 0.30, 1 - fh], rr = R(run0);
+  b = panel(s, run0, 'What the prototype runs on', { hc: C.coral });
+  icon(s, 'FaFlask', rr.x + rr.w - 0.25, rr.y + 0.04, 0.17);
+  const stats = [['FaIndustry', IN(PROTO.sellers), 'synthetic sellers', C.coral], ['FaStore', IN(PROTO.skus), 'SKUs listed', C.saffron], ['FaClipboardCheck', '9', 'C2M categories', C.plum], ['FaFlask', '4', 'model tests before every deploy', C.green]];
+  const sw = (b.w - 0.18) / 4;
+  stats.forEach(([ic, v, l, col], k) => {
+    const x = b.x + k * (sw + 0.06);
+    box(s, x, b.y, 0.24, 0.24, col, { round: true, r: 0.04 });
+    icon(s, ic, x + 0.04, b.y + 0.04, 0.16);
+    T(s, v, { x: x + 0.28, y: b.y - 0.02, w: sw - 0.28, h: 0.28, fontSize: 11, bold: true, color: col === C.saffron ? 'C27C0E' : col, valign: 'middle', fontFace: F.head });
+    T(s, l, { x, y: b.y + 0.27, w: sw, h: b.h - 0.27, fontSize: 7, color: C.muted, valign: 'top' });
+  });
+
+  const live = [0.77, fh, 0.23, 1 - fh], rl = R(live);
+  b = panel(s, live, 'Open it live');
+  icon(s, 'FaLink', rl.x + rl.w - 0.25, rl.y + 0.04, 0.17);
+  s.addImage({ path: AS('qr_live.png'), x: b.x, y: b.y, w: b.h, h: b.h });
+  T(s, [run('meesho-dice-c2m-iitb.vercel.app', { bold: true, color: C.coral, fontSize: 8.5, breakLine: true, hyperlink: { url: 'https://meesho-dice-c2m-iitb.vercel.app/#/maker' } }),
+    run('Mirror: prathmesh-28.github.io/c2m-control-tower', { color: C.text, breakLine: true }), run('Offline: one HTML file in prototype/dist-single', { color: C.muted })],
+  { x: b.x + b.h + 0.08, y: b.y, w: b.w - b.h - 0.08, h: b.h, fontSize: 7, valign: 'middle' });
+  s.addNotes('Product walkthrough. Eight screens of the manufacturer app (Price check, Demand Brief, Batch, WhatsApp), two per tab, captured from the live prototype; coral markers match the numbered lines. Screen values come from the prototype’s seeded synthetic data (Kavin Knit Mills, ₹98 making cost); the costed case in Unit Economics uses ₹80 and the ₹209 demand-weighted median.');
 }
 
-// ================================================================== 13 · APPENDIX B: SOURCES, METHOD, ASSUMPTIONS
+// ================================================================== 14 · APPENDIX B: SOURCES, METHOD, ASSUMPTIONS
 {
   const s = page(-1, {
     label: 'Appendix B · Sources, method, assumptions',
-    headline: 'Every figure in the deck traces to a numbered source [S#] or a registered assumption [A#] in one master model',
+    headline: `Every figure in the deck traces to a numbered source (S1–S${Object.keys(S).length}) or a registered assumption (A1–A${Object.keys(A).length}) in one master model`,
     rail: 'APPENDIX B',
-    foot: 'Master model: deck/source/model.mjs → outputs.json (every slide number is read from it) · prototype results: proto.mjs · teardown data: deck/source/data · survey kit: research/13   |   Supports pages 2–12',
+    foot: 'Sources: S10 team teardown, S21 published owner interviews, S22 Round 1 interviews (full list at left)   |   Master model: deck/source/model.mjs (every slide number is read from it) · prototype results: proto.mjs · survey kit: research/13',
   });
-  let b = panel(s, [0, 0, 0.30, 1], 'Sources [S#] (publisher · title · date)');
+  let b = panel(s, [0, 0, 0.30, 1], 'Sources (publisher · title · date)');
   const sl = Object.entries(S);
   T(s, sl.map(([k, [pub, title, date]], i) => run(`${k}  ${pub}: ${title} (${date})`, { breakLine: i < sl.length - 1, color: C.text })), { x: b.x, y: b.y, w: b.w, h: b.h, fontSize: 7.5, valign: 'top', paraSpaceAfter: 1.5 });
 
-  b = panel(s, [0.30, 0, 0.70, 0.68], 'Assumption register [A#] (value · source · confidence H/M/L)');
+  b = panel(s, [0.30, 0, 0.70, 0.68], 'Assumption register (value · source · confidence H/M/L)');
   const al = Object.entries(A);
   const v = (k) => A[k].value;
   const show = {
@@ -1126,24 +1221,24 @@ function page(i, { headline, rail, band, foot, label }) {
     run('Power: ', { bold: true, color: C.plum }), run('62 sellers × 28 days, SE ≈ 1.6 pts, MDE ≈ 4.5% at 80% power.', {}),
   ], { x: b.x, y: b.y, w: b.w, h: b.h, fontSize: 7.5, valign: 'top', paraSpaceAfter: 2 });
 
-  b = panel(s, [0.65, 0.68, 0.35, 0.32], 'Workings index (formula → page)');
+  b = panel(s, [0.65, 0.68, 0.35, 0.32], 'Workings index (formulas)');
   T(s, [
-    run('Sizing: ', { bold: true, color: C.plum }), run('NMV = sellers × ₹1.425 cr; savings = NMV × g ÷ (1 − g) → p3, p11', { breakLine: true }),
-    run('Unit cost: ', { bold: true, color: C.plum }), run('(make + unsold − resold + logistics + returns + capital) ÷ kept → p10', { breakLine: true }),
-    run('Benefit: ', { bold: true, color: C.plum }), run('orders × (incremental × ₹7.3 + Δfailed × ₹60) → p11', { breakLine: true }),
-    run('Δfailed: ', { bold: true, color: C.plum }), run('pre-order share × (1 − 37%) × 15 pts = 4.7 pts → p11', { breakLine: true }),
-    run('AHP: ', { bold: true, color: C.plum }), run('geometric means, CR = (λ − 5) ÷ 4 ÷ 1.12 → p9, Appendix C', { breakLine: true }),
-    run('RICE: ', { bold: true, color: C.plum }), run('reach × impact × confidence ÷ effort → p7', {}),
+    run('Sizing: ', { bold: true, color: C.plum }), run('NMV = sellers × ₹1.425 cr; savings = NMV × g ÷ (1 − g)', { breakLine: true }),
+    run('Unit cost: ', { bold: true, color: C.plum }), run('(make + unsold − resold + logistics + returns + capital) ÷ kept', { breakLine: true }),
+    run('Benefit: ', { bold: true, color: C.plum }), run('orders × (incremental × ₹7.3 + Δfailed × ₹60)', { breakLine: true }),
+    run('Δfailed: ', { bold: true, color: C.plum }), run('pre-order share × (1 − 37%) × 15 pts = 4.7 pts', { breakLine: true }),
+    run('AHP: ', { bold: true, color: C.plum }), run('geometric means, CR = (λ − 5) ÷ 4 ÷ 1.12 (Appendix C)', { breakLine: true }),
+    run('RICE: ', { bold: true, color: C.plum }), run('reach × impact × confidence ÷ effort', {}),
   ], { x: b.x, y: b.y, w: b.w, h: b.h, fontSize: 7.5, valign: 'top', paraSpaceAfter: 2 });
 }
 
-// ================================================================== 14 · APPENDIX C: BENCHMARKS, COMPLIANCE, MODEL DETAIL
+// ================================================================== 15 · APPENDIX C: BENCHMARKS, COMPLIANCE, MODEL DETAIL
 {
   const s = page(-1, {
     label: 'Appendix C · Benchmarks, compliance, model detail',
-    headline: 'Detailed benchmarking, compliance by design and the model workings behind pages 3, 9 and 10',
+    headline: 'Detailed benchmarking, compliance by design, and the workings behind the cohort, cluster and unit-cost numbers',
     rail: 'APPENDIX C',
-    foot: 'Sources: S15–S19, S22–S25   |   Compliance rows are design responses, not legal advice: Meesho legal confirms each before the pilot   |   Supports pages 3, 6, 7, 9, 10, 12',
+    foot: 'Sources: S15–S19, S22–S25   |   Compliance rows are design responses, not legal advice: Meesho legal confirms each before the pilot',
   });
   let b = panel(s, [0, 0, 0.58, 0.52], 'Detailed benchmarking: KPI × company (dated, sourced) and how Meesho uses it');
   table(s, [['', 'Pinduoduo NBI', 'Taobao C2M', 'Temu semi-managed', 'Shein', 'Shein Brazil'],
@@ -1166,7 +1261,7 @@ function page(i, { headline, rail, band, foot, label }) {
     ['GST', 'Stock at a third-party site', 'Node registered as the seller’s additional place of business'],
   ], { x: b.x, y: b.y, w: b.w, colW: [1.35, 1.55, b.w - 2.9], rowH: [0.2, ...Array(6).fill((b.h - 0.22) / 6)], fs: 7.5 });
 
-  b = panel(s, [0, 0.52, 0.34, 0.48], 'Cohort scoring behind the personas (page 3)');
+  b = panel(s, [0, 0.52, 0.34, 0.48], 'Cohort scoring behind the personas');
   table(s, [['Cohort', ...M.cohortCrit.map(([n, w]) => `${n.replace('Barriers Meesho can fix', 'Fixable').replace('Speed to first order', 'Speed')} ${pc(w)}`), 'Score'],
     ...M.cohorts.map((x, i) => [{ t: `${x.k} · ${{ A: 'Offline B2B', C: 'Churned', B: 'Online elsewhere' }[x.k]}`, b: true, c: C.plum }, ...x.s.map(String), { t: x.score.toFixed(2), b: true, c: i === 0 ? C.white : C.plum, f: i === 0 ? C.coral : undefined }])],
   { x: b.x, y: b.y, w: b.w, colW: [1.25, 0.5, 0.45, 0.5, 0.45, 0.45, b.w - 3.6], rowH: [0.36, 0.24, 0.24, 0.24], fs: 8, hfs: 7.5 });
@@ -1188,10 +1283,12 @@ function page(i, { headline, rail, band, foot, label }) {
     run('Logistics ', { bold: true, color: C.plum }), run('= delivered × forward fee + shipped × packing (₹10) or node fee (₹20)', { breakLine: true }),
     run('Capital ', { bold: true, color: C.plum }), run('= make cost × 18% × days ÷ 365 (45 vs 10 days)', { breakLine: true }),
     run('Floor ', { bold: true, color: C.plum }), run(`= cost per kept ÷ (1 − 9%) → proposed ${rs(c3.cost, 1)} ÷ 0.91 = ${rs(c3.floor, 1)}`, { breakLine: true }),
-    run('Reconciliation checks ', { bold: true, color: C.coral }), run(`NPV ${cr(FN.npv)} = Σ PV row (page 11) ✓ · Year-4 NMV ${cr(FN.nmv[3], 0)} (average 1,300 sellers) vs ${cr(Y4.nmv)} exit run-rate (1,400) ✓ · batch payout ${rs(BX.payout)} = revenue − fees ✓ · RICE order = dependency order ✓`, {}),
+    run('Reconciliation checks ', { bold: true, color: C.coral }), run(`NPV ${cr(FN.npv)} = Σ PV row ✓ · Year-4 NMV ${cr(FN.nmv[3], 0)} (average 1,300 sellers) vs ${cr(Y4.nmv)} exit run-rate (1,400) ✓ · batch payout ${rs(BX.payout)} = revenue − fees ✓ · RICE order = dependency order ✓`, {}),
   ], { x: b.x, y: b.y, w: b.w, h: b.h, fontSize: 7.5, valign: 'top', paraSpaceAfter: 2 });
 }
 
+closePage();
 fs.mkdirSync(path.dirname(OUTFILE), { recursive: true });
 await pres.writeFile({ fileName: OUTFILE });
+if (path.resolve(OUTFILE) === DECK_MAIN) fs.writeFileSync(BUILD_STAMP, JSON.stringify({ sha256: sha(DECK_MAIN), built: new Date().toISOString() }, null, 1));
 console.log('Wrote', OUTFILE, pres.slides.length, 'slides');

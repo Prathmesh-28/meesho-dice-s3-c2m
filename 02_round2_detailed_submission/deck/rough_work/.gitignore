@@ -1,0 +1,7 @@
+_build/
+*/render.png
+*/text.txt
+_tools/node_modules/
+_tools/.venv/
+_tools/.lo_profile/
+_tools/.render/

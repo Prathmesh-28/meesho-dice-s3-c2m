@@ -1,0 +1,9 @@
+{
+  "name": "deck-rough-work-tools",
+  "private": true,
+  "type": "module",
+  "description": "Helpers for slide rough work: phone-screen capture from the live prototype.",
+  "dependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}

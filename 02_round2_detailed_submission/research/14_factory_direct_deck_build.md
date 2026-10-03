@@ -1,6 +1,6 @@
 # The Factory Direct deck: storyline, model, new research, audit
 
-The Round 2 deck (`deck/meesho_dice_round2.pptx`), built on 2 Oct 2026 in the csuite-case-deck format and rebuilt the same day to follow the page flow and density of the 15-page DICE winner (IIM Mumbai, self-pickup). On 3 Oct it grew to 15 pages: a User Personas & Flow page and a week-by-week 90-day plan. Earlier versions are archived in `deck/old/`: v03 is the 11-page deck, v04 the first 14-page version and v05 the 14-page IIM-flow version.
+The Round 2 deck (`deck/meesho_dice_round2.pptx`), built on 2 Oct 2026 in the csuite-case-deck format and rebuilt the same day to follow the page flow and density of the 15-page DICE winner (IIM Mumbai, self-pickup). On 3 Oct it grew to 15 pages: a User Personas & Flow page and a week-by-week 90-day plan. That evening the deck was hand-edited in PowerPoint (panel icons, company logos, VS badges, stat cards). On 4 Oct, slide 13 became a dedicated product walkthrough with every phone screen, and inline citations and page pointers were taken out of the slide bodies; each slide now names its sources only in its footer. Earlier versions are archived in `deck/old/`: v03 is the 11-page deck, v04 the first 14-page version, v05 the 14-page IIM-flow version and v06 the hand-edited deck before the 4 Oct changes.
 
 ## Structure
 
@@ -20,7 +20,8 @@ The page flow copies the IIM Mumbai winner tab for tab, with "Customer" read as 
 | 10 | Unit Economics | Scenario column table per 3-pack (per 100 shipped); one 1,000-pack batch stage by stage; where the ₹45 per pack goes; assumptions strip |
 | 11 | Financial Analysis | 5-year table with discount factors and PV; NPV box; opportunity ladder; benefit vs cost chart; tornado; break-even and scenarios; Round 1 reconciliation |
 | 12 | 90-Day Plan & Risks | Week-by-week Gantt (W1 = 2 Nov 2026 to W13 = 25 Jan 2027) across 5 workstreams with milestones, Day 30/60/90 gates and money released, then Q2–Q4 and Years 2–4; KPI table grouped onboarding → activation → retention → guardrails with owner and cadence; 6 risks; the ask |
-| 13–15 | Appendices A–C | Prototype walkthrough · sources, method, assumption register · detailed benchmarks, compliance, model workings |
+| 13 | Appendix A · Product walkthrough | All 8 phone screens of the manufacturer app, 2 per tab (Price check, Demand Brief, Batch, WhatsApp), with numbered markers and explanations and the barrier each step removes; control-tower thumbnails; what the prototype runs on; QR and live link |
+| 14–15 | Appendices B–C | Sources, method, assumption register · detailed benchmarks, compliance, model workings |
 
 ## What the model says (deck/source/model.mjs)
 
