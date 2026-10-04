@@ -31,6 +31,14 @@ Tap-only: no names, no numbers to type, no contact details, one page. Build it w
 
 Left out to keep it short: the ₹80 making cost (A22) and prices need typed numbers, so ask them on follow-up calls. The full version below has them, plus the per-segment sections.
 
+### Turn the real responses into a results slide
+
+1. In the form: **Responses → ⋮ → Download responses (.csv)**, then unzip the file.
+2. Run `node survey/results_slide.mjs <path to the csv> --date "4 Oct 2026"` (from this `research` folder).
+3. It writes `deck/rough_work/survey_results/survey_results.pptx`: one slide in the deck's style with six editable charts (who answered, what blocks them, which ideas they value, the warehouse fee they accept, payment terms / margin / batch size, likelihood to start). The headline comes from the results; n and the date go in the footer; below 30 answers every number is shown as "x of y".
+
+Only real responses go in. The slide says it is a survey of the factories that answered, so the numbers must be theirs.
+
 ## Full version: 43 questions with branching
 
 A questionnaire for factory owners and managers. It gives the deck its own manufacturer numbers: which group each factory is in, what keeps it offline or made it leave Meesho, its real costs and payment terms, and how it values each Factory Direct lever. It replaces the 8-question "manufacturer pulse" in `13_survey_and_interview_kit.md` (section B); where the questions overlap, the answer options are the same, so any pulse responses can be merged.
