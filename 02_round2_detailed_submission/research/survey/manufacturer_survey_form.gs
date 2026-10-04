@@ -7,6 +7,8 @@
  * 2. Delete the sample code, paste this whole file, and click Save.
  * 3. Pick "buildManufacturerSurvey" in the function list at the top and click Run. Allow access when asked.
  * 4. Open the Execution log: it shows the link to edit the form, the link to share, and the response sheet.
+ * 5. Optional check before sharing: run "addTestResponses" (12 made-up answers tagged TEST), look at the
+ *    Responses tab and the sheet, then run "deleteTestResponses". Test answers are not data; never report them.
  *
  * The questions live in SURVEY below. The readable version is research/16_manufacturer_survey_google_form.md.
  * A choice written as [label, section id] sends the respondent to that section ("submit" ends the form);
@@ -151,6 +153,7 @@ function buildManufacturerSurvey() {
   });
   const sheet = SpreadsheetApp.create(`${SURVEY.title} (responses)`);
   form.setDestination(FormApp.DestinationType.SPREADSHEET, sheet.getId());
+  PropertiesService.getScriptProperties().setProperty('FORM_ID', form.getId());
   let share = form.getPublishedUrl();
   try { share = form.shortenFormUrl(share); } catch (e) { /* keep the long link */ }
   console.log(`Edit the form: ${form.getEditUrl()}`);
@@ -201,4 +204,143 @@ function addQuestion(form, q) {
   item.setTitle(q.title).setRequired(q.required !== false);
   if (q.help) item.setHelpText(q.help);
   return item;
+}
+
+// ------------------------------------------------------------------ test responses
+// Made-up answers for checking the form before it goes out: the branching, the response sheet and the summary charts.
+// Each one is tagged TEST in question 39 (and in the name field). They are not survey data: delete them with
+// deleteTestResponses() before sharing the form, and never report them.
+
+const FORM_ID = ''; // only needed if you built the form by hand: the long ID in the form's edit link
+const TEST_TAG = 'TEST RESPONSE: made up to check the form, not real data.';
+// Group of each test respondent (question 10), mostly offline factories as in the deck's cohort mix.
+const TEST_GROUPS = ['never', 'never', 'never', 'never', 'never', 'meesho_stopped', 'meesho_stopped', 'meesho_stopped', 'elsewhere', 'elsewhere', 'meesho_now', 'meesho_now'];
+
+function addTestResponses() {
+  const form = surveyForm();
+  const items = itemsByNumber(form);
+  TEST_GROUPS.forEach((group, i) => {
+    const response = form.createResponse();
+    Object.entries(testAnswers(i + 1, group)).forEach(([n, value]) => response.withItemResponse(itemResponse(items[n], value)));
+    response.submit();
+  });
+  console.log(`Added ${TEST_GROUPS.length} test responses. Delete them with deleteTestResponses() before sharing the form.`);
+}
+
+function deleteTestResponses() {
+  const form = surveyForm();
+  const tagTitle = question(39).title;
+  let deleted = 0;
+  form.getResponses().forEach((r) => {
+    if (r.getItemResponses().some((ir) => ir.getItem().getTitle() === tagTitle && String(ir.getResponse()).startsWith('TEST'))) {
+      form.deleteResponse(r.getId());
+      deleted += 1;
+    }
+  });
+  // Deleting form responses leaves their rows in the linked sheet, so remove those too.
+  let rows = 0;
+  try {
+    SpreadsheetApp.openById(form.getDestinationId()).getSheets().forEach((sheet) => {
+      const values = sheet.getDataRange().getValues();
+      const col = values[0].indexOf(tagTitle);
+      if (col < 0) return;
+      for (let r = values.length - 1; r >= 1; r--) {
+        if (String(values[r][col]).startsWith('TEST')) { sheet.deleteRow(r + 1); rows += 1; }
+      }
+    });
+  } catch (e) {
+    console.log('No linked response sheet found: delete any TEST rows there by hand.');
+  }
+  console.log(`Deleted ${deleted} test responses from the form and ${rows} rows from the sheet.`);
+}
+
+function testAnswers(k, group) {
+  const labels = (n) => question(n).choices.map((c) => (Array.isArray(c) ? c[0] : c));
+  const pick = (n, weights) => weighted(labels(n), weights);
+  const some = (n, max) => shuffled(labels(n)).slice(0, 1 + Math.floor(Math.random() * max));
+  const a = {};
+  a[1] = labels(1)[0];
+  a[2] = pick(2, [5, 4, 2, 2, 1, 1, 1, 1, 1, 1, 0.3]);
+  a[3] = pick(3, [5, 1, 1, 4, 2, 2, 1, 1, 1, 1, 1, 1, 1]);
+  a[4] = pick(4, [6, 2, 2]);
+  a[5] = pick(5, [3, 4, 3, 1, 1, 1]);
+  a[6] = pick(6, [1, 3, 3, 3, 1]);
+  a[7] = Array.from(new Set(['Distributors or wholesalers', ...some(7, 2)]));
+  a[8] = weighted(a[7], a[7].map((c, i) => (i === 0 ? 3 : 1)));
+  a[9] = pick(9, [3, 3, 2, 1, 2]);
+  a[10] = labels(10)[{ never: 0, meesho_now: 1, meesho_stopped: 2, elsewhere: 3 }[group]];
+  if (group === 'never') a[11] = some(11, 3);
+  if (group === 'elsewhere') { a[12] = some(12, 2); a[13] = pick(13, [3, 3, 1, 1]); a[14] = some(14, 2); }
+  if (group === 'meesho_stopped') { a[15] = pick(15, [3, 3, 1, 1]); a[16] = some(16, 3); a[17] = a[16][0]; a[18] = pick(18, [2, 1, 1]); }
+  if (group === 'meesho_now') { a[19] = pick(19, [1, 2, 2, 1]); a[20] = pick(20, [2, 3, 1, 0.5]); a[21] = some(21, 2); }
+  a[22] = pick(22, [0.5, 1, 3, 4, 2]);
+  a[23] = pick(23, [1, 3, 4, 2, 0.5, 1]);
+  a[24] = pick(24, [1, 4, 3, 1, 1]);
+  if (a[2] === labels(2)[0] && Math.random() < 0.8) a[25] = 70 + Math.floor(Math.random() * 35);
+  if (Math.random() < 0.6) {
+    const [product, exFactory] = weighted([['Cotton briefs, pack of 3', 95], ['Double bedsheet with 2 pillow covers', 260], ['Printed synthetic saree', 240], ['Kitchen containers, set of 6', 150]], [1, 1, 1, 1]);
+    a[26] = product;
+    a[27] = exFactory;
+    a[28] = Math.round(exFactory * (1.6 + Math.random() * 0.8));
+  }
+  a[29] = pick(29, [1, 3, 3, 1]);
+  a[30] = pick(30, [1, 4, 3, 1]);
+  a[31] = pick(31, [4, 3, 1, 2]);
+  a[32] = IDEAS.map(() => weighted(question(32).columns, [1, 3, 4, 1]));
+  a[33] = pick(33, [2, 2, 3, 2, 2, 1, 1, 0.5]);
+  const highestFee = weighted([0, 1, 2, 3], [1, 3, 4, 2]); // fee steps the respondent accepts: none, ₹10, ₹10-20, all
+  a[34] = [0, 1, 2].map((i) => (i < highestFee ? 'Yes' : i === highestFee ? 'Maybe' : 'No'));
+  a[35] = pick(35, [1, 2, 3, 4, 2]);
+  a[36] = pick(36, [3, 3, 2]);
+  a[37] = pick(37, [2, 3, 1]);
+  a[38] = weighted([1, 2, 3, 4, 5], [1, 2, 4, 3, 1]);
+  a[39] = TEST_TAG;
+  a[40] = 'Yes';
+  a[41] = `TEST ${String(k).padStart(2, '0')} (made-up respondent)`;
+  return a;
+}
+
+function itemResponse(item, value) {
+  switch (item.getType()) {
+    case FormApp.ItemType.MULTIPLE_CHOICE: return item.asMultipleChoiceItem().createResponse(value);
+    case FormApp.ItemType.CHECKBOX: return item.asCheckboxItem().createResponse(value);
+    case FormApp.ItemType.GRID: return item.asGridItem().createResponse(value);
+    case FormApp.ItemType.SCALE: return item.asScaleItem().createResponse(value);
+    case FormApp.ItemType.PARAGRAPH_TEXT: return item.asParagraphTextItem().createResponse(String(value));
+    default: return item.asTextItem().createResponse(String(value));
+  }
+}
+
+function surveyForm() {
+  const id = PropertiesService.getScriptProperties().getProperty('FORM_ID') || FORM_ID;
+  if (!id) throw new Error('Run buildManufacturerSurvey first, or paste the form ID into FORM_ID.');
+  return FormApp.openById(id);
+}
+
+function itemsByNumber(form) {
+  const byTitle = {};
+  form.getItems().forEach((item) => { byTitle[item.getTitle()] = item; });
+  const out = {};
+  SURVEY.sections.forEach((s) => s.questions.forEach((q) => {
+    if (!byTitle[q.title]) throw new Error(`Question ${q.n} is not in the form (titles must match exactly): ${q.title}`);
+    out[q.n] = byTitle[q.title];
+  }));
+  return out;
+}
+
+function question(n) {
+  for (const s of SURVEY.sections) for (const q of s.questions) if (q.n === n) return q;
+  throw new Error(`No question ${n}`);
+}
+
+function weighted(values, weights) {
+  let r = Math.random() * weights.reduce((t, w) => t + w, 0);
+  for (let i = 0; i < values.length; i++) { r -= weights[i]; if (r <= 0) return values[i]; }
+  return values[values.length - 1];
+}
+
+function shuffled(values) {
+  const out = values.slice();
+  for (let i = out.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [out[i], out[j]] = [out[j], out[i]]; }
+  return out;
 }

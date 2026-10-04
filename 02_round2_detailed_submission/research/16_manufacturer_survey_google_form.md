@@ -22,6 +22,8 @@ A questionnaire for factory owners and managers. It gives the deck its own manuf
 
 Before sharing: preview the form once as each of the four groups, then send it to 2 or 3 owners as a pilot and fix any word they stumble on.
 
+**Test run (optional):** in the same Apps Script project, run `addTestResponses`. It submits 12 made-up responses (5 never online, 3 left Meesho, 2 on other marketplaces, 2 on Meesho), each tagged TEST, so you can check the branching, the response sheet and the summary charts. Then run `deleteTestResponses`, which removes them from the form and the sheet. Test answers are not survey data: never put them in the deck.
+
 ## The questionnaire
 
 ### Section 1 of 11 · About this survey
