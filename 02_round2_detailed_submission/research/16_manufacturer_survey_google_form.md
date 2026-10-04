@@ -1,5 +1,38 @@
 # Manufacturer survey: Google Form questionnaire
 
+## Short version: 12 questions, about 3 minutes (send this one)
+
+Tap-only: no names, no numbers to type, no contact details, one page. Build it with `survey/manufacturer_survey_short.gs` (same steps as below, but run `buildShortSurvey`). Every question is required; question 6 allows up to 3 picks.
+
+1. **What does your unit mainly make?** Hosiery, innerwear or socks · Home textiles (bedsheets, towels, curtains) · Sarees or dress material · Readymade garments · Plastic household items · Imitation jewellery · Steel kitchenware · Footwear · Brass or metal décor · Bags · Other
+2. **Where is your unit?** Tiruppur · Panipat · Ludhiana · Surat · Erode · Rajkot · Moradabad · Agra · Delhi NCR · Kolkata · Other
+3. **What was your turnover last financial year?** Under ₹10 crore · ₹10-50 crore · ₹50-100 crore · More than ₹100 crore · Prefer not to say
+4. **In a normal month, how much of your production capacity is unused?** Under 10% · 10-20% · 20-30% · More than 30% · Don't know
+5. **Have you ever sold online through your own seller account?** (Selling through a trader or reseller does not count.) No, never · Yes, on Meesho, and we still do · Yes, on Meesho, but we stopped · Yes, but only on other marketplaces (Amazon, Flipkart and others)
+6. **What makes (or made) selling online hard for you? Pick up to 3.** We don't know how to start · Returns and damaged goods coming back · Orders that could not be delivered and came back · Packing and shipping every order ourselves · Keeping stock ready before orders come · Too few orders in the first months · Fees and commission · Online prices are too low for us · Payment comes too late · It would upset our distributors · Other
+7. **When do your distributors or B2B buyers usually pay you?** Before or at delivery · Within 30 days · 30-45 days after delivery · 45-60 days after delivery · More than 60 days after delivery
+8. **On B2B orders, what is your usual profit as a share of your selling price?** Under 5% · 5-8% · 8-12% · 12-20% · More than 20% · Prefer not to say
+9. **What is the smallest batch of one design you can make without losing money?** Under 200 pieces · 200-500 pieces · 500-1,000 pieces · More than 1,000 pieces
+10. **Ideas we are testing: how useful would each be for your business?** (Grid; these are ideas, not real offers.) Rows: A free price check before you list · A weekly report of demand for your product, by district · Making only prepaid, confirmed orders (plus 15% extra) · A warehouse near you that packs, ships and handles returns · 30% of the order value paid when you hand over the goods · Orders and batch confirmation on WhatsApp. Columns: Not useful · A little useful · Very useful
+11. **That warehouse charges a fee for each piece it packs, ships and handles returns for. Would you use it at each fee?** (Grid) Rows: ₹10 a piece · ₹20 a piece · ₹30 a piece. Columns: Yes · Maybe · No
+12. **If these were available in your cluster next month, how likely is it that you would start or grow selling online within 30 days?** (Scale 1-5: Not at all likely to Very likely)
+
+| # | What the answer tells us |
+|---|---|
+| 1-4 | Category, cluster, size and idle capacity (who answered, and the motivation to take batches) |
+| 5 | Segment: offline (Cohort A), stopped on Meesho (C), other marketplaces (B), on Meesho now |
+| 6 | Barriers, read by segment from question 5 (Primary Research barrier grid, personas) |
+| 7 | The 45-60 day distributor terms (cash cycle) |
+| 8 | Target margin on price, 9% (A23) |
+| 9 | Minimum batch (Demand Brief pools demand into batches of 500+) |
+| 10 | Value of each Factory Direct lever (RICE impact and confidence) |
+| 11 | Node fee acceptance at ₹10 / ₹20 / ₹30 (A28: ₹20) |
+| 12 | Stated intent: count it at 50% before using it as an adoption rate |
+
+Left out to keep it short: the ₹80 making cost (A22) and prices need typed numbers, so ask them on follow-up calls. The full version below has them, plus the per-segment sections.
+
+## Full version: 43 questions with branching
+
 A questionnaire for factory owners and managers. It gives the deck its own manufacturer numbers: which group each factory is in, what keeps it offline or made it leave Meesho, its real costs and payment terms, and how it values each Factory Direct lever. It replaces the 8-question "manufacturer pulse" in `13_survey_and_interview_kit.md` (section B); where the questions overlap, the answer options are the same, so any pulse responses can be merged.
 
 | | |
