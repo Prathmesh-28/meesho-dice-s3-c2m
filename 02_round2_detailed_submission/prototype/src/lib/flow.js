@@ -10,7 +10,7 @@ export function personaFlow(pti) {
   const self = priceCheck({ ...args, mode: 'self' });
   const table = routeTable(args);
   const brief = demandBrief({ typeId: PERSONA.type, marketMedian: check.marketMedian });
-  const batch = batchPlan({ brief, listingPrice: check.suggested, minViablePrice: table[3].floor });
+  const batch = batchPlan({ brief, listingPrice: check.gatePrice, minViablePrice: table[3].floor, preOrders: PERSONA.preOrders });
   const ledger = batchCash({ confirmed: batch.preOrders, price: batch.preorderPrice, rates: ratesFor(PERSONA.category) });
   return { check, self, table, brief, batch, ledger };
 }

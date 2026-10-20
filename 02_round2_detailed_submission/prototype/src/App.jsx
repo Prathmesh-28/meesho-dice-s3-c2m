@@ -22,8 +22,8 @@ const NAV = [
   { path: 'health', label: 'Seller Health', num: 3 },
   { path: 'maker', label: 'Manufacturer app', num: 4 },
   { path: 'buyer', label: 'Buyer pre-order', num: 5 },
-  { path: 'business', label: 'Business case', num: 6 },
-  { path: 'method', label: 'How Meesho runs it' },
+  { path: 'business', label: 'Finance analysis', num: 6 },
+  { path: 'method', label: 'Scale-up & road map' },
 ];
 
 export default function App() {
@@ -74,7 +74,7 @@ export default function App() {
         <View {...shared} />
       </main>
       <footer className="footer">
-        Prototype built for the Meesho DICE Challenge S3 detailed submission by {TEAM.members}. All sellers, prices,
+        Prototype built for the Meesho DICE Challenge S3 by {TEAM.members}. All sellers, prices,
         orders and demand are synthetic and generated from a fixed seed; seller names are fictional. Every assumption
         lives in <code>src/config.js</code>.
       </footer>

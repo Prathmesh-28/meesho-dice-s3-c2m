@@ -6,7 +6,8 @@ import { runExperiment } from './experiment.js';
 import { generateCohort, cohortSummary } from './health.js';
 import { priceCheck, unitEconomics } from './economics.js';
 import { demandBrief, batchPlan } from './demand.js';
-import { deckCase, financials, breakEvenYield, SCENARIOS } from './factoryDirect.js';
+import { deckCase, financials, breakEvenYield, gateReleases, SCENARIOS } from './factoryDirect.js';
+import { personaFlow } from './flow.js';
 
 const market = generateMarket();
 const pti = runPTI(market, GATE);
@@ -78,5 +79,19 @@ describe('end-to-end C2M decision model', () => {
     expect(run('node').qualifies).toBe(true);
     expect(run('batch').qualifies).toBe(true);
     expect(run('node').marketMedian).toBe(209);
+  });
+
+  it('runs the deck’s worked batch for Kavin Knit Mills, and the deck’s gate money', () => {
+    const { batch, ledger } = personaFlow(pti);
+    expect(batch.preOrders).toBe(1000);
+    expect(batch.make).toBe(1150);
+    expect(batch.preorderPrice).toBeCloseTo(182.28, 1);
+    expect(Math.round(ledger.advance)).toBe(54684);
+    expect(Math.round(ledger.failed)).toBe(46);
+    expect(Math.round(ledger.returns)).toBe(76);
+    expect(Math.round(ledger.balance)).toBe(33840);
+    const g = gateReleases();
+    expect(g.d90).toBeCloseTo(7.3, 1);
+    expect(g.rest).toBeCloseTo(14.9, 1);
   });
 });

@@ -19,7 +19,7 @@ export default function Overview({ pti, summary, cohort }) {
     ['5 · Node takes the batch', 'One truck to the cluster node; the seller keeps title; an NBFC advances 30%', `+${rupees(ledger.advance)} on Day 3`, ['maker', { step: 'batch' }]],
     ['6 · Node packs each order', 'Picks, packs, labels and samples for QC at ₹20 a unit', 'no packing team needed', ['maker', { step: 'price' }]],
     ['7 · Valmo delivers', `The buyer prepaid ${rupees(batch.preorderPrice)} against ${rupees(check.marketMedian)}; returns end at the node`, `${pct(ledger.failed / ledger.confirmed, 1)} fail, not ${pct(categoryById[PERSONA.category].rtoRate)}`, ['buyer']],
-    ['8 · Settle and learn', 'Balance paid 7 days after delivery; the Health Score updates daily', `+${rupees(ledger.balance)} on Day 15`, ['health', { seller: PERSONA.id }]],
+    ['8 · Settle and learn', 'Balance paid 7 days after delivery (cash in ~11 days on average); the Health Score updates; data loops back to step 1', `+${rupees(ledger.balance)} on Day 15`, ['health', { seller: PERSONA.id }]],
   ];
   const grant = persona.events.find((e) => e.rule === 'grant');
 
@@ -28,8 +28,8 @@ export default function Overview({ pti, summary, cohort }) {
     ['What stops reluctant manufacturers, and what changes their calculus?', 'Manufacturer app', 'maker', `A price check before listing, a pin-code Demand Brief, and batches made only against confirmed pre-orders.`],
     ['What makes early scale-up sustainable without subsidy or handholding?', 'Seller Health', 'health', `${summary.auto} automated actions against ${summary.manual} human escalations across the 60-seller pilot.`],
     ['Will buyers accept a 7-8 day wait for a lower price?', 'Buyer pre-order', 'buyer', `A prepaid pre-order at ${rupees(batch.preorderPrice)} against ${rupees(check.marketMedian)}; every pre-order joins the factory's batch.`],
-    ['Is it worth it for Meesho, and how robust is it?', 'Business case', 'business', `NPV ${crore(fin.npv)} at 12%, payback in Year ${fin.payback}; drag any driver to stress it.`],
-    ['What should Meesho measure, and when should it intervene?', 'Health Score + Day-30 rule', 'experiment', `Five-signal daily score, nine rules with thresholds, and a fund / tighten / stop rule at day 30.`],
+    ['Is it worth it for Meesho, and how robust is it?', 'Finance analysis', 'business', `NPV ${crore(fin.npv)} at 12%, payback in Year ${fin.payback}; drag any driver to stress it.`],
+    ['What should Meesho measure, and when should it intervene?', 'Health Score + Day-30 rule', 'experiment', `Five-signal daily score, a rulebook with thresholds, and a fund / tighten / stop rule at Day 30 that releases ₹7.3 cr.`],
   ];
 
   return (
@@ -39,14 +39,16 @@ export default function Overview({ pti, summary, cohort }) {
           <div className="eyebrow" style={{ color: '#f7c08a' }}>Factory Direct · scale is the wrong screen</div>
           <h2 style={{ marginTop: 8 }}>Screen factories on price, not size. Then let them make only what is already sold.</h2>
           <p>
-            A working prototype of Factory Direct. It screens every large seller on what buyers actually paid, gives a
-            factory a price check, a district Demand Brief and prepaid batches, runs a 60-seller pilot on rules instead of
-            account managers, and shows Meesho’s five-year case. Every number on this page is computed live, from the
-            same model as the deck.
+            India’s cheapest goods are made in factories that won’t sell online, because returns, unsold stock and slow
+            first sales scare them off. Meesho has to bring these factories on and keep them selling, so prices drop
+            because costs are lower, not because of discounts.
+          </p>
+          <p style={{ marginTop: 8 }}>
+            This working prototype runs Factory Direct end to end. Every number is computed live, from the same model as the deck.
           </p>
           <div className="row" style={{ marginTop: 16 }}>
             <a className="btn primary" href={href('maker')} style={{ textDecoration: 'none', background: 'var(--accent)', borderColor: 'var(--accent)', color: 'var(--plum)' }}>Open the manufacturer app →</a>
-            <a className="btn" href={href('business')} style={{ textDecoration: 'none', background: 'transparent', color: '#fff', borderColor: 'rgba(255,255,255,.4)' }}>See the business case</a>
+            <a className="btn" href={href('business')} style={{ textDecoration: 'none', background: 'transparent', color: '#fff', borderColor: 'rgba(255,255,255,.4)' }}>See the finance analysis</a>
           </div>
         </div>
         <div className="kpis">
@@ -56,6 +58,20 @@ export default function Overview({ pti, summary, cohort }) {
           <div className="kpi"><div className="v">{summary.auto} : {summary.manual}</div><div className="l">automated vs human actions, 60-seller pilot</div></div>
         </div>
       </section>
+
+      <Card title="A factory owner’s dilemma" sub="Why bulk B2B factories stay offline, and what Factory Direct changes">
+        <div className="dilemma">
+          {[['1 · Today', '“500 pieces, one truck, paid in 45 days. Zero returns.”', 'Bulk B2B: made to order'],
+            ['2 · The online fear', '“Pack every order? Who pays for returns and unsold stock?”', '43% of factories that quit cite returns'],
+            ['3 · Factory Direct', '“Sold before I cut fabric. It feels like B2B again.”', `1 truck · ${rupees(ledger.advance)} at handover · cash in ~11 days`]].map(([k, q, n], i) => (
+            <div className={`dilemma-step${i === 2 ? ' on' : ''}`} key={k}>
+              <div className="k">{k}</div>
+              <div className="q">{q}</div>
+              <div className="n">{n}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
 
       <Card title="The Factory Direct loop, one batch end to end" sub={`${PERSONA.name} (fictional), ${PERSONA.cluster}: data → orders → goods → cash. No step starts until the one before it is confirmed.`}>
         <div className="loop fd">
@@ -90,7 +106,7 @@ export default function Overview({ pti, summary, cohort }) {
               <a href={href('health', { seller: PERSONA.id })}>Open →</a>
             </li>
             <li>
-              <div><div className="t">Graduated</div><div className="d">{persona.graduatedDay ? `Score held at 80 or above for 30 days; graduated on D${persona.graduatedDay} with batch prepayment unlocked. Today (D${persona.day}) the score is ${Math.round(persona.score)}.` : `Day ${persona.day}, score ${Math.round(persona.score)}.`}</div></div>
+              <div><div className="t">Graduated</div><div className="d">{persona.graduatedDay ? `Score held at 80 or above for 30 days; graduated on D${persona.graduatedDay} with prepaid batches unlocked. Today (D${persona.day}) the score is ${Math.round(persona.score)}.` : `Day ${persona.day}, score ${Math.round(persona.score)}.`}</div></div>
               <a href={href('health', { seller: PERSONA.id })}>Open →</a>
             </li>
           </ol>
@@ -114,7 +130,7 @@ export default function Overview({ pti, summary, cohort }) {
           <div className="note-box mt">
             All sellers, prices, orders and demand are synthetic and generated from a fixed seed, so the same stories
             appear on every run. The logic is what the prototype demonstrates: the rules would run unchanged on
-            Meesho’s delivered-order and listing tables (see <a href={href('method')}>How Meesho runs it</a>).
+            Meesho’s delivered-order and listing tables (see <a href={href('method')}>Scale-up & road map</a>).
           </div>
         </Card>
       </div>

@@ -130,6 +130,14 @@ export function financials(over = {}) {
   };
 }
 
+// Money released at the 90-day gates: ₹0 to Day 30; Days 31-90 fund 2 clusters' onboarding, half the Demand Brief
+// build, 1 Factory Node and a ₹1 cr returns-pool seed; the rest of Year-1 cash follows the Day-90 gate.
+export function gateReleases() {
+  const d90 = 2 * FD.clusterCost + FD.briefCost[0] / 2 + FD.nodeCost + 1;
+  const y1 = financials().cashY1;
+  return { d30: 0, d90, rest: y1 - d90, y1 };
+}
+
 // The share of planned seller yield at which NPV reaches zero.
 export function breakEvenYield(over = {}) {
   let lo = 0, hi = 5;

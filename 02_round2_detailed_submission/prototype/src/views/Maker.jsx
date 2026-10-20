@@ -46,7 +46,7 @@ export default function Maker({ pti, params }) {
   const table = useMemo(() => routeTable({ unitCost, category: categoryId, typeId, margin, medians: pti.medians }), [unitCost, categoryId, typeId, margin, pti]);
   const brief = useMemo(() => demandBrief({ typeId, marketMedian: check.marketMedian }), [typeId, check.marketMedian]);
   // Pre-orders are priced off the gate price and must still clear the prepaid-batch floor.
-  const batch = useMemo(() => batchPlan({ brief, listingPrice: check.suggested, minViablePrice: table[3].floor }), [brief, check.suggested, table]);
+  const batch = useMemo(() => batchPlan({ brief, listingPrice: check.gatePrice, minViablePrice: table[3].floor, preOrders: isPersona ? PERSONA.preOrders : undefined }), [brief, check.gatePrice, table, isPersona]);
   const ledger = useMemo(() => batchCash({ confirmed: batch.preOrders, price: batch.preorderPrice, rates: ratesFor(categoryId) }), [batch, categoryId]);
   const cash = cashCycle();
   const maxWeekly = Math.max(...brief.rows.map((r) => r.weekly));
@@ -342,6 +342,10 @@ export default function Maker({ pti, params }) {
                   Each step removes one cost: the wholesaler mark-up, then packing every order, then stock built blind and
                   cash-on-delivery failures. Same cost model as the deck: ₹150 per return, no failed-delivery fee, 18% working capital.
                 </p>
+                <div className="note-box mt">
+                  <b>Factory Node:</b> a shared stocking point at a Meesho partner hub. The factory keeps part of its finished goods there and
+                  the rest at its own unit, and the hub is topped up from factory stock as orders use it up. A prepaid batch arrives in one truck.
+                </div>
               </Card>
               <Card title="Barriers this step removes">
                 <Barrier t="Unit-level fulfilment" d="The Factory Node option: one bulk handover; the node picks, packs, ships and takes returns." />
@@ -378,6 +382,12 @@ export default function Maker({ pti, params }) {
                   orders plus a {pct(ECONOMICS.batchBuffer)} buffer, and hands them over in bulk. {pct(ECONOMICS.prepaymentShare)} of confirmed value
                   is paid at handover.
                 </p>
+              </Card>
+              <Card title="Where returns go" sub={`${num(ledger.returns)} returns and ${num(ledger.failed)} failed deliveries on this batch`}>
+                <Barrier t="Returns end at the node, not at the factory" d={`Valmo brings every return to the ${cluster} Factory Node. The factory never handles a single return.`} />
+                <Barrier t="Graded, and resold where fit" d="The node grades each pack; packs fit to sell go back into stock, so about 90% of their making cost is recovered." />
+                <Barrier t="Priced in before listing" d={`₹150 per return and ₹0 per failed delivery, already in the price check: ${rupees(check.atSuggested.returnCostPerKept)} per pack kept.`} />
+                <Barrier t="Rules if returns rise" d="Size-led returns get a size-chart fix from return reasons; above 1.5× the category norm the SKU goes on QC hold at the node. A returns pool caps a new factory’s early losses." />
               </Card>
               <Card title="Barriers this step removes">
                 <Barrier t="Inventory risk, build-to-stock" d={`Stock at risk is the ${num(batch.buffer)}-unit buffer, not a warehouse of guesses.`} />

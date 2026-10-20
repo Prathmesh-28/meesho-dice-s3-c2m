@@ -37,10 +37,10 @@ Open the local address printed by Vite. For a production build, run `npm run bui
 2. **Price Truth Index:** change the catalogue gate; inspect large sellers, price gaps, and a SKU breakdown. Export the resulting acquisition list as CSV.
 3. **Day-30 readout:** switch Base, Weak lift, and Price decay to see the fund, tighten, and stop decisions.
 4. **Seller Health:** inspect daily scores and the action log for Kavin Knit Mills and the 60-seller pilot.
-5. **Manufacturer app:** at the default ₹80 making cost, *Ship myself* shows **Not yet** (7.2% below the ₹209 buyers pay) and *Factory Node* shows **Qualifies** (8.5%); the route table compares all four routes. Then view the demand brief, commit the batch to see its cash (NBFC advance, payout, balance) and the WhatsApp-style message.
+5. **Manufacturer app:** at the default ₹80 making cost, *Ship myself* shows **Not yet** (7.2% below the ₹209 buyers pay) and *Factory Node* shows **Qualifies** (8.5%); the route table compares all four routes. Then view the demand brief, commit the deck's worked batch (1,000 pre-orders → 1,150 made, ₹54,684 advanced at handover, +₹33,840 to the factory on Day 15), see where returns go (they end at the node, graded), and the WhatsApp-style message.
 6. **Buyer pre-order:** the buyer's product page with the "Sold directly by the manufacturer" badge; pre-order at ₹182 against ₹209 and watch it join the factory's batch.
-7. **Business case:** NPV, IRR, payback and break-even; drag the five drivers or switch Bear, Base and Bull.
-8. **How Meesho runs it:** review the minimum data fields, daily job, assumptions, and pilot sequence.
+7. **Finance analysis:** NPV, IRR, payback and break-even; drag the five drivers or switch Bear, Base and Bull.
+8. **Scale-up & road map:** the five-step scale-up engine with its KPIs, the cluster kit, and the Day-30 / 60 / 90 gates with the money each releases (₹7.3 cr, then ₹14.9 cr; Year-1 cap ₹22.2 cr).
 
 All sellers, prices, demand, orders, and outcomes are **synthetic, fixed-seed demonstration data**. The model is self-contained in the browser and does not connect to Meesho or WhatsApp. The displayed batch commitment, callback request, and payment are simulations; no external action occurs. Change proposal assumptions in `src/config.js`.
 
@@ -60,6 +60,7 @@ Full-page captures at 2× resolution are in `screenshots/`, numbered in demo ord
 | `08_manufacturer_batch_committed.png` | Committed batch and its cash, advance to balance |
 | `09_whatsapp_brief.png` | WhatsApp demand brief with one-tap commit |
 | `10_buyer_preorder.png` | The buyer's pre-order page and the batch it joins |
-| `11_business_case.png` | Five-year case, drivers, benefit vs cost |
+| `11_business_case.png` | Finance analysis: five-year case, drivers, benefit vs cost |
+| `12_scale_up_road_map.png` | Scale-up engine, cluster kit and the 90-day gates |
 
 To recapture after changing the model, rebuild with `npm run build:single` and screenshot each `#/` route.

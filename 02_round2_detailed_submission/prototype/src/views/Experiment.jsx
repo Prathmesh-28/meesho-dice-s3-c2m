@@ -58,6 +58,7 @@ export default function Experiment({ pti, gate, params }) {
           <div className="eyebrow">Day-30 decision · {cfg.scenarios[scenario].label}</div>
           <h3>{run.decision.title}</h3>
           <p>{run.decision.detail}</p>
+          <p className="strong mt">{run.decision.money}</p>
           <ul className="rule-list">
             {rules.map((r) => (
               <li key={r.code} className={r.code === run.decision.code ? 'hit' : ''}>
@@ -135,7 +136,7 @@ export default function Experiment({ pti, gate, params }) {
             </table>
           </div>
         </Card>
-        <Card title="Experiment design" sub="The Round 1 idea translated into a measurable pilot">
+        <Card title="Experiment design" sub="The badge test as a measurable pilot">
           <div className="kv">
             {design.flatMap(([k, v]) => [<div key={`${k}k`}>{k}</div>, <div key={`${k}v`}>{v}</div>])}
           </div>

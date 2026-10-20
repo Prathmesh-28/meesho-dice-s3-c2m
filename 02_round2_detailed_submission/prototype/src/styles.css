@@ -353,3 +353,20 @@ tr.hl td { background: #fff6e8; }
 .loop.fd { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .loop-step .num-big { font-size: 20px; font-weight: 700; color: var(--plum); }
 @media (max-width: 900px) { .loop.fd { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.dilemma { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.dilemma-step { border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; background: #fff; }
+.dilemma-step.on { border-color: var(--plum); background: #fbf3f8; }
+.dilemma-step .k { font-size: 12px; font-weight: 650; letter-spacing: .5px; text-transform: uppercase; color: var(--plum-2); }
+.dilemma-step .q { font-size: 16px; font-weight: 650; margin: 8px 0; }
+.dilemma-step .n { font-size: 12.5px; color: var(--ink-2); }
+.engine { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.engine-step { border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; background: #fff; display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; }
+.engine-step .k { font-size: 12px; font-weight: 700; color: var(--plum); }
+.engine-step .kpi { margin-top: auto; background: #fff6e8; border-radius: 6px; padding: 6px 8px; font-weight: 600; }
+.gates { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.gate { border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; background: #fff; display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
+.gate .when { font-size: 12px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--plum-2); }
+.gate .pass { background: #e7f5e7; border-radius: 8px; padding: 8px 10px; }
+.gate .money { font-weight: 700; color: var(--plum); }
+@media (max-width: 900px) { .dilemma, .engine, .gates { grid-template-columns: 1fr; } }

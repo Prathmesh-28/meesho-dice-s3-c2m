@@ -34,7 +34,7 @@ export default function Business() {
     <div>
       <div className="page-head">
         <div>
-          <div className="eyebrow">Module 6 · Meesho’s business case</div>
+          <div className="eyebrow">Module 6 · Finance analysis</div>
           <h2>Does Factory Direct pay for itself?</h2>
           <p className="lede">
             Meesho earns on orders, not on price: {pct(FD.incremental)} of C2M orders are new to Meesho at ₹7.3 of contribution

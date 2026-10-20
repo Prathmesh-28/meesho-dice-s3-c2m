@@ -7,6 +7,7 @@
 // decision rule can be demonstrated.
 
 import { EXPERIMENT, SEED } from '../config.js';
+import { gateReleases } from './factoryDirect.js';
 import { makeRng } from './rng.js';
 import { clamp, mean, quantile } from './format.js';
 import { scoreSeller } from './pti.js';
@@ -184,18 +185,21 @@ export function runExperiment(pti, gate, scenarioId = 'base', seed = SEED) {
       detail: retention14 < cfg.retentionFloor
         ? `Only ${Math.round(retention14 * 100)}% of badged sellers still clear the gate at D14 (floor ${Math.round(cfg.retentionFloor * 100)}%). The advantage was a promotion, and no infrastructure fixes that.`
         : 'No lift over the holdout. Price rank alone is not moving buyers.',
+      money: `The ₹${gateReleases().d90.toFixed(1)} cr for Days 31-90 is not released.`,
     };
   } else if (lift >= cfg.fundLift && ci[0] > 0) {
     decision = {
       code: 'fund',
       title: 'Fund clusters and Factory Nodes.',
       detail: `Badged sellers beat the matched holdout by ${(lift * 100).toFixed(1)}% on NMV per live SKU, above the ${Math.round(cfg.fundLift * 100)}% bar, and ${Math.round(retention14 * 100)}% still clear the gate at D14. Move to days 31–90 in full.`,
+      money: `Release ₹${gateReleases().d90.toFixed(1)} cr for Days 31-90: 2 clusters, 1 Factory Node, the Demand Brief build and the returns pool.`,
     };
   } else {
     decision = {
       code: 'tighten',
       title: `Tighten the gate to ${Math.round(cfg.tightenedDelta * 100)}% and re-run for 28 days.`,
       detail: `Lift of ${(lift * 100).toFixed(1)}% is positive but under the ${Math.round(cfg.fundLift * 100)}% bar${ci[0] <= 0 ? ', and the interval still includes zero' : ''}. Commit no capex yet.`,
+      money: '₹0 released until the re-run passes.',
     };
   }
 

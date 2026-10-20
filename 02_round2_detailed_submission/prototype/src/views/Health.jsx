@@ -14,7 +14,7 @@ const BADGE = { active: ['good', 'Badge active'], suspended: ['critical', 'Badge
 const COMPONENTS = [
   ['price', 'Price gap held'],
   ['velocity', 'Order pace vs cohort'],
-  ['quality', 'Quality returns'],
+  ['quality', 'Returns'],
   ['sla', 'On-time dispatch'],
   ['stock', 'In-stock'],
 ];
@@ -210,7 +210,7 @@ export default function Health({ cohort, summary, params }) {
       </div>
 
       <div className="grid cols-main-side mt">
-        <Card title="The rulebook" sub="Nine automated rules and one human step. Thresholds live in src/config.js.">
+        <Card title="The rulebook" sub={`${RULES.filter((r) => r.auto).length} automated rules and one human step, one fix at a time: if a fix does not lift the score, the next one fires. Thresholds live in src/config.js.`}>
           <div className="table-wrap" style={{ maxHeight: 'none' }}>
             <table>
               <thead><tr><th>Stage</th><th>When</th><th>Action</th><th /></tr></thead>

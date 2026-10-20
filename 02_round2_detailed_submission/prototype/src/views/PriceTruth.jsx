@@ -127,7 +127,7 @@ export default function PriceTruth({ gate, setGate, pti, params }) {
         <Slider label="A SKU clears when it is at least" display={`${Math.round(gate.deltaThreshold * 100)}% below median`} min={0.04} max={0.15} step={0.01} value={gate.deltaThreshold} onChange={(v) => setGate({ ...gate, deltaThreshold: v })} />
         <Slider label="A catalogue passes when" display={`${Math.round(gate.skuShare * 100)}% of live SKUs clear`} min={0.4} max={0.8} step={0.05} value={gate.skuShare} onChange={(v) => setGate({ ...gate, skuShare: v })} />
         <Slider label="Screen sellers above" display={`₹${gate.minGmvCr} cr GMV`} min={1} max={15} step={1} value={gate.minGmvCr} onChange={(v) => setGate({ ...gate, minGmvCr: v })} />
-        <button className="btn" type="button" disabled={!changed} onClick={() => setGate(GATE)}>Reset to Round 1 gate</button>
+        <button className="btn" type="button" disabled={!changed} onClick={() => setGate(GATE)}>Reset to the deck’s gate</button>
       </div>
 
       <div className="stats">

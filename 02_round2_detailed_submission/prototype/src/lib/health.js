@@ -20,15 +20,17 @@ export const STAGES = [
 ];
 
 export const RULES = [
+  { id: 'starter', stage: 'Allocate', when: 'New factory, no reviews yet', action: 'Starter impressions for first orders, in the Demand Brief pin-codes', auto: true },
   { id: 'grant', stage: 'Allocate', when: `Orders below ${TRIGGERS.velocityFloor * 100}% of cohort median at D7 or D14`, action: `Impression grant: +${(TRIGGERS.grantImpressions / 1000).toFixed(0)}K impressions in Demand Brief pin-codes for ${TRIGGERS.grantDays} days (max ${TRIGGERS.maxGrants})`, auto: true },
-  { id: 'drift', stage: 'Remedy', when: `Price gap under ${TRIGGERS.driftDelta * 100}% for ${TRIGGERS.driftDays} days`, action: 'Price-drift nudge with the market median', auto: true },
+  { id: 'drift', stage: 'Remedy', when: `Price gap under ${TRIGGERS.driftDelta * 100}% for ${TRIGGERS.driftDays} days`, action: 'Price nudge with the median', auto: true },
   { id: 'removed', stage: 'Remedy', when: `Price gap under ${TRIGGERS.removeDelta * 100}% for ${TRIGGERS.removeDays} days`, action: 'C2M badge removed', auto: true },
   { id: 'reentry', stage: 'Remedy', when: `Gap back above ${TRIGGERS.driftDelta * 100}% for ${TRIGGERS.reentryDays} days`, action: 'Badge restored (re-entry)', auto: true },
-  { id: 'suspend', stage: 'Remedy', when: `Quality returns above ${TRIGGERS.qualityMultiple}× category norm (≥ ${TRIGGERS.qualityMinDeliveries} deliveries)`, action: 'Badge suspended + QC checklist', auto: true },
-  { id: 'reinstate', stage: 'Remedy', when: `Quality returns back under ${TRIGGERS.reinstateMultiple}× norm for ${TRIGGERS.reinstateDays} days`, action: 'Badge reinstated', auto: true },
-  { id: 'node', stage: 'Remedy', when: `On-time dispatch under ${TRIGGERS.slaFloor * 100}% over 7 days`, action: 'Offer assisted operations at the Factory Node', auto: true },
-  { id: 'restock', stage: 'Remedy', when: `In-stock under ${TRIGGERS.stockFloor * 100}% for ${TRIGGERS.stockDays} days`, action: 'Restock nudge with batch size from the Demand Brief', auto: true },
-  { id: 'graduate', stage: 'Graduate', when: `Score ≥ ${HEALTH.graduateScore} for ${HEALTH.graduateDays} days`, action: 'Graduate: batch prepayment unlocked', auto: true },
+  { id: 'sizefix', stage: 'Remedy', when: `Size-led returns above ${TRIGGERS.sizeFixMultiple}× the category norm`, action: 'Size-chart fix from return reasons', auto: true },
+  { id: 'suspend', stage: 'Remedy', when: `Returns above ${TRIGGERS.qualityMultiple}× the category norm (≥ ${TRIGGERS.qualityMinDeliveries} deliveries)`, action: 'Badge suspended; QC hold at the node', auto: true },
+  { id: 'reinstate', stage: 'Remedy', when: `Returns back under ${TRIGGERS.reinstateMultiple}× norm for ${TRIGGERS.reinstateDays} days`, action: 'Badge reinstated', auto: true },
+  { id: 'node', stage: 'Remedy', when: `On-time dispatch under ${TRIGGERS.slaFloor * 100}% over 7 days`, action: 'Move to the node: it picks, packs, ships and takes returns', auto: true },
+  { id: 'restock', stage: 'Remedy', when: `In-stock under ${TRIGGERS.stockFloor * 100}% for ${TRIGGERS.stockDays} days`, action: 'Restock nudge from the brief', auto: true },
+  { id: 'graduate', stage: 'Graduate', when: `Score ≥ ${HEALTH.graduateScore} for ${HEALTH.graduateDays} days`, action: 'Prepaid batches unlocked', auto: true },
   { id: 'escalate', stage: 'Remedy', when: `Score under ${HEALTH.escalateScore} for ${HEALTH.escalateDays} days after an automated fix`, action: 'Escalate to category manager', auto: false },
 ];
 
@@ -106,13 +108,14 @@ export function simulateSeller(seller, rng) {
     qualityStart: a === 'quality' ? rng.int(10, 15) : Infinity,
     qualityBad: rng.uniform(2.0, 2.6),
     acceptsNode: a === 'failing' ? true : rng.chance(0.85),
+    sizeLed: [...seller.id].reduce((n, ch) => n + ch.charCodeAt(0), 0) % 2 === 0, // half of returns spikes are size-led (no RNG draw)
     stockoutStart: a === 'stockout' ? rng.int(12, 18) : Infinity,
   };
 
   const st = {
     badge: 'active', v: p.v, vTarget: null, vRampFrom: null, delta: d0, drifting: false,
     grants: 0, grantUntil: -1, nudged: false, restoreFrom: null,
-    qMult: p.q, qcFixDay: null, sla: p.sla, nodeOffered: null, nodeJoinDay: null,
+    qMult: p.q, qcFixDay: null, sizeFixed: null, sla: p.sla, nodeOffered: null, nodeJoinDay: null,
     stock: p.stock, restockDay: null, lastRestock: -99,
     belowDrift: 0, belowRemove: 0, aboveReentry: 0, qualityOk: 0, stockLow: 0,
     above80: 0, below40: 0, lastRemedy: -99, remedies: 0, graduated: null, escalated: null,
@@ -203,23 +206,29 @@ export function simulateSeller(seller, rng) {
       }
     }
 
+    // Returns: a size-chart fix first; if returns keep rising, the badge is suspended and stock held for QC at the node.
+    if (st.badge === 'active' && st.sizeFixed == null && qualityMultiple > T.sizeFixMultiple && deliveries14 >= T.qualityMinDeliveries) {
+      st.sizeFixed = t;
+      if (p.sizeLed) st.qMult = 1.05;
+      fire(t, 'sizefix', 'Size-chart fix sent from return reasons', `Returns ${qualityMultiple.toFixed(1)}× the category norm over 14 days`, 'warning');
+    }
     if (st.badge === 'active' && qualityMultiple > T.qualityMultiple && deliveries14 >= T.qualityMinDeliveries) {
       st.badge = 'suspended';
       if (a !== 'failing') st.qcFixDay = t + 5;
-      fire(t, 'suspend', 'Badge suspended + QC checklist sent', `Quality returns ${qualityMultiple.toFixed(1)}× the category norm over 14 days`, 'critical');
+      fire(t, 'suspend', 'Badge suspended; stock on QC hold at the node', `Returns ${qualityMultiple.toFixed(1)}× the category norm over 14 days`, 'critical');
     }
     if (st.badge === 'suspended') {
       st.qualityOk = qualityMultiple <= T.reinstateMultiple ? st.qualityOk + 1 : 0;
       if (st.qualityOk === T.reinstateDays) {
         st.badge = 'active';
-        fire(t, 'reinstate', 'Badge reinstated', `Quality returns back to ${qualityMultiple.toFixed(1)}× norm for ${T.reinstateDays} days`, 'good');
+        fire(t, 'reinstate', 'Badge reinstated', `Returns back to ${qualityMultiple.toFixed(1)}× norm for ${T.reinstateDays} days`, 'good');
       }
     }
 
     if (t >= 7 && sla7 < T.slaFloor && st.nodeOffered == null) {
       st.nodeOffered = t;
       if (p.acceptsNode) st.nodeJoinDay = t + 4;
-      fire(t, 'node', 'Assisted operations offered at the Factory Node', `On-time dispatch ${Math.round(sla7 * 100)}% over 7 days (floor ${T.slaFloor * 100}%)`, 'warning');
+      fire(t, 'node', 'Move to the Factory Node offered', `On-time dispatch ${Math.round(sla7 * 100)}% over 7 days (floor ${T.slaFloor * 100}%)`, 'warning');
     }
     if (st.nodeJoinDay === t) {
       events.push({ day: t, rule: 'nodejoin', label: 'Moved to Factory Node: node now picks, packs and takes returns', reason: 'Accepted the assisted-operations offer', tone: 'good', auto: true });
@@ -235,7 +244,7 @@ export function simulateSeller(seller, rng) {
     st.above80 = score >= HEALTH.graduateScore ? st.above80 + 1 : 0;
     if (st.above80 >= HEALTH.graduateDays && st.graduated == null && st.badge === 'active') {
       st.graduated = t;
-      fire(t, 'graduate', 'Graduated: batch prepayment unlocked', `Score ≥ ${HEALTH.graduateScore} for ${HEALTH.graduateDays} days`, 'good');
+      fire(t, 'graduate', 'Graduated: prepaid batches unlocked', `Score ≥ ${HEALTH.graduateScore} for ${HEALTH.graduateDays} days`, 'good');
     }
     st.below40 = score < HEALTH.escalateScore ? st.below40 + 1 : 0;
     if (st.below40 >= HEALTH.escalateDays && st.remedies >= 1 && st.escalated == null) {

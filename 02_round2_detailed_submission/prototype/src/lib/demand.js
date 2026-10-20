@@ -69,9 +69,10 @@ export function demandBrief({ typeId, marketMedian, topN = 12 }) {
   return { type, cat, rows, weeklyTotal, forecast14, suggested, axis, split };
 }
 
-export function batchPlan({ brief, listingPrice, minViablePrice = 0, seed = 1 }) {
+export function batchPlan({ brief, listingPrice, minViablePrice = 0, seed = 1, preOrders: fixed }) {
   const rng = makeRng(hashSeed('batch', brief.type.id, String(seed)));
-  const preOrders = Math.round(brief.suggested * rng.uniform(0.55, 0.7));
+  const drawn = Math.round(brief.suggested * rng.uniform(0.55, 0.7));
+  const preOrders = fixed ?? drawn;
   const buffer = Math.round(preOrders * ECONOMICS.batchBuffer);
   const make = preOrders + buffer;
   const discount = Math.min(ECONOMICS.preorderDiscount, Math.max(0, Math.floor(listingPrice - minViablePrice)));

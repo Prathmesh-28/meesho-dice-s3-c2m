@@ -8,7 +8,7 @@ const { runPTI } = await import(`${P}/lib/pti.js`);
 const { runExperiment } = await import(`${P}/lib/experiment.js`);
 const { generateCohort, cohortSummary } = await import(`${P}/lib/health.js`);
 const { priceCheck, cashCycle } = await import(`${P}/lib/economics.js`);
-const { demandBrief, batchPlan } = await import(`${P}/lib/demand.js`);
+const { personaFlow } = await import(`${P}/lib/flow.js`);
 
 const market = generateMarket();
 const pti = runPTI(market, GATE);
@@ -19,9 +19,8 @@ const persona = cohort.find((s) => s.persona);
 const grant = persona.events.find((e) => e.rule === 'grant');
 
 // The manufacturer app's default screens (persona, Factory Node, B2B margin), exactly as the phone shows them.
-const check = priceCheck({ unitCost: PERSONA.unitCost, category: PERSONA.category, typeId: PERSONA.type, mode: 'node', margin: ECONOMICS.targetMarginB2B, medians: pti.medians });
-const brief = demandBrief({ typeId: PERSONA.type, marketMedian: check.marketMedian });
-const batch = batchPlan({ brief, listingPrice: check.suggested, minViablePrice: check.floor });
+// Same flow as the app's screens: the deck's worked batch of 1,000 prepaid pre-orders.
+const { check, brief, batch } = personaFlow(pti);
 const cash = cashCycle();
 // Slide 13's "try it" demo: a making cost where shipping yourself misses the 8% badge and the Factory Node clears it.
 const demoCost = 80; // the deck's A22 making cost: shipping yourself misses the badge, the Factory Node clears it

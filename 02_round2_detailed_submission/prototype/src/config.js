@@ -151,6 +151,7 @@ export const TRIGGERS = {
   driftDelta: 0.08, driftDays: 7,
   removeDelta: 0.04, removeDays: 3,
   reentryDays: 7,
+  sizeFixMultiple: 1.2, // size-led returns above norm → size-chart fix (deck slide 7)
   qualityMultiple: 1.5, qualityMinDeliveries: 30, reinstateMultiple: 1.2, reinstateDays: 7,
   slaFloor: 0.9,
   stockFloor: 0.7, stockDays: 3,
@@ -246,6 +247,7 @@ export const PERSONA = {
   type: 'briefs3',
   cohort: 'A',
   unitCost: 80,       // the deck's A22 making cost of a 3-pack
+  preOrders: 1000,    // the deck's worked batch: 1,000 prepaid pre-orders (makes 1,150)
   offlineTurnoverCr: 18,
   day: 46,
 };
