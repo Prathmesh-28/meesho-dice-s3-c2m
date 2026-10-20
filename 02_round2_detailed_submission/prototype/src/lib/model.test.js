@@ -6,6 +6,7 @@ import { runExperiment } from './experiment.js';
 import { generateCohort, cohortSummary } from './health.js';
 import { priceCheck, unitEconomics } from './economics.js';
 import { demandBrief, batchPlan } from './demand.js';
+import { deckCase, financials, breakEvenYield, SCENARIOS } from './factoryDirect.js';
 
 const market = generateMarket();
 const pti = runPTI(market, GATE);
@@ -53,5 +54,29 @@ describe('end-to-end C2M decision model', () => {
     expect(persona.events.some((event) => event.rule === 'grant')).toBe(true);
     expect(summary.auto).toBeGreaterThan(summary.manual);
     expect(summary.stageCounts.graduate).toBeGreaterThan(0);
+  });
+
+  it('matches the deck: cost per pack, the batch, and the five-year case', () => {
+    const d = deckCase();
+    expect(d.cols.map((c) => Math.round(c.floor))).toEqual([220, 194, 191, 180]);
+    expect(d.cols.map((c) => c.passes)).toEqual([false, false, true, true]);
+    expect(d.preorderPrice).toBeCloseTo(182.28, 1);
+    expect(Math.round(d.batch.advance)).toBe(54684);
+    expect(Math.round(d.batch.balance)).toBe(33840);
+    const f = financials();
+    expect(f.npv).toBeCloseTo(74.9, 1);
+    expect(f.payback).toBe(3);
+    expect(f.cashY1).toBeCloseTo(22.2, 1);
+    expect(breakEvenYield()).toBeCloseTo(0.45, 2);
+    expect(Math.round(financials(SCENARIOS.bear.over).npv)).toBe(-10);
+    expect(Math.round(financials(SCENARIOS.bull.over).npv)).toBe(140);
+  });
+
+  it('shows the node clearing the badge at the deck making cost', () => {
+    const run = (mode) => priceCheck({ unitCost: PERSONA.unitCost, category: PERSONA.category, typeId: PERSONA.type, mode, margin: ECONOMICS.targetMarginB2B, medians: pti.medians });
+    expect(run('self').qualifies).toBe(false);
+    expect(run('node').qualifies).toBe(true);
+    expect(run('batch').qualifies).toBe(true);
+    expect(run('node').marketMedian).toBe(209);
   });
 });

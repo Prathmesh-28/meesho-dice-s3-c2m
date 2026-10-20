@@ -157,6 +157,52 @@ export const TRIGGERS = {
   remedyCooldown: 7,
 };
 
+// Factory Direct: the deck's assumption register (deck/source/model.mjs, A8-A32) and Meesho's reported numbers.
+// lib/factoryDirect.js turns these into cost per pack, batch cash and the five-year case.
+export const FD = {
+  makingCost: 80,          // A22 ₹ a 3-pack, cost-advantaged unit (to confirm in interviews)
+  margin: 0.09,            // A23 target margin on price, B2B norm
+  wholesalerMarkup: 0.15,  // A24 what a reseller pays above ex-factory
+  returnFee: 150,          // A26 ₹ per customer return charged to the seller
+  rtoFee: 0,               // A27 ₹ per failed delivery charged to the seller
+  fees: { selfFwd: 55, selfPack: 10, nodeFwd: 42, nodeFee: 20 }, // A28 ₹ a unit; node fee = pack 6 + handle 9 + freight 5
+  recovery: { self: 0.85, node: 0.9 },                            // A29 value recovered on returned and failed units
+  capital: { rate: 0.18, stockDays: 45, batchDays: 10 },          // A30
+  unsold: { stock: 0.10, batch: 0.02, salvage: 0.5 },             // A31
+  preorderDiscount: 10,    // A32 ₹ off for 7-8 day delivery
+  gate: 0.08,              // a SKU qualifies at 8% below the demand-weighted median
+  buffer: 0.15,            // make confirmed orders + 15%
+  advance: 0.30,           // A20 share of pre-order value advanced by the NBFC at handover
+  firstLoss: 0.01,         // A20 Meesho's first-loss on advances
+  prepaidShare: 0.5,       // A10 share of C2M orders placed as prepaid pre-orders
+  codFailGap: 0.15,        // A11 failed-delivery gap, COD vs prepaid
+  failCost: 60,            // A12 ₹ Meesho loses on a failed delivery
+  incremental: 0.40,       // A8 share of C2M orders that are new to Meesho
+  priceCut: 0.10,          // A9 C2M GMV per order vs Meesho average
+  sellers: [200, 700, 1050, 1300, 1450],   // A3 average active sellers, Years 1-5
+  yieldCr: [0.70, 1.00, 1.20, 1.425, 1.425], // A4 ₹ cr NMV per seller
+  fte: [12, 20, 24, 26, 26], fteCost: 0.30,  // A14, A13
+  clusters: [5, 8, 10, 12, 12], clusterCost: 1.0, // A15
+  briefCost: [6, 3, 3, 3, 3],                // A16
+  nodes: [6, 8, 10, 12, 12], nodeCost: 1.3,  // A17
+  returnsPool: { y1: 3, share: 0.001 },      // A18
+  grants: { cpm: 75, perSeller: 50000, newSellers: [450, 450, 250, 250, 100] }, // A19
+  rates: [0.12, 0.15],                       // A21 discount rate; stress
+};
+
+// Meesho's own numbers (Q1 FY27 shareholders' letter): ₹531 cr contribution on 725 mn placed orders.
+export const SPONSOR = { ordersQ1: 725e6, gmvQ1: 19054, nmvQ1: 11614, cmCr: 531, prepaid: 0.37, buyersMn: 274, fy26Nmv: 41560 };
+
+// What buyers actually paid on meesho.com (team teardown, 2 Oct 2026, 56 listings per query, reviews as demand
+// weights). The price check uses these real medians for these products; other products use the synthetic market.
+export const TEARDOWN = {
+  briefs3: { q: "Men's cotton briefs, pack of 3", median: 209, listingMedian: 322.5, n: 56 },
+  socks5: { q: 'Ankle socks, pack of 5', median: 128, listingMedian: 133, n: 56 },
+  bedsheet: { q: 'Double bedsheet + 2 pillow covers', median: 325, listingMedian: 404, n: 56 },
+  bathtowel: { q: 'Cotton bath towel', median: 227, listingMedian: 234, n: 56 },
+  tumbler6: { q: 'Steel tumblers, set of 6', median: 262, listingMedian: 415, n: 55 },
+};
+
 // Unit economics for the manufacturer price check.
 export const ECONOMICS = {
   targetMarginB2B: 0.09,     // typical B2B margin the manufacturer compares against
@@ -164,16 +210,10 @@ export const ECONOMICS = {
   settlementDays: 7,         // platform settlement after delivery
   deliveryDays: 5,
   costOfCapital: 0.18,       // annual, MSME working capital
-  resaleRecovery: 0.85,      // share of returned / RTO stock that can be resold
-  rtoReverseCost: 40,
   prepaymentShare: 0.3,      // share of confirmed pre-order value released at node handover
-  preorderDiscount: 20,      // ₹ off for buyers who accept "ships in 7 days"
+  preorderDiscount: 10,      // ₹ off for buyers who accept "ships in 7-8 days" (A32)
   newSellerShare: 0.06,      // share of brief demand a new badged seller can expect
   batchBuffer: 0.15,         // make confirmed pre-orders + 15% of suggested batch
-  modes: {
-    self: { label: 'Ship each order yourself', packing: 10, forward: 55, handling: 0, bulkFreight: 0, reversePerReturn: 90 },
-    node: { label: 'Factory Node (bulk handover)', packing: 6, forward: 42, handling: 9, bulkFreight: 5, reversePerReturn: 70 },
-  },
 };
 
 // Demand Brief geography: district, state, 3-digit pin prefix, relative weight.
@@ -205,7 +245,7 @@ export const PERSONA = {
   category: 'hosiery',
   type: 'briefs3',
   cohort: 'A',
-  unitCost: 98,
+  unitCost: 80,       // the deck's A22 making cost of a 3-pack
   offlineTurnoverCr: 18,
   day: 46,
 };

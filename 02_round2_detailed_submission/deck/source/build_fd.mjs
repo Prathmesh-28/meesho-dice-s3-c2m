@@ -1079,7 +1079,7 @@ function page(i, { headline, rail, band, foot, label }) {
     label: 'Appendix A · Product walkthrough',
     headline: 'Eight phone screens take a factory from “will I make money?” to a prepaid batch, with no e-commerce team',
     rail: 'APPENDIX A',
-    foot: `Screens: the live prototype, captured 4 Oct 2026, on seeded synthetic data; ${MK.name} is fictional. Its inputs (₹${MK.unitCost} making cost, ${rs(MK.median)} synthetic median) differ from the costed case (₹${A.A22.value} making cost, ${rs(U.mkt)} demand-weighted median)`,
+    foot: `Screens: the live prototype on seeded synthetic sellers; ${MK.name} is fictional. Prices use the same cost model as Unit Economics (₹${MK.unitCost} making cost, ${rs(MK.median)} demand-weighted median from the meesho.com teardown)`,
   });
   const steps = [
     { title: '1 · Price check: will I make money?', ic: 'FaIndianRupeeSign', removes: 'unknown margin · returns exposure · slow cash',

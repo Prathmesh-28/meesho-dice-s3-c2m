@@ -23,7 +23,7 @@ export function quantile(arr, q) {
 
 export const num = (x) => inr.format(Math.round(x));
 export const rupees = (x) => `₹${inr.format(Math.round(x))}`;
-export const crore = (x) => `₹${inr1.format(x)} cr`;
+export const crore = (x) => `${x < 0 ? '−' : ''}₹${inr1.format(Math.abs(x))} cr`;
 export const pct = (x, digits = 0) => `${(x * 100).toFixed(digits)}%`;
 export const signedPct = (x, digits = 1) => `${x >= 0 ? '+' : '−'}${Math.abs(x * 100).toFixed(digits)}%`;
 

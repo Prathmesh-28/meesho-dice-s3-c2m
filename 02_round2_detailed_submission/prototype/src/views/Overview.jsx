@@ -1,37 +1,34 @@
 import { useMemo } from 'react';
-import { ECONOMICS, PERSONA } from '../config.js';
-import { priceCheck } from '../lib/economics.js';
-import { demandBrief, batchPlan } from '../lib/demand.js';
+import { PERSONA, SPONSOR } from '../config.js';
+import { categoryById } from '../lib/generate.js';
+import { personaFlow } from '../lib/flow.js';
+import { financials } from '../lib/factoryDirect.js';
 import { href } from '../lib/router.js';
-import { num, pct, rupees, signedPct } from '../lib/format.js';
+import { crore, num, pct, rupees } from '../lib/format.js';
 import { Card } from '../components/ui.jsx';
 
-const LOOP = [
-  { k: '1 · QUALIFY', h: 'Is the price edge real?', p: 'Price Truth Index scores every live SKU against its comparable-set median. Badge only when most of the catalogue is genuinely cheaper.', link: ['pti'], cta: 'Price Truth Index' },
-  { k: '2 · ALLOCATE', h: 'Impressions, not rupees', p: 'Starter impressions go to the pin-codes in the seller’s Demand Brief. If orders lag at D7 or D14, an impression grant fires on its own.', link: ['health', { stage: 'allocate' }], cta: 'Allocation rules' },
-  { k: '3 · DIAGNOSE', h: 'One score, five signals', p: 'Price gap held, order pace against the cohort curve, quality returns, on-time dispatch and stock. Recomputed every day.', link: ['health'], cta: 'Health Score' },
-  { k: '4 · REMEDY', h: 'Rules, not account managers', p: 'Price nudges, QC holds, Factory Node offers and restock nudges fire automatically. A person sees a seller only after a fix has failed.', link: ['health', { stage: 'remedy' }], cta: 'The rulebook' },
-  { k: '5 · GRADUATE', h: 'Earn working capital', p: '30 days at a score of 80 or more unlocks batch prepayment. The Day-30 readout decides whether the whole programme earns capex.', link: ['experiment'], cta: 'Day-30 readout' },
-];
-
-export default function Overview({ pti, summary, baseRun, cohort }) {
+export default function Overview({ pti, summary, cohort }) {
   const persona = cohort.find((s) => s.persona);
-  const story = useMemo(() => {
-    const check = priceCheck({
-      unitCost: PERSONA.unitCost, category: PERSONA.category, typeId: PERSONA.type, mode: 'node',
-      margin: ECONOMICS.targetMarginB2B, medians: pti.medians,
-    });
-    const brief = demandBrief({ typeId: PERSONA.type, marketMedian: check.marketMedian });
-    const batch = batchPlan({ brief, listingPrice: check.suggested, minViablePrice: check.floor });
-    return { check, brief, batch };
-  }, [pti]);
+  const { check, self, table, brief, batch, ledger } = useMemo(() => personaFlow(pti), [pti]);
+  const fin = useMemo(() => financials(), []);
+  const LOOP = [
+    ['1 · Gather the data', `Searches, carts and delivered orders from ${SPONSOR.buyersMn} mn buyers, summed by district`, `${num(brief.weeklyTotal)} orders a week`, ['maker', { step: 'brief' }]],
+    ['2 · Predict demand', 'Demand Brief: districts, sizes and the price band that sells', `${brief.rows[0].district} leads`, ['maker', { step: 'brief' }]],
+    ['3 · Share the number', 'The brief and pre-orders reach the owner on WhatsApp; one reply commits', `${num(batch.preOrders)} pre-orders`, ['maker', { step: 'whatsapp' }]],
+    ['4 · Factory makes the order', 'Confirmed orders + 15%, never stock built blind', `makes ${num(batch.make)}`, ['maker', { step: 'batch' }]],
+    ['5 · Node takes the batch', 'One truck to the cluster node; the seller keeps title; an NBFC advances 30%', `+${rupees(ledger.advance)} on Day 3`, ['maker', { step: 'batch' }]],
+    ['6 · Node packs each order', 'Picks, packs, labels and samples for QC at ₹20 a unit', 'no packing team needed', ['maker', { step: 'price' }]],
+    ['7 · Valmo delivers', `The buyer prepaid ${rupees(batch.preorderPrice)} against ${rupees(check.marketMedian)}; returns end at the node`, `${pct(ledger.failed / ledger.confirmed, 1)} fail, not ${pct(categoryById[PERSONA.category].rtoRate)}`, ['buyer']],
+    ['8 · Settle and learn', 'Balance paid 7 days after delivery; the Health Score updates daily', `+${rupees(ledger.balance)} on Day 15`, ['health', { seller: PERSONA.id }]],
+  ];
   const grant = persona.events.find((e) => e.rule === 'grant');
-  const { check, brief, batch } = story;
 
   const questions = [
     ['Which manufacturers have a genuine price advantage, and which don’t despite scale?', 'Price Truth Index', 'pti', `${pti.counts.ready} of ${pti.counts.screened} large sellers pass; ${pti.top10NotReady} of the 10 largest do not.`],
     ['What stops reluctant manufacturers, and what changes their calculus?', 'Manufacturer app', 'maker', `A price check before listing, a pin-code Demand Brief, and batches made only against confirmed pre-orders.`],
     ['What makes early scale-up sustainable without subsidy or handholding?', 'Seller Health', 'health', `${summary.auto} automated actions against ${summary.manual} human escalations across the 60-seller pilot.`],
+    ['Will buyers accept a 7-8 day wait for a lower price?', 'Buyer pre-order', 'buyer', `A prepaid pre-order at ${rupees(batch.preorderPrice)} against ${rupees(check.marketMedian)}; every pre-order joins the factory's batch.`],
+    ['Is it worth it for Meesho, and how robust is it?', 'Business case', 'business', `NPV ${crore(fin.npv)} at 12%, payback in Year ${fin.payback}; drag any driver to stress it.`],
     ['What should Meesho measure, and when should it intervene?', 'Health Score + Day-30 rule', 'experiment', `Five-signal daily score, nine rules with thresholds, and a fund / tighten / stop rule at day 30.`],
   ];
 
@@ -39,34 +36,35 @@ export default function Overview({ pti, summary, baseRun, cohort }) {
     <div className="stack">
       <section className="hero">
         <div>
-          <div className="eyebrow" style={{ color: '#f7c08a' }}>Scale is the wrong screen</div>
-          <h2 style={{ marginTop: 8 }}>Find the manufacturers whose scale became price. Then keep them growing without an account manager.</h2>
+          <div className="eyebrow" style={{ color: '#f7c08a' }}>Factory Direct · scale is the wrong screen</div>
+          <h2 style={{ marginTop: 8 }}>Screen factories on price, not size. Then let them make only what is already sold.</h2>
           <p>
-            This is a working prototype of the Round 1 plan. It screens sellers on what buyers actually paid, reads a
-            matched Day-30 experiment, scores a 60-seller pilot every day, and shows the manufacturer-side app that turns
-            an offline B2B factory into a C2M seller. Every number on this page is computed live from the model.
+            A working prototype of Factory Direct. It screens every large seller on what buyers actually paid, gives a
+            factory a price check, a district Demand Brief and prepaid batches, runs a 60-seller pilot on rules instead of
+            account managers, and shows Meesho’s five-year case. Every number on this page is computed live, from the
+            same model as the deck.
           </p>
           <div className="row" style={{ marginTop: 16 }}>
-            <a className="btn primary" href={href('pti')} style={{ textDecoration: 'none', background: 'var(--accent)', borderColor: 'var(--accent)', color: 'var(--plum)' }}>Start with the Price Truth Index →</a>
-            <a className="btn" href={href('maker')} style={{ textDecoration: 'none', background: 'transparent', color: '#fff', borderColor: 'rgba(255,255,255,.4)' }}>Open the manufacturer app</a>
+            <a className="btn primary" href={href('maker')} style={{ textDecoration: 'none', background: 'var(--accent)', borderColor: 'var(--accent)', color: 'var(--plum)' }}>Open the manufacturer app →</a>
+            <a className="btn" href={href('business')} style={{ textDecoration: 'none', background: 'transparent', color: '#fff', borderColor: 'rgba(255,255,255,.4)' }}>See the business case</a>
           </div>
         </div>
         <div className="kpis">
-          <div className="kpi"><div className="v">{pti.counts.ready} / {pti.counts.screened}</div><div className="l">large sellers pass the price gate</div></div>
-          <div className="kpi"><div className="v">{pti.top10NotReady} of 10</div><div className="l">largest sellers carry no real price edge</div></div>
-          <div className="kpi"><div className="v">{signedPct(baseRun.lift)}</div><div className="l">Day-30 NMV per SKU vs matched holdout</div></div>
+          <div className="kpi"><div className="v">{rupees(table[3].floor)}</div><div className="l">prepaid-batch floor, {pct(table[3].gap, 1)} under the {rupees(check.marketMedian)} buyers pay</div></div>
+          <div className="kpi"><div className="v">{pti.counts.ready} / {pti.counts.screened}</div><div className="l">large sellers pass the price gate; {pti.top10NotReady} of the 10 largest fail</div></div>
+          <div className="kpi"><div className="v">{crore(fin.npv)}</div><div className="l">Meesho NPV at 12%, payback in Year {fin.payback}, no subsidy</div></div>
           <div className="kpi"><div className="v">{summary.auto} : {summary.manual}</div><div className="l">automated vs human actions, 60-seller pilot</div></div>
         </div>
       </section>
 
-      <Card title="The loop the prototype runs" sub="Round 1 mechanism: five automated steps, no account manager in the loop">
-        <div className="loop">
-          {LOOP.map((s) => (
-            <div className="loop-step" key={s.k}>
-              <div className="k">{s.k}</div>
-              <h4>{s.h}</h4>
-              <p>{s.p}</p>
-              <a href={href(...s.link)}>{s.cta} →</a>
+      <Card title="The Factory Direct loop, one batch end to end" sub={`${PERSONA.name} (fictional), ${PERSONA.cluster}: data → orders → goods → cash. No step starts until the one before it is confirmed.`}>
+        <div className="loop fd">
+          {LOOP.map(([k, p, n, link]) => (
+            <div className="loop-step" key={k}>
+              <div className="k">{k}</div>
+              <div className="num-big">{n}</div>
+              <p>{p}</p>
+              <a href={href(...link)}>Open →</a>
             </div>
           ))}
         </div>
@@ -76,7 +74,7 @@ export default function Overview({ pti, summary, baseRun, cohort }) {
         <Card title={`Follow one manufacturer: ${PERSONA.name}`} sub={`${PERSONA.cluster} · men’s cotton briefs · offline B2B, ₹${PERSONA.offlineTurnoverCr} cr turnover · Cohort A (fictional)`}>
           <ol className="story">
             <li>
-              <div><div className="t">Price check before listing</div><div className="d">At a ₹{PERSONA.unitCost} making cost, the lowest price at a 9% margin is {rupees(check.floor)}, which is {pct(check.gap)} under the {rupees(check.marketMedian)} market median. Qualifies before a single listing goes live.</div></div>
+              <div><div className="t">Price check before listing</div><div className="d">At a ₹{PERSONA.unitCost} making cost, through the Factory Node the lowest price at a 9% margin is {rupees(check.floor)}, {pct(check.gap, 1)} under the {rupees(check.marketMedian)} price buyers pay. Shipping every order itself it would be only {pct(self.gap, 1)} under, short of the 8% badge: the node is what qualifies it.</div></div>
               <a href={href('maker', { step: 'price' })}>Open →</a>
             </li>
             <li>
@@ -98,7 +96,7 @@ export default function Overview({ pti, summary, baseRun, cohort }) {
           </ol>
         </Card>
 
-        <Card title="Where each question in the brief is answered" sub="The four questions the case asks, and the screen that answers each one">
+        <Card title="Where each question in the brief is answered" sub="The questions the case asks, and the screen that answers each one">
           <div className="table-wrap" style={{ maxHeight: 'none' }}>
             <table>
               <thead><tr><th>Question from the brief</th><th>Screen</th><th>What it shows</th></tr></thead>

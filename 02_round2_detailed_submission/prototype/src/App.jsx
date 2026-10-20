@@ -11,6 +11,8 @@ import Experiment from './views/Experiment.jsx';
 import Health from './views/Health.jsx';
 import Maker from './views/Maker.jsx';
 import Method from './views/Method.jsx';
+import Buyer from './views/Buyer.jsx';
+import Business from './views/Business.jsx';
 import diceLogo from './assets/dice-s3-logo.png';
 
 const NAV = [
@@ -19,6 +21,8 @@ const NAV = [
   { path: 'experiment', label: 'Day-30 readout', num: 2 },
   { path: 'health', label: 'Seller Health', num: 3 },
   { path: 'maker', label: 'Manufacturer app', num: 4 },
+  { path: 'buyer', label: 'Buyer pre-order', num: 5 },
+  { path: 'business', label: 'Business case', num: 6 },
   { path: 'method', label: 'How Meesho runs it' },
 ];
 
@@ -37,7 +41,7 @@ export default function App() {
   }, [route.path]);
 
   const shared = { gate, setGate, market, pti, cohort, summary, baseRun, params: route.params };
-  const View = { overview: Overview, pti: PriceTruth, experiment: Experiment, health: Health, maker: Maker, method: Method }[route.path] ?? Overview;
+  const View = { overview: Overview, pti: PriceTruth, experiment: Experiment, health: Health, maker: Maker, buyer: Buyer, business: Business, method: Method }[route.path] ?? Overview;
 
   return (
     <>

@@ -24,7 +24,7 @@ const brief = demandBrief({ typeId: PERSONA.type, marketMedian: check.marketMedi
 const batch = batchPlan({ brief, listingPrice: check.suggested, minViablePrice: check.floor });
 const cash = cashCycle();
 // Slide 13's "try it" demo: a making cost where shipping yourself misses the 8% badge and the Factory Node clears it.
-const demoCost = 105;
+const demoCost = 80; // the deck's A22 making cost: shipping yourself misses the badge, the Factory Node clears it
 const demo = Object.fromEntries(['self', 'node'].map((mode) => {
   const r = priceCheck({ unitCost: demoCost, category: PERSONA.category, typeId: PERSONA.type, mode, margin: ECONOMICS.targetMarginB2B, medians: pti.medians });
   return [mode, { gap: r.gap, qualifies: r.qualifies }];

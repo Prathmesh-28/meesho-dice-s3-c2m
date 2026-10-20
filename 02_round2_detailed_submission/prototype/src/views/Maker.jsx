@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { CATEGORIES, ECONOMICS, GATE, PERSONA } from '../config.js';
-import { priceCheck, cashCycle } from '../lib/economics.js';
+import { priceCheck, cashCycle, routeTable, ratesFor, MODES } from '../lib/economics.js';
+import { batchCash } from '../lib/factoryDirect.js';
 import { demandBrief, batchPlan, whatsappBrief, whatsappConfirm, QUICK_REPLIES } from '../lib/demand.js';
 import meeshoIcon from '../assets/meesho-icon.png';
 import { categoryById, typeById } from '../lib/generate.js';
@@ -42,8 +43,11 @@ export default function Maker({ pti, params }) {
     () => priceCheck({ unitCost, category: categoryId, typeId, mode: mode === 'node' ? 'self' : 'node', margin, medians: pti.medians }),
     [unitCost, categoryId, typeId, mode, margin, pti],
   );
+  const table = useMemo(() => routeTable({ unitCost, category: categoryId, typeId, margin, medians: pti.medians }), [unitCost, categoryId, typeId, margin, pti]);
   const brief = useMemo(() => demandBrief({ typeId, marketMedian: check.marketMedian }), [typeId, check.marketMedian]);
-  const batch = useMemo(() => batchPlan({ brief, listingPrice: check.suggested, minViablePrice: check.floor }), [brief, check.suggested, check.floor]);
+  // Pre-orders are priced off the gate price and must still clear the prepaid-batch floor.
+  const batch = useMemo(() => batchPlan({ brief, listingPrice: check.suggested, minViablePrice: table[3].floor }), [brief, check.suggested, table]);
+  const ledger = useMemo(() => batchCash({ confirmed: batch.preOrders, price: batch.preorderPrice, rates: ratesFor(categoryId) }), [batch, categoryId]);
   const cash = cashCycle();
   const maxWeekly = Math.max(...brief.rows.map((r) => r.weekly));
 
@@ -137,7 +141,7 @@ export default function Maker({ pti, params }) {
                   </div>
                   <div className="pfield" style={{ marginBottom: 0 }}>
                     <label>How orders ship</label>
-                    <Seg label="Fulfilment" value={mode} onChange={setMode} options={[{ value: 'node', label: 'Factory Node' }, { value: 'self', label: 'Ship myself' }]} />
+                    <Seg label="Fulfilment" value={mode} onChange={setMode} options={['self', 'node', 'batch'].map((m) => ({ value: m, label: MODES[m].label }))} />
                   </div>
                 </div>
 
@@ -147,14 +151,14 @@ export default function Maker({ pti, params }) {
                     <div className="big">{rupees(check.floor)}</div>
                     <div className="small">
                       Your lowest price at a {pct(margin)} margin is {check.gap >= 0 ? `${pct(check.gap, 1)} below` : `${pct(-check.gap, 1)} above`} the
-                      {' '}{rupees(check.marketMedian)} that buyers pay today. The C2M badge needs {pct(GATE.deltaThreshold)}.
+                      {' '}{rupees(check.marketMedian)} that buyers pay today ({check.marketSource}). The C2M badge needs {pct(GATE.deltaThreshold)}.
                       {!check.qualifies && mode === 'self' && other.qualifies && ' Switch to the Factory Node and it qualifies.'}
                     </div>
                   </div>
                 </div>
 
                 <div className="pcard">
-                  <h4>Per unit the buyer keeps, listed at {rupees(check.suggested)}</h4>
+                  <h4>Per pack the buyer keeps, listed at {rupees(check.suggested)}</h4>
                   <table className="pl">
                     <tbody>
                       {check.atSuggested.lines.map((l) => (
@@ -166,8 +170,8 @@ export default function Maker({ pti, params }) {
                     </tbody>
                   </table>
                   <p className="small mt">
-                    Margin {pct(check.atSuggested.margin, 1)} after {pct(cat.returnRate)} returns and {pct(cat.rtoRate)} RTO. Returns alone cost
-                    {' '}{rupees(check.atSuggested.returnCostPerKept)} per unit kept.
+                    Margin {pct(check.atSuggested.margin, 1)} after {pct(cat.returnRate)} returns and {pct(check.atSuggested.rtoRate, 1)} failed deliveries. Returns alone cost
+                    {' '}{rupees(check.atSuggested.returnCostPerKept)} per pack kept.
                   </p>
                 </div>
 
@@ -237,7 +241,7 @@ export default function Maker({ pti, params }) {
                     <tbody>
                       <tr><td>Pre-order price</td><td>{rupees(batch.preorderPrice)}</td></tr>
                       <tr><td>Confirmed order value</td><td>{rupees(batch.confirmedValue)}</td></tr>
-                      <tr><td>Paid at node handover ({pct(ECONOMICS.prepaymentShare)})</td><td>{rupees(batch.prepayment)}</td></tr>
+                      <tr><td>Advanced by an NBFC at handover ({pct(ECONOMICS.prepaymentShare)})</td><td>{rupees(batch.prepayment)}</td></tr>
                       <tr><td>Hand over at</td><td>{cluster} Factory Node</td></tr>
                     </tbody>
                   </table>
@@ -254,6 +258,22 @@ export default function Maker({ pti, params }) {
                       <li><span className="when">Day 4–8</span><span>Node ships each pre-order to the buyer</span></li>
                       <li><span className="when">Day 15</span><span>Balance settled, {ECONOMICS.settlementDays} days after delivery</span></li>
                     </ul>
+                  </div>
+                )}
+                {committed && (
+                  <div className="pcard">
+                    <h4>Your cash from this batch</h4>
+                    <table className="pl">
+                      <tbody>
+                        <tr><td>Pre-orders × {rupees(ledger.price)}</td><td>{rupees(ledger.value)}</td></tr>
+                        <tr><td>Day 3 · NBFC advance (30%)</td><td className="good-ink">+{rupees(ledger.advance)}</td></tr>
+                        <tr><td>Kept after {num(ledger.failed)} failed, {num(ledger.returns)} returned</td><td>{num(ledger.kept)} packs</td></tr>
+                        <tr><td>Revenue on kept packs</td><td>{rupees(ledger.revenue)}</td></tr>
+                        <tr><td>Shipping, node and return fees</td><td>−{rupees(ledger.feeTotal)}</td></tr>
+                        <tr><td>Day 15 · payout, advance repaid</td><td>{rupees(ledger.payout)}</td></tr>
+                        <tr className="total"><td>Balance to you on Day 15</td><td>+{rupees(ledger.balance)}</td></tr>
+                      </tbody>
+                    </table>
                   </div>
                 )}
               </div>
@@ -303,22 +323,29 @@ export default function Maker({ pti, params }) {
                   to score, so the gate runs on their quote instead.
                 </p>
               </Card>
-              <Card title="Ship yourself or use the Factory Node?" sub={`Same product, same ₹${unitCost} making cost, ${pct(margin)} margin`}>
+              <Card title="Which route clears the 8% badge?" sub={`Same product, same ₹${unitCost} making cost, ${pct(margin)} margin, against the ${rupees(check.marketMedian)} buyers pay today`}>
                 <table>
-                  <thead><tr><th /><th className="num">Ship myself</th><th className="num">Factory Node</th></tr></thead>
+                  <thead><tr><th>Route</th><th className="num">Cost per pack</th><th className="num">Lowest viable price</th><th className="num">Below market</th><th className="num">Badge</th></tr></thead>
                   <tbody>
-                    <tr><td>Lowest viable price</td><td className="num">{rupees(self.floor)}</td><td className="num">{rupees(node.floor)}</td></tr>
-                    <tr><td>Below market median</td><td className="num">{pct(self.gap, 1)}</td><td className="num">{pct(node.gap, 1)}</td></tr>
-                    <tr><td>Returns cost per unit kept</td><td className="num">{rupees(self.atSuggested.returnCostPerKept)}</td><td className="num">{rupees(node.atSuggested.returnCostPerKept)}</td></tr>
-                    <tr><td>Margin at {rupees(check.suggested)}</td><td className="num">{pct(unitMargin(self, check.suggested, unitCost, categoryId, 'self'), 1)}</td><td className="num">{pct(unitMargin(node, check.suggested, unitCost, categoryId, 'node'), 1)}</td></tr>
-                    <tr><td>C2M badge</td><td className="num">{self.qualifies ? '✓ Yes' : '✕ No'}</td><td className="num">{node.qualifies ? '✓ Yes' : '✕ No'}</td></tr>
+                    {table.map((r) => (
+                      <tr key={r.key} className={r.key === mode ? 'hl' : ''}>
+                        <td><b>{r.label}</b><div className="small muted">{r.sub}</div></td>
+                        <td className="num">{rupees(r.cost)}</td>
+                        <td className="num"><b>{rupees(r.floor)}</b></td>
+                        <td className="num">{r.gap >= 0 ? pct(r.gap, 1) : `−${pct(-r.gap, 1)}`}</td>
+                        <td className="num">{r.passes ? <Chip tone="good">Qualifies</Chip> : <Chip tone="critical">Not yet</Chip>}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
-                <p className="small muted mt">Node rates are illustrative assumptions (bulk freight in, consolidated forward rates, returns ending at the node). Edit them in <code>src/config.js</code>.</p>
+                <p className="small muted mt">
+                  Each step removes one cost: the wholesaler mark-up, then packing every order, then stock built blind and
+                  cash-on-delivery failures. Same cost model as the deck: ₹150 per return, no failed-delivery fee, 18% working capital.
+                </p>
               </Card>
-              <Card title="Round 1 barriers this step removes">
+              <Card title="Barriers this step removes">
                 <Barrier t="Unit-level fulfilment" d="The Factory Node option: one bulk handover; the node picks, packs, ships and takes returns." />
-                <Barrier t="Returns and RTO exposure" d={`Priced in up front with the Round 1 return math: ${rupees(check.atSuggested.returnCostPerKept)} per unit kept in ${cat.short.toLowerCase()}.`} />
+                <Barrier t="Returns and RTO exposure" d={`Priced in up front: ${rupees(check.atSuggested.returnCostPerKept)} per unit kept in ${cat.short.toLowerCase()}.`} />
                 <Barrier t="Cash cycle" d={`Cash back in about ${Math.round(cash.batchDays)} days instead of ${cash.b2bDays}. Working-capital cost falls from ${pct(cash.b2bCost, 1)} to ${pct(cash.batchCost, 1)} of revenue.`} />
               </Card>
             </>
@@ -333,7 +360,7 @@ export default function Maker({ pti, params }) {
                   delivered-order data.
                 </p>
               </Card>
-              <Card title="Round 1 barriers this step removes">
+              <Card title="Barriers this step removes">
                 <Barrier t="Unproven demand" d={`${num(brief.weeklyTotal)} orders a week across 12 districts for ${brief.type.name.toLowerCase()}, before the factory commits a rupee.`} />
                 <Barrier t="Weak first 30 days" d="The same 12 pin-codes receive the seller’s starter impressions and any impression grant, so early traffic lands where the demand already is." />
               </Card>
@@ -352,7 +379,7 @@ export default function Maker({ pti, params }) {
                   is paid at handover.
                 </p>
               </Card>
-              <Card title="Round 1 barriers this step removes">
+              <Card title="Barriers this step removes">
                 <Barrier t="Inventory risk, build-to-stock" d={`Stock at risk is the ${num(batch.buffer)}-unit buffer, not a warehouse of guesses.`} />
                 <Barrier t="Cash cycle, settlement lag" d={`${rupees(batch.prepayment)} arrives at handover, before any unit is delivered.`} />
                 <Barrier t="Unit-level operations" d="Bulk handover. The node does unit picking, packing, shipping and returns." />
@@ -388,14 +415,4 @@ function Barrier({ t, d }) {
       <div><b>{t}</b><span>{d}</span></div>
     </div>
   );
-}
-
-// Margin at a common listing price, so the two fulfilment modes compare like for like.
-function unitMargin(_check, price, unitCost, category, mode) {
-  return unitEconomicsAt(price, unitCost, category, mode);
-}
-
-import { unitEconomics } from '../lib/economics.js';
-function unitEconomicsAt(price, unitCost, category, mode) {
-  return unitEconomics({ price, unitCost, category, mode }).margin;
 }

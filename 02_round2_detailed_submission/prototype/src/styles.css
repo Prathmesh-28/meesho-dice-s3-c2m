@@ -338,3 +338,18 @@ ul.tight li { margin: 3px 0; }
   .meter { grid-template-columns: 110px 1fr 40px; }
   .kv { grid-template-columns: 1fr; }
 }
+
+/* Factory Direct additions */
+tr.hl td { background: #fff6e8; }
+.slider { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; font-size: 13px; }
+.slider input[type=range] { width: 100%; accent-color: var(--plum); }
+.product-img { position: relative; height: 150px; border-radius: 12px; background: linear-gradient(135deg, #f5eef3, #eef1f7); display: flex; align-items: center; justify-content: center; gap: 10px; }
+.product-img span { width: 62px; height: 70px; border-radius: 10px 10px 26px 26px; box-shadow: 0 4px 10px rgba(0,0,0,.18); }
+.product-img .pack { position: absolute; left: 10px; top: 10px; background: #fff; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 650; color: var(--plum); }
+.badge-direct { display: inline-block; margin-top: 6px; background: #e7f5e7; color: var(--good-ink); border-radius: 6px; padding: 3px 8px; font-size: 11.5px; font-weight: 600; }
+.buy-opt { text-align: left; border: 1.5px solid var(--grid); background: #fff; border-radius: 12px; padding: 10px 12px; cursor: pointer; font: inherit; color: inherit; display: block; width: 100%; }
+.buy-opt.on { border-color: var(--plum); background: #fbf3f8; }
+.buy-price { font-weight: 700; font-size: 16px; }
+.loop.fd { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.loop-step .num-big { font-size: 20px; font-weight: 700; color: var(--plum); }
+@media (max-width: 900px) { .loop.fd { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
