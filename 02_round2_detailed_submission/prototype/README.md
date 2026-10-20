@@ -34,6 +34,7 @@ Open the local address printed by Vite. For a production build, run `npm run bui
 ## Demo path
 
 1. **Overview:** follow Kavin Knit Mills, the fictional example seller.
+   **End-to-end flow:** step through (or play) one batch on every stakeholder's screen at once: the buyer's Meesho app, the owner's WhatsApp, the Factory Node's warehouse tablet, Meesho's C2M console, Valmo and the NBFC, from the price check to the payout. Each step is linkable (`#/flow?step=6`).
 2. **Price Truth Index:** change the catalogue gate; inspect large sellers, price gaps, and a SKU breakdown. Export the resulting acquisition list as CSV.
 3. **Day-30 readout:** switch Base, Weak lift, and Price decay to see the fund, tighten, and stop decisions.
 4. **Seller Health:** inspect daily scores and the action log for Kavin Knit Mills and the 60-seller pilot.
@@ -52,6 +53,7 @@ Full-page captures at 2× resolution are in `screenshots/`, numbered in demo ord
 | File | Shows |
 |---|---|
 | `01_overview.png` | The Factory Direct loop with live numbers, Kavin Knit Mills' story, and where each brief question is answered |
+| `01b_end_to_end_flow.png` | One batch on every stakeholder's screen: buyer, manufacturer, node, Meesho, Valmo, NBFC (step 6, the truck) |
 | `02_price_truth_index.png` | Scale vs price-gap scatter, category bars, seller table and SKU drill-down |
 | `03_day30_readout_fund.png` | Base case: +18% lift, balanced groups, "fund" decision |
 | `04_day30_readout_stop.png` | Price-decay case: gate retention falls below 70%, "stop" decision |

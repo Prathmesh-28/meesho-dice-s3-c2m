@@ -14,10 +14,12 @@ import Method from './views/Method.jsx';
 import Buyer from './views/Buyer.jsx';
 import Business from './views/Business.jsx';
 import Operations from './views/Operations.jsx';
+import Flow from './views/Flow.jsx';
 import diceLogo from './assets/dice-s3-logo.png';
 
 const NAV = [
   { path: 'overview', label: 'Overview' },
+  { path: 'flow', label: 'End-to-end flow' },
   { path: 'pti', label: 'Price Truth Index', num: 1 },
   { path: 'experiment', label: 'Day-30 readout', num: 2 },
   { path: 'health', label: 'Seller Health', num: 3 },
@@ -43,7 +45,7 @@ export default function App() {
   }, [route.path]);
 
   const shared = { gate, setGate, market, pti, cohort, summary, baseRun, params: route.params };
-  const View = { overview: Overview, pti: PriceTruth, experiment: Experiment, health: Health, maker: Maker, buyer: Buyer, ops: Operations, business: Business, method: Method }[route.path] ?? Overview;
+  const View = { overview: Overview, flow: Flow, pti: PriceTruth, experiment: Experiment, health: Health, maker: Maker, buyer: Buyer, ops: Operations, business: Business, method: Method }[route.path] ?? Overview;
 
   return (
     <>
