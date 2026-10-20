@@ -9,14 +9,15 @@ const feeds = [
   ['Orders', 'delivered orders, NMV, RTO, quality return reason', 'Comparable-set median, demand brief, experiment and quality checks'],
   ['Operations', 'dispatch time, promised SLA, in-stock status', 'Daily health score and automated remedies'],
   ['Exposure', 'impressions by category, SKU and pin-code', 'Starter allocation, grant and 20% category cap'],
-  ['Factory Node', 'inbound batches, Valmo pick/pack scans, return grades', 'Dispatch SLA, returns ending at the node, node utilisation'],
+  ['Factory Node', 'shipping notices, goods receipts, QC samples, stock by factory and SKU, Valmo pick/pack scans, return grades', 'Dispatch SLA, node stock and top-ups, returns ending at the node, node utilisation'],
+  ['Pre-orders', 'order state (paid, in batch, locked, shipped), escrow, cut-off, promised date by district', 'Weekly batch size, promise accuracy, refunds and late credits'],
 ];
 
 const ENGINE = [
   ['1 · QUALIFY', 'Price Truth Index', 'delivered orders · live SKU prices', 'badged SKUs ≤ 0.92 × median, weekly', 'pti'],
   ['2 · ALLOCATE', 'Demand Brief', 'search · orders · returns by pin-code', 'sell-through within ±15% of the brief', 'maker'],
   ['3 · MAKE', 'Prepaid batch', 'pre-order checkouts · UPI · NBFC rails', 'repeat batch within 30 days', 'buyer'],
-  ['4 · SHIP', 'Factory Node', 'Valmo scans · return grades at node', 'node utilisation ≥ 70%', 'maker'],
+  ['4 · SHIP', 'Factory Node', 'Valmo scans · return grades at node', 'node utilisation ≥ 70%', 'ops'],
   ['5 · KEEP', 'Health Score', '5 signals, recomputed daily', '≤ 5 escalations per 100 · days to recover', 'health'],
 ];
 const KIT = [

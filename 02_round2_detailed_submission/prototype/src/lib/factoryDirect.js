@@ -14,11 +14,12 @@ export { S as SPONSOR_DERIVED };
 
 // ---------------------------------------------------------------- per pack
 const HOSIERY = { rto: 0.14, ret: 0.08 };
-const prepaidRto = (rates) => rates.rto - (1 - S.prepaid) * FD.codFailGap;
+export const prepaidRto = (rates) => rates.rto - (1 - S.prepaid) * FD.codFailGap;
 
 // Cost per pack kept, by route. mode: 'self' ships each order, 'node' drops stock at a Factory Node.
 // stock: 'build' makes to stock, 'batch' makes confirmed pre-orders + 15%. prepaid lowers failed deliveries.
-export function packCost({ cogs, mode = 'self', stock = 'build', prepaid = false, rates = HOSIERY, margin = FD.margin }) {
+// retRecovery: value recovered on customer returns, when it differs from failed deliveries (opened innerwear).
+export function packCost({ cogs, mode = 'self', stock = 'build', prepaid = false, rates = HOSIERY, margin = FD.margin, retRecovery }) {
   const rRto = prepaid ? prepaidRto(rates) : rates.rto;
   const disp = 100, rto = disp * rRto, delivered = disp - rto, ret = delivered * rates.ret, kept = delivered - ret;
   const rec = FD.recovery[mode === 'node' ? 'node' : 'self'];
@@ -27,7 +28,7 @@ export function packCost({ cogs, mode = 'self', stock = 'build', prepaid = false
   const L = FD.fees;
   const make = disp * cogs;
   const unsold = ((disp * u) / (1 - u)) * cogs * (1 - FD.unsold.salvage);
-  const recovered = (rto + ret) * cogs * rec;
+  const recovered = rto * cogs * rec + ret * cogs * (retRecovery ?? rec);
   const logistics = mode === 'node' ? delivered * L.nodeFwd + disp * L.nodeFee : delivered * L.selfFwd + disp * L.selfPack;
   const reverse = ret * FD.returnFee + rto * FD.rtoFee;
   const capital = (make * FD.capital.rate * days) / 365;
@@ -47,11 +48,11 @@ export const ROUTES = [
 ];
 
 // Every route for one making cost, against one market price.
-export function routes({ cogs = FD.makingCost, market, rates = HOSIERY, margin = FD.margin }) {
+export function routes({ cogs = FD.makingCost, market, rates = HOSIERY, margin = FD.margin, retRecovery }) {
   const exFactory = cogs / (1 - margin);
   const gate = market * (1 - FD.gate);
   return ROUTES.map((r) => {
-    const c = packCost({ cogs: r.markup ? exFactory * (1 + FD.wholesalerMarkup) : cogs, rates, margin, ...r.opts });
+    const c = packCost({ cogs: r.markup ? exFactory * (1 + FD.wholesalerMarkup) : cogs, rates, margin, retRecovery, ...r.opts });
     return { ...r, ...c, gap: 1 - c.floor / market, passes: c.floor <= gate };
   });
 }
@@ -91,7 +92,7 @@ function irr(flows) {
   return (lo + hi) / 2;
 }
 
-// over: incremental, gap, costFail, preorder, yieldScale, costScale, rate.
+// over: incremental, gap, costFail, preorder, yieldScale, costScale, rate, nodes (node sites by year).
 export function financials(over = {}) {
   const P = { incremental: FD.incremental, contrib: S.contribPerOrder, gap: FD.codFailGap, costFail: FD.failCost,
     preorder: FD.prepaidShare, yieldScale: 1, costScale: 1, rate: FD.rates[0], ...over };
@@ -112,7 +113,7 @@ export function financials(over = {}) {
     people: FD.fte.map((f) => f * FD.fteCost),
     onboarding: yrs.map((i) => (FD.clusters[i] - (i ? FD.clusters[i - 1] : 0)) * FD.clusterCost),
     briefs: FD.briefCost,
-    nodes: yrs.map((i) => (FD.nodes[i] - (i ? FD.nodes[i - 1] : 0)) * FD.nodeCost),
+    nodes: yrs.map((i) => ((P.nodes ?? FD.nodes)[i] - (i ? (P.nodes ?? FD.nodes)[i - 1] : 0)) * FD.nodeCost),
     returnsPool: yrs.map((i) => (i === 0 ? FD.returnsPool.y1 : nmv[i] * FD.returnsPool.share)),
     grants: FD.grants.newSellers.map((n) => (((n * FD.grants.perSeller) / 1000) * FD.grants.cpm) / 1e7),
     firstLoss: nmv.map((v) => v * P.preorder * FD.advance * FD.firstLoss),
@@ -126,7 +127,7 @@ export function financials(over = {}) {
   return {
     P, nmv, orders, benIncr, benRto, benefit, lines, cost, net, pv,
     npv: sum(pv), irr: irr(net), payback, cashY1: cost[0] - lines.people[0],
-    valuePerOrder: P.incremental * P.contrib + drop * P.costFail, failDrop: drop,
+    valuePerOrder: P.incremental * P.contrib + drop * P.costFail, failDrop: drop, nmvPerOrder,
   };
 }
 

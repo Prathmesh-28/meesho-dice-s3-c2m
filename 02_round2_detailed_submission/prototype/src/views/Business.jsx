@@ -34,7 +34,7 @@ export default function Business() {
     <div>
       <div className="page-head">
         <div>
-          <div className="eyebrow">Module 6 · Finance analysis</div>
+          <div className="eyebrow">Module 7 · Finance analysis</div>
           <h2>Does Factory Direct pay for itself?</h2>
           <p className="lede">
             Meesho earns on orders, not on price: {pct(FD.incremental)} of C2M orders are new to Meesho at ₹7.3 of contribution
@@ -111,7 +111,7 @@ export default function Business() {
           <p>Pays <b>{rupees(dc.preorderPrice)}</b> on a prepaid pre-order instead of the <b>{rupees(dc.market)}</b> buyers pay today: ₹{dc.buyerSaves.toFixed(1)} less.</p>
         </Card>
         <Card title="The factory" sub="per pack, against selling ex-factory">
-          <p>Earns <b>₹{dc.factoryMargin.toFixed(1)}</b> a pack against ₹{dc.exFactoryMargin.toFixed(1)} selling to a distributor ({(dc.factoryMargin / dc.exFactoryMargin).toFixed(1)}×), and gets 30% of the batch at handover.</p>
+          <p>Earns <b>₹{dc.factoryMargin.toFixed(1)}</b> a pack against ₹{dc.exFactoryMargin.toFixed(1)} selling to a distributor ({(dc.factoryMargin / dc.exFactoryMargin).toFixed(1)}×), and gets 30% of the batch before delivery: 20% at the cut-off, 10% at handover.</p>
         </Card>
         <Card title="Meesho" sub="per C2M order">
           <p>Earns <b>₹{f.valuePerOrder.toFixed(1)}</b> an order without a subsidy: no order discounts, impression grants instead of cash, and nodes funded only after the Day-30 gate.</p>

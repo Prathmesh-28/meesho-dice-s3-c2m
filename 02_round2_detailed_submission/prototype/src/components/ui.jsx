@@ -163,3 +163,8 @@ export function useSort(rows, initialKey, initialDir = 'desc') {
   );
   return { sorted, header };
 }
+
+// WhatsApp formatting: *text* renders bold.
+export function waText(text) {
+  return text.split(/\*([^*]+)\*/g).map((part, i) => (i % 2 ? <b key={i}>{part}</b> : part));
+}

@@ -13,6 +13,7 @@ import Maker from './views/Maker.jsx';
 import Method from './views/Method.jsx';
 import Buyer from './views/Buyer.jsx';
 import Business from './views/Business.jsx';
+import Operations from './views/Operations.jsx';
 import diceLogo from './assets/dice-s3-logo.png';
 
 const NAV = [
@@ -22,7 +23,8 @@ const NAV = [
   { path: 'health', label: 'Seller Health', num: 3 },
   { path: 'maker', label: 'Manufacturer app', num: 4 },
   { path: 'buyer', label: 'Buyer pre-order', num: 5 },
-  { path: 'business', label: 'Finance analysis', num: 6 },
+  { path: 'ops', label: 'Batch operations', num: 6 },
+  { path: 'business', label: 'Finance analysis', num: 7 },
   { path: 'method', label: 'Scale-up & road map' },
 ];
 
@@ -41,7 +43,7 @@ export default function App() {
   }, [route.path]);
 
   const shared = { gate, setGate, market, pti, cohort, summary, baseRun, params: route.params };
-  const View = { overview: Overview, pti: PriceTruth, experiment: Experiment, health: Health, maker: Maker, buyer: Buyer, business: Business, method: Method }[route.path] ?? Overview;
+  const View = { overview: Overview, pti: PriceTruth, experiment: Experiment, health: Health, maker: Maker, buyer: Buyer, ops: Operations, business: Business, method: Method }[route.path] ?? Overview;
 
   return (
     <>

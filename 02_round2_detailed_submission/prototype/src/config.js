@@ -217,6 +217,55 @@ export const ECONOMICS = {
   batchBuffer: 0.15,         // make confirmed pre-orders + 15% of suggested batch
 };
 
+// Batch operations (lib/operations.js): how a pre-order becomes a parcel, what is left at the node, and who pays
+// when something goes wrong. These are operating rules proposed beyond the deck's costed case, and assumptions to
+// confirm with factories, Valmo and the node partner. None of them changes the deck's cost per pack.
+export const OPS = {
+  share: 0.06,             // a new badged factory's share of its brief districts' demand (= ECONOMICS.newSellerShare)
+  minRun: 500,             // pieces: "500 pieces is our preferred minimum" (factory owner, deck slide 2)
+  cutoffs: { 1: [4], 2: [1, 4] }, // weekday of each pre-order cut-off, 11:59 pm (Thu; or Mon and Thu)
+  makeDays: 3,             // cut, stitch, pack and QC-sample at the factory after the cut-off
+  shipLagDays: 1,          // the truck arrives the evening before; the node counts it and ships next morning
+  advanceAtCutoff: 0.2,    // NBFC: 20% of confirmed value when the batch locks, before fabric is cut...
+  advanceAtHandover: 0.1,  // ...and 10% when the node counts the truck (A20's 30% in two parts)
+  settleDays: 7,           // payout 7 days after each delivery, after the 7-day return window
+  nodeShipDays: 2,         // node stock ships within 2 days
+  safetyDays: 2,           // node keeps 2 days of node-stock orders as safety stock
+  storagePerMonth: 1,      // ₹ a pack a month at the node (about ₹600 for a pallet of 600 packs)
+  ageing: { markdownDay: 30, returnDay: 45 }, // unsold node stock: marked down at 30 days, back to the factory at 45
+  lateCredit: 10,          // ₹ back on each order of a late batch, paid by whoever caused the delay
+  lateRefundDays: 3,       // more than 3 days late: one-tap full refund
+  qcSample: { lot: [501, 1200], n: 80, accept: 5 }, // AQL 2.5, general level II, for lots of 501-1,200
+  reworkHours: 48,
+  grnHours: 4,             // the node counts every truck within 4 hours
+  shrinkTolerance: 0.005,  // node stock losses above 0.5% a quarter are the node partner's, at making cost
+  payoutHold: 0.05,        // share of a factory's last payout held 30 days when it stops shipping
+  ewayLimit: { interstate: 50000, tnIntrastate: 100000 }, // ₹; sources differ on Tamil Nadu (₹50,000-1 lakh)
+  siteCapacity: 10000,     // orders a day one partner node site ships on two shifts; a third shift covers peaks
+  exits: [                 // the deck's exit run-rates (slide 9)
+    { label: 'Pilot · Day 90', sellers: 60, nodes: 1 },
+    { label: 'Year 1 exit', sellers: 450, nodes: 6 },
+    { label: 'Year 4 exit', sellers: 1400, nodes: 12 },
+  ],
+  // Surface transit from a Tiruppur node, days (to confirm with Valmo lane data).
+  zones: [
+    { id: 'A', label: 'Tamil Nadu', days: [1, 2], states: ['Tamil Nadu'] },
+    { id: 'B', label: 'South', days: [2, 3], states: ['Kerala', 'Karnataka', 'Andhra Pradesh', 'Telangana'] },
+    { id: 'C', label: 'West & Central', days: [3, 4], states: ['Maharashtra', 'Madhya Pradesh', 'Chhattisgarh', 'Gujarat', 'Odisha'] },
+    { id: 'D', label: 'North', days: [4, 6], states: ['Uttar Pradesh', 'Rajasthan', 'Delhi', 'Haryana', 'Punjab', 'Uttarakhand'] },
+    { id: 'E', label: 'East', days: [5, 6], states: ['Bihar', 'Jharkhand', 'West Bengal'] },
+    { id: 'F', label: 'North-East', days: [6, 8], states: ['Assam'] },
+  ],
+  // Return rules for innerwear, against the deck's costed case (8% returned; 85-90% of value recovered by route).
+  // recovery: value recovered on a return when it differs from the route's own (null = the route's).
+  returnPolicies: [
+    { id: 'deck', label: 'As costed', ret: 0.08, recovery: null, note: 'Open returns, resold after grading: the deck’s case' },
+    { id: 'opened', label: 'Opened, not resold', ret: 0.08, recovery: 0.1, note: 'Open returns, but opened innerwear goes to seconds at 10% of value' },
+    { id: 'sealed', label: 'Sealed packs only', ret: 0.04, recovery: null, note: 'Size swaps in a sealed pack only; assumed to halve returns' },
+    { id: 'none', label: 'Non-returnable', ret: 0.02, recovery: 0.5, note: 'Wrong item or defect claims only, as innerwear listings on Meesho allow' },
+  ],
+};
+
 // Demand Brief geography: district, state, 3-digit pin prefix, relative weight.
 export const DISTRICTS = [
   ['Lucknow', 'Uttar Pradesh', '226', 1.0], ['Kanpur', 'Uttar Pradesh', '208', 0.8],

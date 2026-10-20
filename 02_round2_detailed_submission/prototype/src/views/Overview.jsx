@@ -9,17 +9,17 @@ import { Card } from '../components/ui.jsx';
 
 export default function Overview({ pti, summary, cohort }) {
   const persona = cohort.find((s) => s.persona);
-  const { check, self, table, brief, batch, ledger } = useMemo(() => personaFlow(pti), [pti]);
+  const { check, self, table, brief, batch, ledger, plan } = useMemo(() => personaFlow(pti), [pti]);
   const fin = useMemo(() => financials(), []);
   const LOOP = [
     ['1 · Gather the data', `Searches, carts and delivered orders from ${SPONSOR.buyersMn} mn buyers, summed by district`, `${num(brief.weeklyTotal)} orders a week`, ['maker', { step: 'brief' }]],
     ['2 · Predict demand', 'Demand Brief: districts, sizes and the price band that sells', `${brief.rows[0].district} leads`, ['maker', { step: 'brief' }]],
     ['3 · Share the number', 'The brief and pre-orders reach the owner on WhatsApp; one reply commits', `${num(batch.preOrders)} pre-orders`, ['maker', { step: 'whatsapp' }]],
-    ['4 · Factory makes the order', 'Confirmed orders + 15%, never stock built blind', `makes ${num(batch.make)}`, ['maker', { step: 'batch' }]],
-    ['5 · Node takes the batch', 'One truck to the cluster node; the seller keeps title; an NBFC advances 30%', `+${rupees(ledger.advance)} on Day 3`, ['maker', { step: 'batch' }]],
-    ['6 · Node packs each order', 'Picks, packs, labels and samples for QC at ₹20 a unit', 'no packing team needed', ['maker', { step: 'price' }]],
+    ['4 · Factory makes the order', 'After the weekly cut-off: paid orders + 15%, never stock built blind; QC-sampled at the factory', `makes ${num(batch.make)}`, ['maker', { step: 'batch' }]],
+    ['5 · Node takes the batch', 'One truck to the cluster node; the seller keeps title; an NBFC advances 30%: 20% at the cut-off, 10% at handover', `+${rupees(ledger.advance)} before delivery`, ['ops']],
+    ['6 · Node packs each order', 'Counts the truck, then picks, packs and labels each order at ₹20 a unit; leftovers become node stock', 'no packing team needed', ['ops', { tab: 'stock' }]],
     ['7 · Valmo delivers', `The buyer prepaid ${rupees(batch.preorderPrice)} against ${rupees(check.marketMedian)}; returns end at the node`, `${pct(ledger.failed / ledger.confirmed, 1)} fail, not ${pct(categoryById[PERSONA.category].rtoRate)}`, ['buyer']],
-    ['8 · Settle and learn', 'Balance paid 7 days after delivery (cash in ~11 days on average); the Health Score updates; data loops back to step 1', `+${rupees(ledger.balance)} on Day 15`, ['health', { seller: PERSONA.id }]],
+    ['8 · Settle and learn', 'Balance paid 7 days after each delivery (cash in ~11 days from cutting fabric); the Health Score updates; data loops back to step 1', `+${rupees(ledger.balance)} a batch`, ['health', { seller: PERSONA.id }]],
   ];
   const grant = persona.events.find((e) => e.rule === 'grant');
 
@@ -27,7 +27,8 @@ export default function Overview({ pti, summary, cohort }) {
     ['Which manufacturers have a genuine price advantage, and which don’t despite scale?', 'Price Truth Index', 'pti', `${pti.counts.ready} of ${pti.counts.screened} large sellers pass; ${pti.top10NotReady} of the 10 largest do not.`],
     ['What stops reluctant manufacturers, and what changes their calculus?', 'Manufacturer app', 'maker', `A price check before listing, a pin-code Demand Brief, and batches made only against confirmed pre-orders.`],
     ['What makes early scale-up sustainable without subsidy or handholding?', 'Seller Health', 'health', `${summary.auto} automated actions against ${summary.manual} human escalations across the 60-seller pilot.`],
-    ['Will buyers accept a 7-8 day wait for a lower price?', 'Buyer pre-order', 'buyer', `A prepaid pre-order at ${rupees(batch.preorderPrice)} against ${rupees(check.marketMedian)}; every pre-order joins the factory's batch.`],
+    ['Will buyers accept a 7-8 day wait for a lower price?', 'Buyer pre-order', 'buyer', `A prepaid pre-order at ${rupees(batch.preorderPrice)} against ${rupees(check.marketMedian)}, with the date for the buyer's district shown before payment.`],
+    ['Can the physical flow keep the promise: dates, stock, returns, paperwork?', 'Batch operations', 'ops', `A Thursday cut-off, ${num(plan.preOrders)} pre-orders → ${num(plan.make)} made, shipped ${plan.wait.min}-${plan.wait.max} days after the order; every exception has an owner and a cost.`],
     ['Is it worth it for Meesho, and how robust is it?', 'Finance analysis', 'business', `NPV ${crore(fin.npv)} at 12%, payback in Year ${fin.payback}; drag any driver to stress it.`],
     ['What should Meesho measure, and when should it intervene?', 'Health Score + Day-30 rule', 'experiment', `Five-signal daily score, a rulebook with thresholds, and a fund / tighten / stop rule at Day 30 that releases ₹7.3 cr.`],
   ];
@@ -63,7 +64,7 @@ export default function Overview({ pti, summary, cohort }) {
         <div className="dilemma">
           {[['1 · Today', '“500 pieces, one truck, paid in 45 days. Zero returns.”', 'Bulk B2B: made to order'],
             ['2 · The online fear', '“Pack every order? Who pays for returns and unsold stock?”', '43% of factories that quit cite returns'],
-            ['3 · Factory Direct', '“Sold before I cut fabric. It feels like B2B again.”', `1 truck · ${rupees(ledger.advance)} at handover · cash in ~11 days`]].map(([k, q, n], i) => (
+            ['3 · Factory Direct', '“Sold before I cut fabric. It feels like B2B again.”', '1 truck a week · 30% advanced before delivery · cash in ~11 days']].map(([k, q, n], i) => (
             <div className={`dilemma-step${i === 2 ? ' on' : ''}`} key={k}>
               <div className="k">{k}</div>
               <div className="q">{q}</div>
@@ -84,6 +85,11 @@ export default function Overview({ pti, summary, cohort }) {
             </div>
           ))}
         </div>
+        <div className="note-box mt">
+          This loop shows the deck’s worked batch of {num(batch.preOrders)} pre-orders. At Kavin’s starting {pct(plan.share)} share, pre-orders arrive at
+          {' '}{num(plan.preDay)} a day, so he runs a weekly batch: {num(plan.preOrders)} + 15% = {num(plan.make)}, cut off every Thursday and shipped on
+          Monday. The deck’s 1,000 is his week at a {pct(plan.shareFor(1000, 7), 1)} share. <a href={href('ops')}>Batch operations, day by day →</a>
+        </div>
       </Card>
 
       <div className="grid cols-2">
@@ -98,7 +104,7 @@ export default function Overview({ pti, summary, cohort }) {
               <a href={href('maker', { step: 'brief' })}>Open →</a>
             </li>
             <li>
-              <div><div className="t">Make only what is sold</div><div className="d">{num(batch.preOrders)} pre-orders confirmed, so {num(batch.make)} units are made (+15% buffer), handed over in bulk at the Factory Node, with {rupees(batch.prepayment)} prepaid at handover.</div></div>
+              <div><div className="t">Make only what is sold</div><div className="d">{num(plan.preOrders)} pre-orders a week at his starting {pct(plan.share)} share, so {num(plan.make)} units are made (+15%) after Thursday’s cut-off and trucked to the Factory Node on Sunday, with 30% of the value advanced before delivery. The deck’s 1,000-pack batch is his week at a {pct(plan.shareFor(1000, 7), 1)} share.</div></div>
               <a href={href('maker', { step: 'batch' })}>Open →</a>
             </li>
             <li>

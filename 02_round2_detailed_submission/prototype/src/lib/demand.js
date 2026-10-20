@@ -86,28 +86,40 @@ export function batchPlan({ brief, listingPrice, minViablePrice = 0, seed = 1, p
     discount,
     confirmedValue,
     prepayment: confirmedValue * ECONOMICS.prepaymentShare,
-    windowDaysLeft: 3,
   };
 }
 
-export function whatsappBrief({ seller, brief, batch, week = 40 }) {
+const n = (x) => Math.round(x).toLocaleString('en-IN');
+const rs = (x) => `₹${n(x)}`;
+
+// Dates come from lib/operations.js (batchDates): cut-off, truck and ship day for this week's batch.
+export function whatsappBrief({ seller, brief, batch, dates, fmt, week = 43 }) {
   const top = brief.rows.slice(0, 3);
-  const n = (x) => x.toLocaleString('en-IN');
   const band = (r) => `₹${r.priceBand[0]}–${r.priceBand[1]}`;
   return [
     `📦 *C2M Demand Brief* · Week ${week}`,
     `Hello ${seller} 🙏`,
     `Top demand this week for *${brief.type.name}*:`,
     ...top.map((r, i) => `${i + 1}. ${r.district} (${r.pin}xxx): ${n(r.weekly)} orders/week · sells at ${band(r)}`),
-    `Suggested batch: *${n(brief.suggested)} units*`,
-    `Confirmed pre-orders so far: *${n(batch.preOrders)}*`,
-    `Batch window closes in ${batch.windowDaysLeft} days.`,
+    `Your pre-orders this week: *${n(batch.preOrders)}* · cut-off *${fmt(dates.cutoff)}, 11:59 pm*`,
+    `Make *${n(batch.make)}* (pre-orders + 15%) · truck to the node on *${fmt(dates.truck)}*`,
   ];
 }
 
-export function whatsappConfirm({ batch, cluster }) {
-  const n = (x) => Math.round(x).toLocaleString('en-IN');
-  return `✅ Batch committed: ${n(batch.make)} units. Hand over at the ${cluster} Factory Node within ${batch.windowDaysLeft} days. ₹${n(batch.prepayment)} is paid at handover.`;
+export function whatsappConfirm({ batch, cluster, dates, fmt, advance }) {
+  return `✅ Batch locked: ${n(batch.make)} units. Cut fabric ${fmt(dates.advance)}; truck to the ${cluster} Factory Node on ${fmt(dates.truck)}. ${rs(advance.atCutoff)} (20%) arrives ${fmt(dates.advance)} morning, ${rs(advance.atHandover)} when the node counts the truck.`;
 }
+
+// Meesho suggests the node top-up; the factory approves it. Meesho never moves seller stock on its own.
+export function whatsappTopUp({ stock, days, topUp, sizes, dates, fmt }) {
+  return [
+    `📦 *Node stock* · ${n(stock)} packs left, about ${days} days`,
+    `Suggested top-up on ${fmt(dates.truck)}’s truck: *${n(topUp)} packs*`,
+    sizes.map((s) => `${s.value} ${s.units}`).join(' · '),
+    'You own this stock and can recall it on any truck.',
+  ];
+}
+
+export const TOPUP_REPLIES = ['1 · Approve top-up', '2 · Change quantity', '3 · Skip this week'];
 
 export const QUICK_REPLIES = ['1 · Commit batch', '2 · Review sizes', '3 · Request callback'];
